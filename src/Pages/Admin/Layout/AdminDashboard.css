@@ -56,6 +56,7 @@ body {
     padding: 20px;
     overflow-y: auto;
     flex: 1;
+    transition: margin-left 0.3s ease;
 }
 
 .dashboard-grid {
@@ -132,6 +133,24 @@ th {
     display: flex;
     flex-direction: column;
     z-index: 1000;
+    transition: width 0.3s ease;
+}
+
+.sidebar.collapsed {
+    width: 0px;
+    padding: 0px;
+}
+
+.toggle-sidebar-button {
+    background-color: transparent;
+    position: absolute;
+    border: none;
+    color: var(--text-color);
+    font-size: 20px;
+    cursor: pointer;
+    margin-bottom: 15px;
+    transition: transform 0.3s ease;
+    align-self: flex-start;
 }
 
 .sidebar-create-button {
@@ -144,7 +163,7 @@ th {
 }
 
 .sidebar-create-button:hover {
-    background-color: var(--accent-color);
+    background-color: var(--primary-color);
 }
 
 .sidebar-list {
@@ -163,4 +182,14 @@ th {
     background-color: var(--primary-color);
     color: var(--background-color);
     border-radius: 5px;
+}
+
+.main-content {
+    flex-grow: 1;
+    padding: 20px;
+    transition: margin-left 0.3s ease;
+}
+
+.main-content.expanded {
+    margin-left: 60px;
 }

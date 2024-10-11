@@ -24,12 +24,13 @@ const Service = () => {
   return (
     <>
       <div className="aiwave-service-area rainbow-section-gap">
-        <div className="container">
-          <div className="row  ">
+        <div className="container ">
+          <div className="row row--15 service-wrapper d-flex justify-content-between ">
+            
             {serviceData.map((service, index) => (
               <div
                 key={index}
-                className="col-lg-4 col-md-6 col-sm-6 col-12 sal-animate service-item mb-4"
+                className="col-lg-3 col-md-4  col-12 sal-animate service-item mb-4"
                 data-sal="slide-up"
                 data-sal-duration={700}
                 data-sal-delay={index * 100}
@@ -53,13 +54,15 @@ const Service = () => {
       <style jsx>{`
         .service-item {
           display: flex;
-          gap: 4rem;
-          border: 2px solid #00ff00;
+          justify-content:space-around;
+          gap: 2rem;
+          border: 1px solid #00ff00;
           padding: 20px;
           border-radius: 10px;
-          border-width: 10px;
+          border-width: 2px;
           transition: transform 0.3s ease, box-shadow 0.3s ease;
           margin-bottom: 30px;
+          // margin-left: 5px;
         }
         .service-item:hover {
           transform: translateY(-10px);

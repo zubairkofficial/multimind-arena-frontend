@@ -91,10 +91,11 @@
     --color-primary: #00ff00;
     --color-primary-alt: #17df14;
     --color-secondary: #003300;
-    --color-primary-gradient-start: #05b705;
+    --color-primary-gradient-start: #003300;
     --color-primary-gradient-end: #00ff00;
     --color-heading: #ffffff;
     --color-body: #BCC3D7;
+    --color-nav-color: '#1C1E24';
     --color-link: #BCC3D7;
     --color-text-off: #565e78;
     --color-dark: #000000;
@@ -10798,13 +10799,14 @@ only screen and (min-width: 768px) and (max-width: 991px) {
 ----------------------------*/
 
 .mainmenu-nav .mainmenu {
+    background-color: var(--color-blackest);
     display: flex;
     margin: 0;
     justify-content: center;
     padding: 0 16px;
     border: 1px solid var(--color-border);
     border-radius: 50px;
-    border-color: var(--color-primary);
+    border-color: "#1F2126";
 }
 
 .mainmenu-nav .mainmenu>li {
@@ -20714,7 +20716,7 @@ only screen and (min-width: 768px) and (max-width: 991px) {
 }
 
 .display-one {
-    font-size: 75px;
+    font-size: 60px;
 }
 
 @media only screen and (min-width: 992px) and (max-width: 1199px) {
@@ -21019,7 +21021,7 @@ only screen and (min-width: 768px) and (max-width: 991px) {
 .slider-style-1 .inner .description {
     font-family: var(--font-primary);
     padding: 0 22%;
-    font-size: 24px;
+    font-size: 18px;
     line-height: 1.7;
     margin-bottom: 80px;
     color: var(--color-link);

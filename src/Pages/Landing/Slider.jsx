@@ -1,10 +1,30 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 const Slider = () => {
+  const [text, setText] = useState("AI Chating");
+  const [isFading, setIsFading] = useState(false);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIsFading(true);
+      setTimeout(() => {
+        setText((prevText) => (prevText === "AI Chating" ? "AI Writing" : "AI Chating"));
+        setIsFading(false);
+      }, 500);
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const fadeInOutStyles = {
+    opacity: isFading ? 0 : 1,
+    transition: "opacity 0.5s ease-in-out",
+  };
+
   return (
     <>
       <div
-        className="slider-area slider-style-1 variation-default slider-bg-image bg-banner1 slider-bg-shape"
+        className="slider-area slider-style-1 variation-default  bg-banner1 slider-bg-shape"
         data-black-overlay={1}
       >
         {/* <div class="bg-blend-top bg_dot-mask"></div> */}
@@ -15,13 +35,13 @@ const Slider = () => {
                 <h1 className="title display-one">
                   Examine the Potential of
                   <br />{" "}
-                  <b className="theme-gradient is-visible mx-5">AI Chating</b>
+                  <b className="theme-gradient is-visible mx-5" style={fadeInOutStyles}>{text}</b>
                   AI Hack
                 </h1>
-                <p className="description">
+                <h6 className="description">
                   Unleash Brainwave's AI potential. Use the open AI <br />{" "}
                   conversation app Pixcels Themes
-                </p>
+                </h6>
                 <div className="form-group">
                   <textarea
                     name="text"
@@ -72,18 +92,6 @@ const Slider = () => {
               </div>
             </div>
           </div>
-        </div>
-        <div className="bg-shape">
-          <img
-            className="bg-shape-one"
-            src="assets/images/bg/bg-shape-four.png"
-            alt="Bg Shape"
-          />
-          <img
-            className="bg-shape-two"
-            src="assets/images/bg/bg-shape-five.png"
-            alt="Bg Shape"
-          />
         </div>
       </div>
     </>

@@ -50,27 +50,27 @@ const Header = () => {
               <nav className="mainmenu-nav d-none d-lg-flex justify-content-center">
                 <ul className="mainmenu">
                   <li>
-                  <Link to="/" style={{ color: "#ffffff" }}>
+                    <Link to="/" style={{ color: "#ffffff" }}>
                       Home
                     </Link>
                   </li>
                   <li className="has-dropdown has-menu-child-item position-relative">
-                  <Link to="/tools" style={{ color: "#ffffff" }}>
+                    <Link to="/tools" style={{ color: "#ffffff" }}>
                       Tools
                     </Link>
                   </li>
                   <li className="with-megamenu has-menu-child-item">
-                  <Link to="/arenas" style={{ color: "#ffffff" }}>
+                    <Link to="/arenas" style={{ color: "#ffffff" }}>
                       Arenas
                     </Link>
                   </li>
                   <li>
-                  <Link to="/roadmap" style={{ color: "#ffffff" }}>
+                    <Link to="/roadmap" style={{ color: "#ffffff" }}>
                       Roadmap
                     </Link>
                   </li>
                   <li>
-                  <Link to="/how-to-use" style={{ color: "#ffffff" }}>
+                    <Link to="/how-to-use" style={{ color: "#ffffff" }}>
                       How to use
                     </Link>
                   </li>
@@ -83,10 +83,8 @@ const Header = () => {
                 <div className="header-btn d-none d-lg-block">
                   <Link
                     className="rainbow-gradient-btn"
-            
                     to="/register"
                     style={{
-                      backgroundColor: "#00ff00",
                       color: "#000000",
                       padding: "2px 2px",
                       borderRadius: "2px",
@@ -143,7 +141,7 @@ const Header = () => {
 
         <ul className="mainmenu list-unstyled mb-4">
           <li>
-          <Link
+            <Link
               to="/"
               className="d-block py-2 text-decoration-none"
               style={{ color: "#ffffff" }}
@@ -152,7 +150,7 @@ const Header = () => {
             </Link>
           </li>
           <li>
-          <Link
+            <Link
               to="/tools"
               className="d-block py-2 text-decoration-none"
               style={{ color: "#ffffff" }}
@@ -161,7 +159,7 @@ const Header = () => {
             </Link>
           </li>
           <li>
-          <Link
+            <Link
               to="/arenas"
               className="d-block py-2 text-decoration-none"
               style={{ color: "#ffffff" }}
@@ -170,7 +168,7 @@ const Header = () => {
             </Link>
           </li>
           <li>
-          <Link
+            <Link
               to="/how-to-use"
               className="d-block py-2 text-decoration-none"
               style={{ color: "#ffffff" }}
@@ -179,7 +177,7 @@ const Header = () => {
             </Link>
           </li>
           <li>
-          <Link
+            <Link
               to="/roadmap"
               className="d-block py-2 text-decoration-none"
               style={{ color: "#ffffff" }}
@@ -193,7 +191,7 @@ const Header = () => {
           <nav className="mainmenu-nav">
             <ul className="dashboard-mainmenu rbt-default-sidebar-list list-unstyled">
               <li>
-              <Link
+                <Link
                   to="plans-billing.html"
                   className="d-block py-2 text-decoration-none"
                   style={{ color: "#ffffff" }}
@@ -209,7 +207,7 @@ const Header = () => {
         <nav className="mainmenu-nav mb-4">
           <ul className="dashboard-mainmenu rbt-default-sidebar-list list-unstyled">
             <li className="has-submenu">
-            <Link
+              <Link
                 className="d-block py-2 text-decoration-none"
                 data-bs-toggle="collapse"
                 to="#collapseExampleMenu"
@@ -228,7 +226,7 @@ const Header = () => {
         <nav className="mainmenu-nav">
           <ul className="dashboard-mainmenu rbt-default-sidebar-list list-unstyled">
             <li>
-            <Link
+              <Link
                 to="terms-policy.html"
                 className="d-block py-2 text-decoration-none"
                 style={{ color: "#ffffff" }}
@@ -241,10 +239,9 @@ const Header = () => {
         </nav>
 
         <div className="header-btn mt-4 d-flex justify-content-center d-md-none">
-        <Link
+          <Link
             className="btn btn-default"
-            target="_blank"
-            to="text-generator.html"
+            to="/"
             style={{
               backgroundColor: "#00ff00",
               color: "#000000",
