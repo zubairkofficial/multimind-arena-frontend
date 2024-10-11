@@ -16440,7 +16440,8 @@ span.rainbow-demo-btn {
 
 .rainbow-rn-cta .content-wrapper {
     padding: 68px 80px 60px;
-    /* background: var(--color-primary); */
+    background: linear-gradient(45deg, var(--color-primary-gradient-start) 0%, var(--color-primary-gradient-start) 100%);
+    /* linear-gradient(45deg, var(--color-primary-gradient-start), var(--color-primary-gradient-end), 100%); */
     border-radius: 12px;
     position: relative;
     align-items: center;

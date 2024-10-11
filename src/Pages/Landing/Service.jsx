@@ -25,7 +25,7 @@ const Service = () => {
     <>
       <div className="aiwave-service-area rainbow-section-gap">
         <div className="container">
-          <div className="row row--15 service-wrapper">
+          <div className="row  ">
             {serviceData.map((service, index) => (
               <div
                 key={index}

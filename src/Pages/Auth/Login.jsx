@@ -61,7 +61,7 @@ const Login = () => {
       const user = JSON.parse(userString);
 
       // Redirect to the dashboard or home page
-      if (user.isAdmin) {
+      if (user.isAdmin === true) {
         navigate("/admin/dashboard");
       } else {
         navigate("/dashboard");

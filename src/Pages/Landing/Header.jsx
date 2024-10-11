@@ -83,7 +83,7 @@ const Header = () => {
                 <div className="header-btn d-none d-lg-block">
                   <Link
                     className="rainbow-gradient-btn"
-                    target="_blank"
+            
                     to="/register"
                     style={{
                       backgroundColor: "#00ff00",

@@ -45,9 +45,9 @@ export const router = createBrowserRouter([
       {
         path: "dashboard",
         element: (
-     //     <Auth isAuth={true} isAdmin={true}>
+          <Auth isAuth={true} isAdmin={true}>
             <AdminDashboard />
-         // </Auth>
+          </Auth>
         ),
       },
     ],
@@ -57,9 +57,9 @@ export const router = createBrowserRouter([
   {
     path: "/dashboard",
     element: (
-       <Auth isAuth={true}>
-      <UserDashboard />
-       </Auth>
+      <Auth isAuth={true}>
+        <UserDashboard />
+      </Auth>
     ),
   },
 

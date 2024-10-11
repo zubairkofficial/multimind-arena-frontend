@@ -34,13 +34,13 @@ const Auth = ({ children, isAuth = true, isAdmin = false }) => {
       }
   
       // Ensure only admins can access admin routes
-      if (isAdmin && parseInt(user.isAdmin) !== true) {
+      if (isAdmin && (user.isAdmin) !== true) {
         Helpers.toast("error", "Access denied. Only admin allowed.");
         return <Navigate to="/" />;
       }
   
       // Ensure admins cannot access user routes
-      if (!isAdmin && parseInt(user.isAdmin) === true) {
+      if (!isAdmin && (user.isAdmin) === true) {
         Helpers.toast(
           "error",
           "Access denied. Admins cannot access user routes."
