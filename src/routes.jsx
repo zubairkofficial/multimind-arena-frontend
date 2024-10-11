@@ -1,10 +1,9 @@
 import { createBrowserRouter } from "react-router-dom";
 import NotFound from "./Pages/NotFound";
 import Auth from "./components/Auth";
-import Index from "./Pages/Landing";
+import Index from "./Pages/Landing/Index";
 import Register from "./Pages/Auth/Register";
 import Login from "./Pages/Auth/Login";
-import Dashboard from "./Pages/Admin/AdminDashboard";
 import AdminDashboard from "./Pages/Admin/AdminDashboard";
 import UserDashboard from "./Pages/User/UserDashboard";
 import VerifyEmail from "./Pages/Auth/VerifyEmail";
@@ -15,7 +14,11 @@ export const router = createBrowserRouter([
   // Default Routes
   {
     path: "/",
-    element: <Index />,
+    element: (
+      <Auth isAuth={true}>
+        <Index />
+      </Auth>
+    ),
   },
   {
     path: "/register",
@@ -42,12 +45,11 @@ export const router = createBrowserRouter([
       {
         path: "dashboard",
         element: (
-          // <Auth isAdmin={true}>
+     //     <Auth isAuth={true} isAdmin={true}>
             <AdminDashboard />
-          // </Auth>
+         // </Auth>
         ),
       },
-
     ],
   },
 
@@ -55,9 +57,9 @@ export const router = createBrowserRouter([
   {
     path: "/dashboard",
     element: (
-      // <Auth isAdmin={false}>
-        <UserDashboard />
-      // </Auth> 
+       <Auth isAuth={true}>
+      <UserDashboard />
+       </Auth>
     ),
   },
 

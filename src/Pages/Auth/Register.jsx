@@ -53,11 +53,8 @@ const Register = () => {
       console.log("User registered:", userData);
       var notyf = new Notyf();
 
-      // Display an error notification
-
-      
       // Display a success notification
-      notyf.success('User Registered Successfully');
+      notyf.success('User Registered Successfully. Please Verify your email to continue',3000);
       navigate("/login"); // Redirect to the verify email page
     } catch (err) {
       console.error("Failed to register:", err);

@@ -1,7 +1,7 @@
 import { Notyf } from "notyf";
 
 class Helpers {
-  static localhost = "http://127.0.0.1:8000";
+  static localhost = "http://127.0.0.1:8080";
   static server = "http://";
   static basePath = `${this.localhost}`;
   static apiUrl = `${this.basePath}/api/`;

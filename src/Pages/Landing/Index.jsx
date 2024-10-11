@@ -17,27 +17,21 @@ const Index = () => {
     <>
       <>
         <main className="page-wrapper">
-          {/* Start Header Top Area  */}
+        
           <Header />
-          {/* Imroz Preloader */}
+      
           {/* <Preloader/> */}
-          {/* Start Slider Area  */}
+     
           <Slider />
-          {/* End Slider Area  */}
-          {/* Start Brand Area */}
+ 
           <BrandArea />
-          {/* Start Tab__Style--one Area  */}
+     
           <TabArea />
-          {/* End Tab__Style--one Area  */}
-          {/* Start Service__Style--one Area  */}
-          {/* End Service__Style--one Area  */}
-          {/* Start Advanced Tab area */}
+ 
           <AdvancedTab />
-          {/* End Advanced Tab Area */}
-          {/* Start Collabration-Style-One  */}
+        
 
-          {/* End Collabration-Style-One  */}
-          {/* Start CTA Style-one Area  */}
+     
           <div className="rainbow-rn-cta">
             <div className="container">
               <div className="row row--0 align-items-center content-wrapper">
@@ -50,7 +44,7 @@ const Index = () => {
                         data-sal-duration={400}
                         data-sal-delay={200}
                       >
-                        Join our aI Experts community
+                        Join our Chat Arenas Now.
                       </h4>
                       <p
                         className="sal-animate"
@@ -94,21 +88,17 @@ const Index = () => {
               </div>
             </div>
           </div>
-          {/* End CTA Style-one Area  */}
-          {/* Pricing Part */}
-          <Pricing />
-          {/* Service Area */}
-          <Service />
-          {/* Start Testimonial Area  */}
-          <Testimonial />
-          {/* End Testimonial Area  */}
 
-          {/* Start Footer Area  */}
+          <Pricing />
+
+          <Service />
+   
+          <Testimonial />
+  
           <Footer />
-          {/* End Footer Area  */}
-          {/* Start Copy Right Area  */}
+    
           <Copyright />
-          {/* End Copy Right Area  */}
+    
         </main>
       </>
     </>

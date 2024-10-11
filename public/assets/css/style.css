@@ -106,7 +106,7 @@
     --color-border: rgba(255, 255, 255, 0.05);
     --color-border-light: #e5e7eb;
     --color-border-dark: #1E1E1E;
-    --color-bg-1: #0E0C15;
+    --color-bg-1: #000000;
     --color-gray: #3E414B;
     --color-midgray: #878787;
     --color-light: #E4E6EA;
@@ -16440,7 +16440,7 @@ span.rainbow-demo-btn {
 
 .rainbow-rn-cta .content-wrapper {
     padding: 68px 80px 60px;
-    background: var(--color-primary);
+    /* background: var(--color-primary); */
     border-radius: 12px;
     position: relative;
     align-items: center;

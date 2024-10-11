@@ -2,12 +2,15 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { Link } from "react-router-dom";
 import { useLoginMutation } from "./../../features/api/apiSlice"; // Import the login mutation
-import { Notyf } from 'notyf';
-import 'notyf/notyf.min.css';
-
+import { useDispatch } from "react-redux";
+import { Notyf } from "notyf";
+import "notyf/notyf.min.css";
+import Helpers from "../../Config/Helpers";
+import { setUser } from "./../../features/userSlice"; // Import the userSlice action
 
 const Login = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [login, { isLoading }] = useLoginMutation(); // Hook to trigger the login API
   const [formData, setFormData] = useState({
     email: "",
@@ -44,13 +47,25 @@ const Login = () => {
       console.log("User logged in:", userData);
       var notyf = new Notyf();
 
-      // Display an error notification
-
       // Display a success notification
-      notyf.success('Logged In Successfully');
-      navigate("/");
+      notyf.success("Logged In Successfully");
 
-      Helpers.setItem('user', userData.user ) // Redirect to the dashboard or home page
+      // Update the user in the userSlice
+      dispatch(setUser(userData.user));
+
+      // Save user data in localStorage
+      const userString = JSON.stringify(userData.user);
+      Helpers.setItem("user", userString);
+      Helpers.setItem("type", userData.user.isAdmin);
+      Helpers.setItem("token", userData.token);
+      const user = JSON.parse(userString);
+
+      // Redirect to the dashboard or home page
+      if (user.isAdmin) {
+        navigate("/admin/dashboard");
+      } else {
+        navigate("/dashboard");
+      }
     } catch (err) {
       console.error("Failed to login:", err);
       setError("Login failed. Please check your credentials and try again.");

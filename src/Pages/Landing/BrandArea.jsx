@@ -6,6 +6,12 @@ const brands = [
   { src: "assets/images/brand/stenciljs.png", alt: "StencilJS" },
   { src: "assets/images/brand/spotify.png", alt: "Spotify" },
   { src: "assets/images/brand/woocommerce.png", alt: "WooCommerce" },
+  { src: "assets/images/brand/slack.png", alt: "Slack" },
+  { src: "assets/images/brand/strapi.png", alt: "Strapi" },
+  { src: "assets/images/brand/mapbox.png", alt: "Mapbox" },
+  { src: "assets/images/brand/stenciljs.png", alt: "StencilJS" },
+  { src: "assets/images/brand/spotify.png", alt: "Spotify" },
+  { src: "assets/images/brand/woocommerce.png", alt: "WooCommerce" },
   { src: "assets/images/brand/slack.png", alt: "Slack" }
 ];
 
@@ -24,7 +30,7 @@ const BrandArea = () => {
         </div>
         <div className="row">
           <div className="col-lg-12 mt--10">
-            <marquee behavior="scroll" direction="left" scrollamount="6">
+            <marquee behavior="scroll" direction="left" scrollamount="12">
               <ul className="d-flex list-unstyled mb-0">
                 {brands.map((brand, index) => (
                   <li className="mx-4" key={index}>
@@ -33,7 +39,7 @@ const BrandArea = () => {
                         src={brand.src}
                         alt={brand.alt}
                         className="img-fluid"
-                        style={{ width: '400px', height: '200px' }}
+                        style={{ width: '200px', height: 'auto' }}
                       />
                     </a>
                   </li>

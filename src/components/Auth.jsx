@@ -1,5 +1,6 @@
 import React from "react";
 import Helpers from './../Config/Helpers'
+import { Navigate } from "react-router";
 
 const Auth = ({ children, isAuth = true, isAdmin = false }) => {
     let user = Helpers.getItem("user", true);
@@ -33,13 +34,13 @@ const Auth = ({ children, isAuth = true, isAdmin = false }) => {
       }
   
       // Ensure only admins can access admin routes
-      if (isAdmin && parseInt(user.user_type) !== 1) {
+      if (isAdmin && parseInt(user.isAdmin) !== true) {
         Helpers.toast("error", "Access denied. Only admin allowed.");
         return <Navigate to="/" />;
       }
   
       // Ensure admins cannot access user routes
-      if (!isAdmin && parseInt(user.user_type) === 1) {
+      if (!isAdmin && parseInt(user.isAdmin) === true) {
         Helpers.toast(
           "error",
           "Access denied. Admins cannot access user routes."

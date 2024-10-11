@@ -1,0 +1,166 @@
+:root {
+    --primary-color: #00ff00;
+    --secondary-color: #003300;
+    --background-color: #000000;
+    --text-color: #ffffff;
+    --accent-color: #00cc00;
+    --box-shadow: 0 0 10px var(--primary-color);
+}
+
+body {
+    font-family: 'Courier New', monospace;
+    margin: 0;
+    padding: 0;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    overflow: hidden;
+}
+
+.admin-dashboard {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-dashboard-container {
+    display: flex;
+    height: 100%;
+}
+
+.header {
+    background-color: var(--secondary-color);
+    padding: 10px;
+    border-bottom: 1px solid var(--primary-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--primary-color);
+    text-shadow: 0 0 5px var(--primary-color);
+}
+
+.admin-info {
+    font-size: 14px;
+}
+
+.main-content {
+    padding: 20px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.dashboard-item {
+    background-color: var(--secondary-color);
+    border: 1px solid var(--primary-color);
+    padding: 20px;
+    text-align: center;
+    box-shadow: var(--box-shadow);
+}
+
+.dashboard-item h3 {
+    margin-bottom: 10px;
+}
+
+.dashboard-item .value {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.recent-activities,
+.system-status {
+    margin-bottom: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th,
+td {
+    border: 1px solid var(--primary-color);
+    padding: 10px;
+    text-align: left;
+}
+
+th {
+    background-color: var(--secondary-color);
+    color: var(--primary-color);
+}
+
+.action-button {
+    background-color: var(--primary-color);
+    color: var(--background-color);
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.action-button:hover {
+    background-color: var(--accent-color);
+    box-shadow: 0 0 10px var(--primary-color);
+}
+
+.sidebar {
+    background-color: var(--secondary-color);
+    border-right: 1px solid var(--primary-color);
+    padding: 20px;
+    width: 250px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    z-index: 1000;
+}
+
+.sidebar-create-button {
+    background-color: var(--primary-color);
+    border: none;
+    color: var(--background-color);
+    padding: 10px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.sidebar-create-button:hover {
+    background-color: var(--accent-color);
+}
+
+.sidebar-list {
+    flex-grow: 1;
+}
+
+.sidebar-item {
+    color: var(--text-color);
+    background-color: transparent;
+    border: none;
+    transition: all 0.3s ease;
+    padding: 15px;
+}
+
+.sidebar-item:hover {
+    background-color: var(--primary-color);
+    color: var(--background-color);
+    border-radius: 5px;
+}
