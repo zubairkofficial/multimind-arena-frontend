@@ -75,7 +75,7 @@ const Login = () => {
 
   // Handle Google login
   const handleGoogleLogin = () => {
-    const googleLoginUrl = "http://192.168.18.5:8080/user/auth-google";
+    const googleLoginUrl = "http://192.168.18.123:8080/google-auth";
 
     // Calculate the center position of the screen for the popup
     const width = 600;
