@@ -68,25 +68,32 @@ const Testimonial = () => {
   };
 
   const cardStyle = {
-    height: '100%',
+    height: '350px',
     display: 'flex',
+    margin: '15px 15px 15px 15px',
     flexDirection: 'column',
     justifyContent: 'space-between',
     padding: '20px',
     boxSizing: 'border-box',
+    border: '2px solid #00ff00',
+    borderRadius: '15px',
+    backgroundColor: '#003300',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.5)',
+    transition: 'transform 0.3s',
   };
 
   const slideStyle = {
-    padding: '0 10px',
+    padding: '0 25px',
   };
 
   const sliderContainerStyle = {
-    margin: '0 -10px',
+    margin: '0 -25px',
   };
 
   const ratingStyle = {
     display: 'flex',
-    marginBottom: '10px',
+    marginBottom: '15px',
+    color: '#00ff00',
   };
 
   const bottomContentStyle = {
@@ -99,30 +106,42 @@ const Testimonial = () => {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginTop: '20px',
   };
 
   const imageStyle = {
-    width: '80px',
+    width: '70px',
     height: 'auto',
-    marginRight: '10px',
+    marginRight: '15px',
+    borderRadius: '50%',
+    border: '2px solid #00ff00',
   };
 
   const videoButtonStyle = {
     display: 'flex',
     alignItems: 'center',
-    marginRight: '10px',
+    marginRight: '15px',
+    color: '#00ff00',
+    fontSize: '24px',
+  };
+
+  const descriptionStyle = {
+    marginBottom: '20px',
+    fontSize: '16px',
+    lineHeight: '1.6',
+    color: '#e0ffe0',
   };
 
   return (
-    <div style={{ padding: '40px 0' }}>
+    <div style={{ padding: '60px 0', backgroundColor: '#000000' }}>
       <div className="container">
         <div className="row">
           <div className="col-lg-12">
-            <div style={{ marginBottom: '60px' }}>
-              <h4 style={{ color: '#FF8A00', fontSize: '24px' }}>
+            <div style={{ marginBottom: '60px', textAlign: 'center' }}>
+              <h4 style={{ color: '#00ff00', fontSize: '28px', marginBottom: '10px' }}>
                 Assisting individuals
               </h4>
-              <h2 style={{ fontSize: '32px' }}>The opinions of the community</h2>
+              <h2 style={{ fontSize: '36px', color: '#e0ffe0' }}>The opinions of the community</h2>
             </div>
           </div>
         </div>
@@ -132,7 +151,11 @@ const Testimonial = () => {
             <Slider {...settings} style={sliderContainerStyle}>
               {testimonials.map((testimonial) => (
                 <div key={testimonial.id} style={slideStyle}>
-                  <div style={cardStyle}>
+                  <div
+                    style={cardStyle}
+                    onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+                    onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                  >
                     <div style={ratingStyle}>
                       {[...Array(5)].map((_, i) => (
                         <a key={i} href="#rating">
@@ -141,13 +164,13 @@ const Testimonial = () => {
                       ))}
                     </div>
                     <div>
-                      <p style={{ marginBottom: '20px' }}>{testimonial.description}</p>
+                      <p style={descriptionStyle}>{testimonial.description}</p>
                     </div>
                     <div style={bottomContentStyle}>
                       <div style={metaInfoStyle}>
                         <div>
-                          <p style={{ marginBottom: '5px' }}>{testimonial.name}</p>
-                          <p style={{ marginBottom: '0px' }}>{testimonial.position}</p>
+                          <p style={{ marginBottom: '5px', fontWeight: 'bold', color: '#e0ffe0' }}>{testimonial.name}</p>
+                          <p style={{ marginBottom: '0px', color: '#00ff00' }}>{testimonial.position}</p>
                         </div>
                         <img
                           src={testimonial.brandImg}
@@ -155,7 +178,7 @@ const Testimonial = () => {
                           style={imageStyle}
                         />
                       </div>
-                      <div style={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', marginTop: '20px' }}>
                         <a
                           href={testimonial.video}
                           style={videoButtonStyle}
@@ -166,7 +189,7 @@ const Testimonial = () => {
                           <img
                             src={testimonial.img}
                             alt="Team Image"
-                            style={{ width: '80px', height: 'auto' }}
+                            style={{ width: '70px', height: 'auto', borderRadius: '10px', border: '2px solid #00ff00' }}
                           />
                         </a>
                       </div>

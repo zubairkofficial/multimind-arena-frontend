@@ -6,7 +6,8 @@ import { useDispatch } from "react-redux";
 import { Notyf } from "notyf";
 import "notyf/notyf.min.css";
 import Helpers from "../../Config/Helpers";
-import { setUser } from "./../../features/userSlice"; // Import the userSlice action
+import { setUser } from "./../../features/userSlice";
+import axios from "axios"; // Import the userSlice action
 
 const Login = () => {
   const navigate = useNavigate();
@@ -72,6 +73,24 @@ const Login = () => {
     }
   };
 
+  // Handle Google login
+  const handleGoogleLogin = () => {
+    const googleLoginUrl = "http://192.168.18.5:8080/user/auth-google";
+
+    // Calculate the center position of the screen for the popup
+    const width = 600;
+    const height = 500;
+    const left = window.screen.width / 2 - width / 2;
+    const top = window.screen.height / 2 - height / 2;
+
+    // Open the Google login URL in a new window with specific dimensions centered
+    window.open(
+      googleLoginUrl,
+      "_blank",
+      `width=${width},height=${height},top=${top},left=${left}`
+    );
+  };
+
   return (
     <div>
       <main className="page-wrapper">
@@ -85,6 +104,26 @@ const Login = () => {
                   </div>
                   <div className="signup-box-bottom">
                     <div className="signup-box-content">
+                      <div className="social-btn-grp">
+                        {/* Google Login Button */}
+                        <button
+                          className="btn-default btn-border"
+                          onClick={handleGoogleLogin}
+                        >
+                          <span className="icon-left">
+                            <img
+                              src="assets/images/sign-up/google.png"
+                              alt="Google Icon"
+                            />
+                          </span>
+                          Continue with Google
+                        </button>
+                      </div>
+                      <div className="text-social-area">
+                        <hr />
+                        <span>Or continue with</span>
+                        <hr />
+                      </div>
                       <form onSubmit={handleSubmit}>
                         <div className="input-section mail-section">
                           <div className="icon">

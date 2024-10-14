@@ -103,7 +103,7 @@
     --color-darkest: rgba(0, 0, 0, 0.3);
     --color-lessdark: #0f1015;
     --color-black: #000000;
-    --color-blackest: #16181E;
+    --color-blackest: #08080b;
     --color-border: rgba(255, 255, 255, 0.05);
     --color-border-light: #e5e7eb;
     --color-border-dark: #1E1E1E;
@@ -19085,7 +19085,7 @@ iframe {
 
 .sign-up-box .signup-box-bottom .signup-box-content .social-btn-grp {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     gap: 10px;
 }
 
@@ -19096,7 +19096,7 @@ iframe {
 }
 
 .sign-up-box .signup-box-bottom .signup-box-content .btn-default {
-    flex-basis: 50%;
+    flex-basis: 100%;
     padding: 0 12px;
     display: inline-block;
     text-shadow: none;
@@ -19113,13 +19113,14 @@ iframe {
 .sign-up-box .signup-box-bottom .signup-box-content .btn-default .icon-left {
     margin-right: 10px;
     display: inline-block;
+    justify-content: center;
     width: 18px;
     height: auto;
 }
 
 .sign-up-box .signup-box-bottom .signup-box-content .text-social-area {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     margin: 20px 0;
 }

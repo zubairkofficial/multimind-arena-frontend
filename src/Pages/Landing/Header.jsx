@@ -92,7 +92,7 @@ const Header = () => {
                       fontWeight: "bolder",
                     }}
                   >
-                    <span>Get Start</span>
+                    <span>Get Started </span>
                   </Link>
                 </div>
                 {/* End Header Btn */}

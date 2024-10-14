@@ -1,13 +1,18 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { Link } from "react-router-dom";
-import { useRegisterUserMutation } from "./../../features/api/apiSlice"; // Import the register mutation
+import {
+  useRegisterUserMutation,
+  useLoginWithGoogleMutation,
+} from "./../../features/api/apiSlice"; // Import the register and Google login mutation
 import Helpers from "../../Config/Helpers";
 import { Notyf } from "notyf";
 
 const Register = () => {
   const navigate = useNavigate();
   const [registerUser, { isLoading }] = useRegisterUserMutation(); // Hook to trigger the register API
+  const [loginWithGoogle] = useLoginWithGoogleMutation(); // Hook to trigger Google login API
+
   const [formData, setFormData] = useState({
     name: "",
     username: "",
@@ -32,7 +37,13 @@ const Register = () => {
     setError(null); // Reset previous error messages
 
     // Validate form data
-    if (!formData.name || !formData.username || !formData.email || !formData.password || !formData.confirmPassword) {
+    if (
+      !formData.name ||
+      !formData.username ||
+      !formData.email ||
+      !formData.password ||
+      !formData.confirmPassword
+    ) {
       setError("All fields are required");
       return;
     }
@@ -54,13 +65,38 @@ const Register = () => {
       var notyf = new Notyf();
 
       // Display a success notification
-      notyf.success('User Registered Successfully. Please Verify your email to continue',3000);
-      navigate("/login"); // Redirect to the verify email page
+      notyf.success(
+        "User Registered Successfully. Please Verify your email to continue",
+        3000
+      );
+      navigate("/login"); // Redirect to the login page
     } catch (err) {
       console.error("Failed to register:", err);
       setError("Registration failed. Please try again.");
     }
   };
+
+  // Handle Google login when button is clicked
+const handleGoogleLogin = async () => {
+  try {
+    // Directly fetch the OAuth URL from your backend
+    const response = await loginWithGoogle().unwrap();
+    
+    // Assuming the URL is returned in the `response.url`
+    const googleAuthUrl = response.url;
+    
+    if (googleAuthUrl) {
+      // Open the Google OAuth URL in a new window or tab
+      window.location.href = googleAuthUrl;
+    } else {
+      setError("Failed to get Google login URL.");
+    }
+  } catch (err) {
+    console.error("Google login failed:", err);
+    setError("Google login failed. Please try again.");
+  }
+};
+
 
   return (
     <div>
@@ -76,6 +112,26 @@ const Register = () => {
                   </div>
                   <div className="signup-box-bottom">
                     <div className="signup-box-content">
+                      <div class="social-btn-grp">
+                        {/* Google login button */}
+                        <button
+                          class="btn-default btn-border"
+                          onClick={handleGoogleLogin}
+                        >
+                          <span class="icon-left">
+                            <img
+                              src="assets/images/sign-up/google.png"
+                              alt="Google Icon"
+                            />
+                          </span>
+                          Continue with Google
+                        </button>
+                      </div>
+                      <div class="text-social-area">
+                        <hr />
+                        <span>Or continue with</span>
+                        <hr />
+                      </div>
                       <form onSubmit={handleSubmit}>
                         <div className="input-section">
                           <div className="icon">
@@ -138,7 +194,11 @@ const Register = () => {
                           />
                         </div>
                         {error && <p className="text-danger">{error}</p>}
-                        <button type="submit" className="btn-default" disabled={isLoading}>
+                        <button
+                          type="submit"
+                          className="btn-default"
+                          disabled={isLoading}
+                        >
                           {isLoading ? "Signing Up..." : "Sign Up"}
                         </button>
                       </form>

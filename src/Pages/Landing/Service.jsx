@@ -25,17 +25,17 @@ const Service = () => {
     <>
       <div className="aiwave-service-area rainbow-section-gap">
         <div className="container ">
-          <div className="row row--15 service-wrapper d-flex justify-content-between ">
+          <div className="row row--15 service-wrapper d-flex justify-content-around ">
             
             {serviceData.map((service, index) => (
               <div
                 key={index}
-                className="col-lg-3 col-md-4  col-12 sal-animate service-item mb-4"
+                className="col-lg-3 col-md-4 rainbow-pricing style-aiwave  col-12 sal-animate service-item mb-4"
                 data-sal="slide-up"
                 data-sal-duration={700}
                 data-sal-delay={index * 100}
               >
-                <div className="service service__style--1 aiwave-style text-center">
+                <div className="service service__style--1 style-aiwave text-center bg-black">
                   <div className="icon service-icon">
                     <img src={service.icon} alt="Service Image" />
                   </div>
@@ -56,7 +56,6 @@ const Service = () => {
           display: flex;
           justify-content:space-around;
           gap: 2rem;
-          border: 1px solid #00ff00;
           padding: 20px;
           border-radius: 10px;
           border-width: 2px;

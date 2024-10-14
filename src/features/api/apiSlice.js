@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 // Define your API slice
 export const apiSlice = createApi({
     reducerPath: 'api', // Optional, defaults to 'api'
-    baseQuery: fetchBaseQuery({ baseUrl: 'http://192.168.18.5:8080/api/v1' }), // Replace with your base URL
+    baseQuery: fetchBaseQuery({ baseUrl: 'http://192.168.18.5:8080/api/v1' }), // Main base URL for your API
     endpoints: (builder) => ({
         // Fetch users
         getUsers: builder.query({
@@ -25,8 +25,20 @@ export const apiSlice = createApi({
                 body: credentials,
             }),
         }),
+        // Login with Google
+        loginWithGoogle: builder.mutation({
+            query: (token) => ({
+                url: `http://192.168.18.5:8080/user/auth/google?token=${token}`, // Google auth endpoint without /api/v1
+                method: 'GET', // GET method for Google login
+            }),
+        }),
     }),
 });
 
 // Export hooks for usage in functional components
-export const { useGetUsersQuery, useRegisterUserMutation, useLoginMutation } = apiSlice;
+export const {
+    useGetUsersQuery,
+    useRegisterUserMutation,
+    useLoginMutation,
+    useLoginWithGoogleMutation // Export the Google auth hook
+} = apiSlice;
