@@ -2,12 +2,13 @@
     background-color: #000000;
     color: #ffffff;
     padding: 20px;
-    font-family: Arial, sans-serif;
+    margin: 20px;
+    font-family: 'Courier New', Courier, monospace;
 }
 
 .dashboard-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: end;
     align-items: center;
     margin-bottom: 20px;
     padding-top: 60px;

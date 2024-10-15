@@ -24,13 +24,13 @@ const Copyright = () => {
                 <div className="col-lg-6 col-md-4 col-sm-12 col-12">
                   <div className="copyright-right text-center text-lg-end">
                     <p className="copyright-text">
-                      Copyright © 2024{" "}
+                    © 2024 All rights reserved. {" "}
                       <a
-                        href="https://cyberify.co"
+                        href="https://multimind-arena.cyberifyportfolio.com"
                         target ='_blank_'
                         className="btn-read-more"
                       >
-                        <span>Cyberify co.</span>
+                        <span> MultiMind Arena</span>
                       </a>
                     </p>
                   </div>

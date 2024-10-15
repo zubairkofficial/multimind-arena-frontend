@@ -2,21 +2,21 @@ import React from "react";
 
 const serviceData = [
   {
-    icon: "assets/images/service/service-icon-01.png",
-    title: "100% No-Risk, Money Back Guarantee!",
+    icon: "assets/images/icons/active-arenas.png",
+    title: "Active Arenas",
     description:
-      "Refunds will be issued within a period of 14 days from the purchase date",
+      "42 Arenas",
   },
   {
-    icon: "assets/images/service/service-icon-02.png",
-    title: "Upgrade or Cancel Anytime",
-    description: "Passages there are many variations of Lorem Ipsum available.",
+    icon: "assets/images/icons/online-players.png",
+    title: "Online Players",
+    description: "1,337+ Players",
   },
   {
-    icon: "assets/images/service/service-icon-03.png",
-    title: "Not sure yet, try the free version",
+    icon: "/assets/images/icons/ai-figures.png",
+    title: "AI Figures",
     description:
-      "Refunds will be issued within a period of 14 days from the purchase date",
+      "100+ AI Figures",
   },
 ];
 
@@ -30,7 +30,7 @@ const Service = () => {
             {serviceData.map((service, index) => (
               <div
                 key={index}
-                className="col-lg-3 col-md-4 rainbow-pricing style-aiwave  col-12 sal-animate service-item mb-4"
+                className="col-lg-3 col-md-4 col-12 sal-animate service-item mb-4"
                 data-sal="slide-up"
                 data-sal-duration={700}
                 data-sal-delay={index * 100}

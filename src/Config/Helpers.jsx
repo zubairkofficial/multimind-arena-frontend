@@ -33,7 +33,7 @@ class Helpers {
 
   static getItem = (data, isJson = false) => {
     if (isJson) {
-      return JSON.parse(localStorage.getItem(data));
+      return (JSON.parse(localStorage.getItem(data)));
     } else {
       return localStorage.getItem(data);
     }

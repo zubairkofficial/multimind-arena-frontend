@@ -11,16 +11,7 @@ const TabArea = () => {
               data-sal="slide-up"
               data-sal-duration={700}
               data-sal-delay={100}
-            >
-              <h4 className="subtitle">
-                <span className="theme-gradient">
-                  RAINBOW UNLOCKS THE POTENTIAL ai
-                </span>
-              </h4>
-              <h2 className="title mb--0">
-                Generative AI made for <br /> creators.
-              </h2>
-            </div>
+            ></div>
           </div>
         </div>
         <div className="row row--30 align-items-center">
@@ -40,10 +31,10 @@ const TabArea = () => {
                   >
                     <span className="generator-icon">
                       <img
-                        src="assets/images/icons/video-g.png"
+                        src="assets/images/icons/scientific.png"
                         alt="Vedio Generator Icon"
                       />
-                      Video Generator
+                      Scientific
                     </span>
                   </button>
                 </li>
@@ -60,12 +51,11 @@ const TabArea = () => {
                   >
                     <span className="generator-icon">
                       <img
-                        src="assets/images/icons/audio-g.png"
+                        src="assets/images/icons/historical.png"
                         alt="Vedio Generator Icon"
                       />
-                      Audio Generator
+                      Historical
                     </span>
-
                   </button>
                 </li>
                 <li className="nav-item tabs__tab " role="presentation">
@@ -81,12 +71,11 @@ const TabArea = () => {
                   >
                     <span className="generator-icon">
                       <img
-                        src="assets/images/icons/photo-g.png"
+                        src="assets/images/icons/philosophy.png"
                         alt="Vedio Generator Icon"
                       />
-                      Photo Generator
+                      Philosophy
                     </span>
-
                   </button>
                 </li>
                 <li className="nav-item tabs__tab " role="presentation">
@@ -102,31 +91,10 @@ const TabArea = () => {
                   >
                     <span className="generator-icon">
                       <img
-                        src="assets/images/icons/text-g.png"
+                        src="assets/images/icons/literary-minds.png"
                         alt="Vedio Generator Icon"
                       />
-                      Text Generator
-                    </span>
-
-                  </button>
-                </li>
-                <li className="nav-item tabs__tab " role="presentation">
-                  <button
-                    className="nav-link rainbow-gradient-btn without-shape-circle"
-                    id="code-generator-tab"
-                    data-bs-toggle="tab"
-                    data-bs-target="#code-generate"
-                    type="button"
-                    role="tab"
-                    aria-controls="code-generate"
-                    aria-selected="false"
-                  >
-                    <span className="generator-icon">
-                      <img
-                        src="assets/images/icons/code-g.png"
-                        alt="Vedio Generator Icon"
-                      />
-                      Code Generator
+                      Literary Minds
                     </span>
                   </button>
                 </li>
@@ -143,26 +111,30 @@ const TabArea = () => {
                       <div className="col-xl-6">
                         <div className="section-title">
                           <h2 className="title">
-                            Video generating AI refers to artificial
-                            intelligence.
+                            Fusion Frontiers: Pioneering Science with People and
+                            AI
                           </h2>
                           <div className="features-section">
                             <ul className="list-style--1">
                               <li>
                                 <i className="fa-regular fa-circle-check" />
-                                Transformer Models
+                                Blending Human Insight with AI Innovation for
+                                Breakthrough Ideas
                               </li>
                               <li>
                                 <i className="fa-regular fa-circle-check" />
-                                Conditional Generative Models
+                                Evolving Minds: Shaping Tomorrow with Human-AI
+                                Debates
                               </li>
                               <li>
                                 <i className="fa-regular fa-circle-check" />
-                                Pre-trained Models
+                                Mind and Machine: Conversations Beyond
+                                Boundaries
                               </li>
                               <li>
                                 <i className="fa-regular fa-circle-check" />
-                                Variational Autoencoders
+                                Explore the future of science through
+                                collaborative discussions
                               </li>
                             </ul>
                           </div>
@@ -179,7 +151,7 @@ const TabArea = () => {
                           <div className="inner-without-padding">
                             <div className="export-img img-bg-shape">
                               <img
-                                src="assets/images/generator-img/chat-export-vedio.png"
+                                src="assets/images/bg/slider-main-image.png"
                                 alt="Chat example Image"
                               />
                               <div className="image-shape" />
@@ -190,6 +162,7 @@ const TabArea = () => {
                     </div>
                   </div>
                 </div>
+
                 <div
                   className="tab-pane fade show active"
                   id="audio-generate"
@@ -201,26 +174,30 @@ const TabArea = () => {
                       <div className="col-xl-6">
                         <div className="section-title">
                           <h2 className="title">
-                            Audio generating AI refers to artificial
-                            intelligence.
+                            Dive Into History – Trivia, Debates, and AI Insights
+                            Await!
                           </h2>
                           <div className="features-section">
                             <ul className="list-style--1">
                               <li>
                                 <i className="fa-regular fa-circle-check" />
-                                Transformer Models
+                                Relive key historical moments through engaging
+                                discussions
                               </li>
                               <li>
                                 <i className="fa-regular fa-circle-check" />
-                                Conditional Generative Models
+                                Debate pivotal events with fellow history
+                                enthusiasts and AI
                               </li>
                               <li>
                                 <i className="fa-regular fa-circle-check" />
-                                Pre-trained Models
+                                Connect past with the present to understand
+                                today’s world
                               </li>
                               <li>
                                 <i className="fa-regular fa-circle-check" />
-                                Variational Autoencoders
+                                Participate in history quizzes and uncover
+                                hidden gems
                               </li>
                             </ul>
                           </div>
@@ -237,7 +214,7 @@ const TabArea = () => {
                           <div className="inner-without-padding">
                             <div className="export-img img-bg-shape">
                               <img
-                                src="assets/images/generator-img/chat-export-audio.png"
+                                src="assets/images/bg/slider-main-image.png"
                                 alt="Chat example Image"
                               />
                               <div className="image-shape" />
@@ -248,6 +225,7 @@ const TabArea = () => {
                     </div>
                   </div>
                 </div>
+
                 <div
                   className="tab-pane fade"
                   id="photo-generate"
@@ -259,26 +237,29 @@ const TabArea = () => {
                       <div className="col-xl-6">
                         <div className="section-title">
                           <h2 className="title">
-                            Photo generating AI refers to artificial
-                            intelligence.
+                            Engage, Explore, Evolve: Philosophy with Humans and
+                            AI
                           </h2>
                           <div className="features-section">
                             <ul className="list-style--1">
                               <li>
                                 <i className="fa-regular fa-circle-check" />
-                                Transformer Models
+                                Deep Conversations: Human and AI Philosophical
+                                Exchange
                               </li>
                               <li>
                                 <i className="fa-regular fa-circle-check" />
-                                Conditional Generative Models
+                                Where Curiosity Meets Understanding
                               </li>
                               <li>
                                 <i className="fa-regular fa-circle-check" />
-                                Pre-trained Models
+                                Explore life’s biggest questions with AI and
+                                thinkers
                               </li>
                               <li>
                                 <i className="fa-regular fa-circle-check" />
-                                Variational Autoencoders
+                                Challenge your beliefs and expand your thinking
+                                in debates
                               </li>
                             </ul>
                           </div>
@@ -295,7 +276,7 @@ const TabArea = () => {
                           <div className="inner-without-padding">
                             <div className="export-img img-bg-shape">
                               <img
-                                src="assets/images/generator-img/chat-export-photo.png"
+                                src="assets/images/bg/slider-main-image.png"
                                 alt="Chat example Image"
                               />
                               <div className="image-shape" />
@@ -306,6 +287,7 @@ const TabArea = () => {
                     </div>
                   </div>
                 </div>
+
                 <div
                   className="tab-pane fade"
                   id="text-generate"
@@ -317,32 +299,31 @@ const TabArea = () => {
                       <div className="col-xl-6">
                         <div className="section-title">
                           <h2 className="title">
-                            Text generating AI refers to artificial
-                            intelligence.
+                            Where Human Imagination Meets Digital Insight.
                           </h2>
                           <div className="features-section">
                             <ul className="list-style--1">
                               <li>
                                 <i className="fa-regular fa-circle-check" />
-                                Transformer Models
+                                Where Readers and AI Collide
                               </li>
                               <li>
                                 <i className="fa-regular fa-circle-check" />
-                                Conditional Generative Models
+                                Human Hearts, AI Minds
+                              </li>
+                              <li>
+                                <i className="fa-regular fa-circle-check" />A
+                                Literary Trinity
                               </li>
                               <li>
                                 <i className="fa-regular fa-circle-check" />
-                                Pre-trained Models
-                              </li>
-                              <li>
-                                <i className="fa-regular fa-circle-check" />
-                                Variational Autoencoders
+                                Humans, Books, and Bytes
                               </li>
                             </ul>
                           </div>
                           <div className="read-more">
                             <a className="btn-default color-blacked" href="#">
-                              Start Exploring Now{" "}
+                              Exploring Literature Together{" "}
                               <i className="fa-sharp fa-solid fa-arrow-right" />
                             </a>
                           </div>
@@ -353,7 +334,7 @@ const TabArea = () => {
                           <div className="inner-without-padding">
                             <div className="export-img img-bg-shape">
                               <img
-                                src="assets/images/generator-img/chat-export.png"
+                                src="assets/images/bg/slider-main-image.png"
                                 alt="Chat example Image"
                               />
                               <div className="image-shape" />
@@ -364,6 +345,7 @@ const TabArea = () => {
                     </div>
                   </div>
                 </div>
+
                 <div
                   className="tab-pane fade"
                   id="code-generate"
@@ -411,7 +393,7 @@ const TabArea = () => {
                           <div className="inner-without-padding">
                             <div className="export-img img-bg-shape">
                               <img
-                                src="assets/images/generator-img/chat-export-code.png"
+                                src="assets/images/bg/slider-main-image.png"
                                 alt="Chat example Image"
                               />
                               <div className="image-shape" />

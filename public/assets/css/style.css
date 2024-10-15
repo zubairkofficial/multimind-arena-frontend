@@ -3665,7 +3665,7 @@ textarea:-ms-input-placeholder {
 }
 
 .rainbow-section-gap {
-    padding: 70px 0 !important;
+    padding: 50px 0 !important;
 }
 
 @media only screen and (min-width: 768px) and (max-width: 991px) {
@@ -3681,7 +3681,7 @@ textarea:-ms-input-placeholder {
 }
 
 .rainbow-section-gap-big {
-    padding: 140px 0 !important;
+    padding: 40px 0 !important;
 }
 
 @media only screen and (min-width: 768px) and (max-width: 991px) {

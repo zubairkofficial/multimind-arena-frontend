@@ -9,15 +9,13 @@ import UserDashboard from "./Pages/User/UserDashboard";
 import VerifyEmail from "./Pages/Auth/VerifyEmail";
 import ForgotPassword from "./Pages/Auth/ForgotPassword";
 import EditProfile from "./Pages/User/Profile/EditProfile";
-
+import AdminUsers from './Pages/Admin/AdminUsers';
 // Define routes
 export const router = createBrowserRouter([
   // Default Routes
   {
     path: "/",
-    element: (
-        <Index />
-    ),
+    element: <Index />,
   },
   {
     path: "/register",
@@ -39,16 +37,22 @@ export const router = createBrowserRouter([
 
   // Admin Routes
   {
-    path: "/admin/",
+    path: "/admin",
+    element: (
+      <Auth isAuth={true} isAdmin={true}>
+        <AdminDashboard />  
+      </Auth>
+    ),
     children: [
       {
         path: "dashboard",
-        element: (
-          <Auth isAuth={true} isAdmin={true}>
-            <AdminDashboard />
-          </Auth>
-        ),
+        element: <AdminDashboard />, // Route for /admin/dashboard
       },
+      {
+        path: "users",
+        element: <AdminUsers />, // Route for /admin/users
+      },
+      // You can add more admin routes like this
     ],
   },
 

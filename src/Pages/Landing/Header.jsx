@@ -44,7 +44,6 @@ const Header = () => {
                     alt="ChatBot Logo"
                     style={{
                       height: '550px',
-                      width: '180px'
                     }}
                   />
                 </Link>
@@ -91,7 +90,7 @@ const Header = () => {
                     style={{
                       color: "#000000",
                       padding: "2px 2px",
-                      borderRadius: "2px",
+                      // borderRadius: "2px",
                       textDecoration: "none",
                       fontWeight: "bolder",
                     }}
