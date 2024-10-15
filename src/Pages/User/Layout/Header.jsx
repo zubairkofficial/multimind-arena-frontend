@@ -79,7 +79,7 @@ const Header = () => {
                       </div>
                       <div className="content">
                         <span className="title ">{userDetails.name}</span>
-                        <p>{userDetails.email}</p>
+                        {/* <p>{userDetails.email}</p> */}
                       </div>
                     </div>
                     <div className="icon">

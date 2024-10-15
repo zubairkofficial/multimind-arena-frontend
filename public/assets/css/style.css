@@ -99,11 +99,11 @@
     --color-link: #BCC3D7;
     --color-text-off: #565e78;
     --color-dark: #000000;
-    --color-darker: rgba(6, 6, 6, 0.7);
-    --color-darkest: rgba(0, 0, 0, 0.3);
+    --color-darker: rgba(46, 45, 45, 0.7);
+    --color-darkest: rgba(62, 62, 62, 0.3);
     --color-lessdark: #0f1015;
-    --color-black: #000000;
-    --color-blackest: #08080b;
+    --color-black: #222222;
+    --color-blackest: #101010;
     --color-border: rgba(255, 255, 255, 0.05);
     --color-border-light: #e5e7eb;
     --color-border-dark: #1E1E1E;
@@ -23921,7 +23921,7 @@ body.active-light-mode .slider-area.bg-transparent .inner button.btn-default.btn
     width: 100%;
     margin-left: 0;
     top: 0;
-    background-color: var(--color-dark);
+    background-color: #101010;
     padding: 0 24px;
     border-bottom: 1px solid var(--color-border);
 }

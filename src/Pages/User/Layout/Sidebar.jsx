@@ -17,7 +17,7 @@ const Sidebar = () => {
     if (user) {
       setUserDetails({
         name: user.name || "User",
-        email: user.email || "user@example.com",
+        //email: user.email || "user@example.com",
       });
     }
   }, []);
@@ -111,9 +111,9 @@ const Sidebar = () => {
               </div>
             </div>
           </div>
-          <div className="subscription-box">
+          <div className="subscription-box d-flex justify-content-center align-items-center">
             <div className="inner">
-              <Link to="/profile" className="autor-info">
+              <Link to="/profile" className="autor-info d-flex justify-content-center align-items-center">
                 <div className="author-img active">
                   <img
                     className="w-100"
@@ -121,9 +121,9 @@ const Sidebar = () => {
                     alt="Author"
                   />
                 </div>
-                <div className="author-desc">
+                <div className="author-desc ">
                   <h6>{userDetails.name}</h6>
-                  <p>{userDetails.email}</p>
+                  {/* <p>{userDetails.email}</p> */}
                 </div>
               </Link>
               <div className="btn-part">
