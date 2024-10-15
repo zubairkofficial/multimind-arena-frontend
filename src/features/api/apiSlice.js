@@ -1,9 +1,10 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import Helpers from '../../Config/Helpers';
 
 // Define your API slice
 export const apiSlice = createApi({
     reducerPath: 'api', // Optional, defaults to 'api'
-    baseQuery: fetchBaseQuery({ baseUrl: 'http://192.168.18.5:8080/api/v1' }), // Main base URL for your API
+    baseQuery: fetchBaseQuery({ baseUrl: Helpers.apiUrl }), // Main base URL for your API
     endpoints: (builder) => ({
         // Fetch users
         getUsers: builder.query({

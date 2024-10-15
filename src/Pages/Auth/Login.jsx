@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { useNavigate } from "react-router";
-import { Link } from "react-router-dom";
+import { Link,useLocation } from "react-router-dom";
 import { useLoginMutation } from "./../../features/api/apiSlice"; // Import the login mutation
 import { useDispatch } from "react-redux";
 import { Notyf } from "notyf";
@@ -12,6 +12,8 @@ import axios from "axios"; // Import the userSlice action
 const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const location = useLocation();
   const [login, { isLoading }] = useLoginMutation(); // Hook to trigger the login API
   const [formData, setFormData] = useState({
     email: "",
@@ -75,21 +77,30 @@ const Login = () => {
 
   // Handle Google login
   const handleGoogleLogin = () => {
-    const googleLoginUrl = "http://192.168.18.123:8080/google-auth";
+    const googleLoginUrl = "https://accounts.google.com/o/oauth2/v2/auth?response_type=code&redirect_uri=http://localhost:8080/google-auth/redirect&scope=email profile&client_id=730787481005-daqp7eagna4m0evft1l5nhp2aspijmb3.apps.googleusercontent.com";
+  console.log(googleLoginUrl)
 
-    // Calculate the center position of the screen for the popup
-    const width = 600;
-    const height = 500;
-    const left = window.screen.width / 2 - width / 2;
-    const top = window.screen.height / 2 - height / 2;
-
-    // Open the Google login URL in a new window with specific dimensions centered
-    window.open(
-      googleLoginUrl,
-      "_blank",
-      `width=${width},height=${height},top=${top},left=${left}`
-    );
+  
+    window.location.href = googleLoginUrl;
   };
+  
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    console.log("path",queryParams)
+    const token = queryParams.get('token');
+    const user = queryParams.get('user');
+    console.log("Query Parameters:", [...queryParams]); // Convert to array for better logging
+
+    if (token) {
+      localStorage.setItem('token', token);
+      console.log("user",JSON.parse(user))
+      const result=JSON.stringify(JSON.parse(user))
+      localStorage.setItem('user', result); // Optionally store userId
+
+     
+      window.location.href = '/'; // Adjust as necessary
+    }
+  }, [location]);
 
   return (
     <div>

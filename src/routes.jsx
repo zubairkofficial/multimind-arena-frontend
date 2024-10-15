@@ -15,9 +15,9 @@ export const router = createBrowserRouter([
   {
     path: "/",
     element: (
-      <Auth isAuth={true}>
+    
         <Index />
-      </Auth>
+ 
     ),
   },
   {

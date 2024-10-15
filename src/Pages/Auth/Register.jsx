@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { useNavigate } from "react-router";
 import { Link } from "react-router-dom";
 import {
@@ -76,26 +76,33 @@ const Register = () => {
     }
   };
 
-  // Handle Google login when button is clicked
-const handleGoogleLogin = async () => {
-  try {
-    // Directly fetch the OAuth URL from your backend
-    const response = await loginWithGoogle().unwrap();
-    
-    // Assuming the URL is returned in the `response.url`
-    const googleAuthUrl = response.url;
-    
-    if (googleAuthUrl) {
-      // Open the Google OAuth URL in a new window or tab
-      window.location.href = googleAuthUrl;
-    } else {
-      setError("Failed to get Google login URL.");
+ 
+  // Handle Google login
+  const handleGoogleLogin = () => {
+    const googleLoginUrl = "https://accounts.google.com/o/oauth2/v2/auth?response_type=code&redirect_uri=http://localhost:8080/google-auth/redirect&scope=email profile&client_id=730787481005-daqp7eagna4m0evft1l5nhp2aspijmb3.apps.googleusercontent.com";
+  console.log(googleLoginUrl)
+
+  
+    window.location.href = googleLoginUrl;
+  };
+  
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    console.log("path",queryParams)
+    const token = queryParams.get('token');
+    const user = queryParams.get('user');
+    console.log("Query Parameters:", [...queryParams]); // Convert to array for better logging
+
+    if (token) {
+      localStorage.setItem('token', token);
+      console.log("user",JSON.parse(user))
+      const result=JSON.stringify(JSON.parse(user))
+      localStorage.setItem('user', result); // Optionally store userId
+
+     
+      window.location.href = '/'; // Adjust as necessary
     }
-  } catch (err) {
-    console.error("Google login failed:", err);
-    setError("Google login failed. Please try again.");
-  }
-};
+  }, [location]);
 
 
   return (

@@ -42,6 +42,10 @@ const Header = () => {
                     className="logo-light"
                     src="assets/images/logo/logo.png"
                     alt="ChatBot Logo"
+                    style={{
+                      height: '550px',
+                      width: '180px'
+                    }}
                   />
                 </Link>
               </div>
