@@ -111,7 +111,7 @@ const Login = () => {
               <div className="col-lg-6 bg-color-blackest left-wrapper">
                 <div className="sign-up-box">
                   <div className="signup-box-top">
-                    <img src="assets/images/logo/logo.png" alt="sign-up logo" />
+                    <img src="assets/images/logo/logo.png" alt="sign-up logo" style={{height: '80px', width: 'auto'}} />
                   </div>
                   <div className="signup-box-bottom">
                     <div className="signup-box-content">

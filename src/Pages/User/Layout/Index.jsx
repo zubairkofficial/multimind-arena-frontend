@@ -2,7 +2,7 @@ import React from "react";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 import { useState } from "react";
-const AdminDashboard = ({ children }) => {
+const UserDashboard = ({ children }) => {
 
     const [sidebarOpen, setSidebarOpen] = useState(false);
   return (
@@ -18,4 +18,4 @@ const AdminDashboard = ({ children }) => {
   );
 };
 
-export default AdminDashboard;
+export default UserDashboard;

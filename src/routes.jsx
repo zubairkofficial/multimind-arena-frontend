@@ -8,6 +8,7 @@ import AdminDashboard from "./Pages/Admin/AdminDashboard";
 import UserDashboard from "./Pages/User/UserDashboard";
 import VerifyEmail from "./Pages/Auth/VerifyEmail";
 import ForgotPassword from "./Pages/Auth/ForgotPassword";
+import EditProfile from "./Pages/User/Profile/EditProfile";
 
 // Define routes
 export const router = createBrowserRouter([
@@ -15,9 +16,7 @@ export const router = createBrowserRouter([
   {
     path: "/",
     element: (
-    
         <Index />
- 
     ),
   },
   {
@@ -59,6 +58,14 @@ export const router = createBrowserRouter([
     element: (
       <Auth isAuth={true}>
         <UserDashboard />
+      </Auth>
+    ),
+  },
+  {
+    path: "/profile",
+    element: (
+      <Auth isAuth={true}>
+        <EditProfile />
       </Auth>
     ),
   },

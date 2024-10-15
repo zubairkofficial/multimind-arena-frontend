@@ -29,7 +29,7 @@ const Sidebar = () => {
                 <Link to="index.html">Home</Link>
               </li>
               <li className="has-dropdown has-menu-child-item position-relative">
-                <Link to="#">
+                <Link to="/">
                   Tools <i className="fa-regular fa-chevron-down" />
                 </Link>
                 <ul className="submenu">
