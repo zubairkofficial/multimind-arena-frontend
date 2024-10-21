@@ -1,34 +1,24 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { toggleSidebar } from "./../../../features/sidebarSlice"; // Import the action
+import { toggleSidebar, toggleRightSidebar } from "./../../../features/sidebarSlice"; // Import actions
 
 const Header = () => {
   const dispatch = useDispatch();
   const sidebarOpen = useSelector((state) => state.sidebar.sidebarOpen);
-
-  const [userDetails, setUserDetails] = useState({
-    name: "Test User", // default values
-    email: "test@gmail.com",
-  });
-
-  useEffect(() => {
-    // Get user data from local storage
-    const user = JSON.parse(localStorage.getItem("user")); // Assuming user is stored as an object
-    if (user) {
-      setUserDetails({
-        name: user.name || "Test User",
-        email: user.email || "test@gmail.com",
-      });
-    }
-  }, []);
+  const rightSidebarOpen = useSelector((state) => state.rightSidebar.rightSidebarOpen);
+  const user = useSelector((state) => state.user.user); // Access user data directly from Redux store
 
   const handleSidebar = () => {
     dispatch(toggleSidebar()); // Dispatch action to toggle sidebar state
   };
 
+  const handleRightSidebar = () => {
+    dispatch(toggleRightSidebar()); // Dispatch action to toggle right sidebar state
+  };
+
   const handleLogout = () => {
-    localStorage.clear();
+    localStorage.clear(); // Assuming you want to clear localStorage on logout (you could also dispatch an action to clear the Redux store)
   };
 
   return (
@@ -40,9 +30,7 @@ const Header = () => {
               <div className="expand-btn-grp">
                 <button
                   onClick={handleSidebar}
-                  className={`bg-solid-primary popup-dashboardleft-btn ${
-                    sidebarOpen ? "" : "collapsed"
-                  }`}
+                  className={`bg-solid-primary popup-dashboardleft-btn ${sidebarOpen ? "" : "collapsed"}`}
                 >
                   <i className="fa-sharp fa-regular fa-sidebar" />
                 </button>
@@ -51,7 +39,7 @@ const Header = () => {
                 <Link to="/">
                   <img
                     className="logo-light"
-                    src="assets/images/logo/logo.png"
+                    src="/assets/images/logo/logo.png"
                     alt="ChatBot Logo"
                   />
                 </Link>
@@ -73,13 +61,12 @@ const Header = () => {
                     <div className="inner d-flex align-items-center">
                       <div className="img-box">
                         <img
-                          src="assets/images/team/team-01sm.jpg"
+                          src="/assets/images/team/team-01sm.jpg"
                           alt="Admin"
                         />
                       </div>
                       <div className="content">
-                        <span className="title ">{userDetails.name}</span>
-                        {/* <p>{userDetails.email}</p> */}
+                        <span className="title">{user?.name || "Test User"}</span>
                       </div>
                     </div>
                     <div className="icon">
@@ -92,15 +79,15 @@ const Header = () => {
                     <div className="rbt-admin-profile">
                       <div className="admin-thumbnail">
                         <img
-                          src="assets/images/team/team-01sm.jpg"
+                          src="/assets/images/team/team-01sm.jpg"
                           alt="User Images"
                         />
                       </div>
                       <div className="admin-info">
-                        <span className="name">{userDetails.name}</span>
+                        <span className="name">{user?.name || "Test User"}</span>
                         <Link
                           className="rbt-btn-link color-primary"
-                          to="/profile"
+                          to="/view-profile"
                         >
                           View Profile
                         </Link>
@@ -108,12 +95,11 @@ const Header = () => {
                     </div>
                     <ul className="user-list-wrapper user-nav">
                       <li>
-                        <Link to="/profile">
+                        <Link to="/view-profile">
                           <i className="fa-sharp fa-regular fa-user" />
                           <span>Profile Details</span>
                         </Link>
                       </li>
-
                       <li>
                         <Link to="/billing">
                           <i className="fa-sharp fa-regular fa-briefcase" />
@@ -144,6 +130,14 @@ const Header = () => {
               <div className="expand-btn-grp d-none">
                 <button className="bg-solid-primary popup-dashboardright-btn">
                   <i className="fa-sharp fa-regular fa-sidebar-flip" />
+                </button>
+              </div>
+              <div className="expand-btn-grp">
+                <button
+                  onClick={handleRightSidebar}
+                  className={`bg-solid-primary popup-dashboardright-btn ${rightSidebarOpen ? "" : "collapsed"}`}
+                >
+                  <i className="fa-sharp fa-regular fa-sidebar-flip"></i>
                 </button>
               </div>
             </div>

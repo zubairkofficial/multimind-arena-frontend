@@ -17,10 +17,18 @@ class Helpers {
     return token;
   };
 
+  static getItem = (data, isJson = false) => {
+    if (isJson) {
+      return (JSON.parse(localStorage.getItem(data)));
+    } else {
+      return localStorage.getItem(data);
+    }
+  };
+
   static authHeaders = {
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${this.getToken()}`,
+      Authorization: `Bearer ${this.getItem("token")}`,
     },
   };
 
@@ -31,13 +39,7 @@ class Helpers {
     },
   };
 
-  static getItem = (data, isJson = false) => {
-    if (isJson) {
-      return (JSON.parse(localStorage.getItem(data)));
-    } else {
-      return localStorage.getItem(data);
-    }
-  };
+
 
   static setItem = (key, data, isJson = false) => {
     if (isJson) {

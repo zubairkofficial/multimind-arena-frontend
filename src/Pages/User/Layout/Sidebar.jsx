@@ -22,6 +22,20 @@ const Sidebar = () => {
     }
   }, []);
 
+  // Sidebar menu items
+  const mainMenuItems = [
+    { path: "/dashboard", icon: "fa-home", label: "Dashboard" },
+    { path: "/chats", icon: "fa-messages", label: "Chat" },
+    { path: "/add-arena", icon: "fa-plus-circle", label: "Add Arena" },
+    { path: "/ai-figure-gallery", icon: "fa-images", label: "AI Figure Fallery" }, // Added Add Arena option
+  ];
+
+  const settingMenuItems = [
+    { path: "/profile", icon: "fa-user", label: "Profile Details" },
+    { path: "/billing", icon: "fa-briefcase", label: "Subscriptions" },
+    { path: "/history", icon: "fa-users", label: "History" },
+  ];
+
   return (
     <>
       <div className="popup-mobile-menu">
@@ -31,7 +45,7 @@ const Sidebar = () => {
               <Link to="/dashboard">
                 <img
                   className="logo-light"
-                  src="assets/images/logo/logo.png"
+                  src="/assets/images/logo/logo.png"
                   alt="ChatBot Logo"
                 />
               </Link>
@@ -48,87 +62,77 @@ const Sidebar = () => {
           <div className="inner">
             <div className="content-item-content">
               <div className="rbt-default-sidebar-wrapper">
+                {/* Main menu */}
                 <nav className="mainmenu-nav">
                   <ul className="dashboard-mainmenu rbt-default-sidebar-list">
-                    <li className="d-flex justify-content-center align-items-center">
-                      <Link to="/dashboard">
-                        <i className="fa-solid fa-home" />
-                        <span>Dashboard</span>
-                      </Link>
-                    </li>
+                    {mainMenuItems.map((item, index) => (
+                      <li
+                        key={index}
+                        className="d-flex justify-content-center align-items-center"
+                      >
+                        <Link to={item.path}>
+                          <i className={`fa-solid ${item.icon}`} />
+                          <span>{item.label}</span>
+                        </Link>
+                      </li>
+                    ))}
                   </ul>
                 </nav>
                 <div className="rbt-sm-separator" />
+                {/* Settings menu */}
                 <nav className="mainmenu-nav">
                   <ul className="dashboard-mainmenu rbt-default-sidebar-list">
                     <li className="has-submenu">
                       <Link
                         className="collapse-btn collapsed"
                         data-bs-toggle="collapse"
-                        to="#collapseExample"
+                        to="#collapseSettings"
                         role="button"
                         aria-expanded="false"
-                        aria-controls="collapseExample"
+                        aria-controls="collapseSettings"
                       >
                         <i className="fa-sharp fa-solid fa-circle-plus" />
-                        <span>Setting</span>
+                        <span>Settings</span>
                       </Link>
-                      <div className="collapse" id="collapseExample">
+                      <div className="collapse" id="collapseSettings">
                         <ul className="submenu rbt-default-sidebar-list">
-                          <li>
-                            <Link to="/profile">
-                              <i className="fa-sharp fa-regular fa-user" />
-                              <span>Profile Details</span>
-                            </Link>
-                          </li>
-
-                          <li>
-                            <Link to="/billing">
-                              <i className="fa-sharp fa-regular fa-briefcase" />
-                              <span>Subscriptions</span>
-                            </Link>
-                          </li>
-                          <li>
-                            <Link to="/history">
-                              <i className="fa-sharp fa-regular fa-users" />
-                              <span>History</span>
-                            </Link>
-                          </li>
+                          {settingMenuItems.map((item, index) => (
+                            <li key={index}>
+                              <Link to={item.path}>
+                                <i className={`fa-sharp fa-regular ${item.icon}`} />
+                                <span>{item.label}</span>
+                              </Link>
+                            </li>
+                          ))}
                         </ul>
                       </div>
-                    </li>
-                  </ul>
-                  <div className="rbt-sm-separator" />
-                  <ul className="dashboard-mainmenu rbt-default-sidebar-list">
-                    <li>
-                      <Link to="/terms-policy">
-                        <i className="fa-sharp fa-regular fa-briefcase" />
-                        <span>Terms &amp; Policy</span>
-                      </Link>
                     </li>
                   </ul>
                 </nav>
               </div>
             </div>
           </div>
+          {/* User profile section */}
           <div className="subscription-box d-flex justify-content-center align-items-center">
             <div className="inner">
-              <Link to="/profile" className="autor-info d-flex justify-content-center align-items-center">
+              <Link
+                to="/edit-profile"
+                className="autor-info d-flex justify-content-center align-items-center"
+              >
                 <div className="author-img active">
                   <img
                     className="w-100"
-                    src="assets/images/team/team-01sm.jpg"
+                    src="/assets/images/team/team-01sm.jpg"
                     alt="Author"
                   />
                 </div>
                 <div className="author-desc ">
                   <h6>{userDetails.name}</h6>
-                  {/* <p>{userDetails.email}</p> */}
                 </div>
               </Link>
               <div className="btn-part">
                 <Link to="/billing" className="btn-default btn-border">
-                  Upgrade To Pro
+                  Upgrade
                 </Link>
               </div>
             </div>

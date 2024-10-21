@@ -1,3 +1,4 @@
+
 import React from "react";
 
 const TabNavigation = () => (
@@ -49,8 +50,23 @@ const TabNavigation = () => (
           <span className="title">Delete Account</span>
         </a>
       </li>
+      <li role="presentation">
+        <a
+          href="#"
+          className="tab-button"
+          id="persona-tab"
+          data-bs-toggle="tab"
+          data-bs-target="#persona"
+          role="tab"
+          aria-controls="persona"
+          aria-selected="false"
+        >
+          <span className="title">Persona</span>
+        </a>
+      </li>
     </ul>
   </div>
 );
 
 export default TabNavigation;
+

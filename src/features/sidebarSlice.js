@@ -1,12 +1,18 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {
-    sidebarOpen: false,
+// Initial state for both sidebars
+const initialSidebarState = {
+    sidebarOpen: true,
 };
 
+const initialRightSidebarState = {
+    rightSidebarOpen: false,
+};
+
+// Slice for left sidebar
 const sidebarSlice = createSlice({
     name: "sidebar",
-    initialState,
+    initialState: initialSidebarState,
     reducers: {
         toggleSidebar: (state) => {
             state.sidebarOpen = !state.sidebarOpen;
@@ -17,6 +23,24 @@ const sidebarSlice = createSlice({
     },
 });
 
-export const { toggleSidebar, setSidebarOpen } = sidebarSlice.actions;
+// Slice for right sidebar
+const rightSidebarSlice = createSlice({
+    name: "rightSidebar",
+    initialState: initialRightSidebarState,
+    reducers: {
+        toggleRightSidebar: (state) => {
+            state.rightSidebarOpen = !state.rightSidebarOpen;
+        },
+        setRightSidebarOpen: (state, action) => {
+            state.rightSidebarOpen = action.payload;
+        },
+    },
+});
 
-export default sidebarSlice.reducer;
+// Export actions
+export const { toggleSidebar, setSidebarOpen } = sidebarSlice.actions;
+export const { toggleRightSidebar, setRightSidebarOpen } = rightSidebarSlice.actions;
+
+// Export reducers
+export const sidebarReducer = sidebarSlice.reducer;
+export const rightSidebarReducer = rightSidebarSlice.reducer;

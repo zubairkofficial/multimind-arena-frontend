@@ -1,0 +1,51 @@
+:root {
+    --color-dark-bg: #121212;
+    --color-dark-card: #101010;
+    --color-dark-border: #111111;
+    --color-focus-green: #00ff00;
+    --btn-hover-color: #00cc00;
+}
+
+table {
+    color: #ffffff;
+}
+
+.table-hover tbody tr:hover {
+    background-image: linear-gradient(135deg, rgba(0, 255, 0, 0.2), rgba(0, 204, 0, 0.2));
+    /* Subtle green gradient */
+    color: #ffffff;
+    transition: background-color 0.3s ease, background-image 0.3s ease;
+    /* Smooth transition effect */
+}
+
+.table-bordered {
+    border: 1px solid var(--color-dark-border);
+}
+
+.table-bordered th,
+.table-bordered td {
+    border: 1px solid var(--color-dark-border);
+    padding: 15px 10px;
+    /* Increased padding on y-axis */
+}
+
+.badge {
+    font-size: 1em;
+    padding: 0.5rem;
+}
+
+.pagination button {
+    margin: 0.25rem;
+    color: #ffffff;
+    border: 1px solid var(--color-focus-green);
+}
+
+.pagination button.active {
+    background-color: var(--color-focus-green);
+    color: #000000;
+}
+
+.pagination button[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+}

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 const Slider = () => {
-  const [text, setText] = useState("AI Chating");
+  const [text, setText] = useState("MultiMind");
   const [isFading, setIsFading] = useState(false);
 
   useEffect(() => {
@@ -42,7 +42,7 @@ const Slider = () => {
                   <br />
                 Challenge AI-powered historical figures in debates, games, and conversations.
                 </h6>
-                <div className="form-group">
+                <div className="">
                   <Link
                     className="btn-default @@btnClass"
                     to='/login'

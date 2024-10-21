@@ -22,16 +22,26 @@ const Sidebar = () => {
     }
   }, []);
 
+  // Menu items for sidebar
+  const menuItems = [
+    { path: "/admin/dashboard", icon: "fa-home", label: "Dashboard" },
+    { path: "/admin/users", icon: "fa-user", label: "Manage Users" },
+    { path: "/admin/recent-activity", icon: "fa-history", label: "Recent Activity" },
+    { path: "/admin/manage-arenas", icon: "fa-cog", label: "Manage Arenas" },
+    { path: "/admin/manage-ai-figures", icon: "fa-images", label: "Manage AI Figures" }, // New option added
+    { path: "/admin/arena-types", icon: "fa-info", label: "Manage Arena Types" }, 
+  ];
+
   return (
     <>
-      <div className="popup-mobile-menu">
+      <div className="popup-mobile-menu ">
         <div className="inner-popup">
           <div className="header-top">
             <div className="logo">
               <Link to="/dashboard">
                 <img
                   className="logo-light"
-                  src="/public/assets/images/logo/logo.png"
+                  src="/assets/images/logo/logo.png"
                   alt="ChatBot Logo"
                 />
               </Link>
@@ -50,61 +60,44 @@ const Sidebar = () => {
               <div className="rbt-default-sidebar-wrapper">
                 <nav className="mainmenu-nav">
                   <ul className="dashboard-mainmenu rbt-default-sidebar-list">
-                    {/* Dashboard Link */}
-                    <li className="d-flex justify-content-center align-items-center">
-                      <Link to="/dashboard">
-                        <i className="fa-solid fa-home" />
-                        <span>Dashboard</span>
-                      </Link>
-                    </li>
-                     {/* New Link: Manage Users */}
-                     <li className="d-flex justify-content-center align-items-center">
-                      <Link to="/manage-users">
-                        <i className="fa-solid fa-person" />
-                        <span>Manage Users</span>
-                      </Link>
-                    </li>
-                    {/* New Link: Recent Activity */}
-                    <li className="d-flex justify-content-center align-items-center">
-                      <Link to="/recent-activity">
-                        <i className="fa-solid fa-history" />
-                        <span>Recent Activity</span>
-                      </Link>
-                    </li>
-                    {/* New Link: Manage Arenas */}
-                    <li className="d-flex justify-content-center align-items-center">
-                      <Link to="/manage-arenas">
-                        <i className="fa-solid fa-cog" />
-                        <span>Manage Arenas</span>
-                      </Link>
-                    </li>
+                    {menuItems.map((item, index) => (
+                      <li
+                        key={index}
+                        className="d-flex justify-content-center align-items-center"
+                      >
+                        <Link to={item.path}>
+                          <i className={`fa-solid ${item.icon}`} />
+                          <span>{item.label}</span>
+                        </Link>
+                      </li>
+                    ))}
                   </ul>
                 </nav>
                 <div className="rbt-sm-separator" />
-                {/* Rest of the sidebar */}
-          
               </div>
             </div>
           </div>
           {/* Rest of the sidebar content */}
           <div className="subscription-box">
             <div className="inner">
-              <Link to="/profile" className="autor-info">
+            <Link
+                to="/admin/view-profile"
+                className="autor-info d-flex justify-content-center align-items-center"
+              >
                 <div className="author-img active">
                   <img
                     className="w-100"
-                    src="/public/assets/images/team/team-01sm.jpg"
+                    src="/assets/images/team/team-01sm.jpg"
                     alt="Author"
                   />
                 </div>
-                <div className="author-desc">
+                <div className="author-desc ">
                   <h6>{userDetails.name}</h6>
-                  <p>{userDetails.email}</p>
                 </div>
               </Link>
               <div className="btn-part">
                 <Link to="/billing" className="btn-default btn-border">
-                  Upgrade To Pro
+                  Upgrade 
                 </Link>
               </div>
             </div>

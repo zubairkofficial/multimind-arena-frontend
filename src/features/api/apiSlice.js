@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import Helpers from "../../Config/Helpers";
+import { setUser } from "../userSlice"; // Import setUser action
 
 // Define your API slice
 export const apiSlice = createApi({
@@ -14,29 +15,32 @@ export const apiSlice = createApi({
                 body: newUser,
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${Helpers.getItem("token")}`,
                 },
             }),
         }),
+
         // Login user
         login: builder.mutation({
             query: (credentials) => ({
-                url: "user/login", // Replace with your actual login endpoint
+                url: "user/login",
                 method: "POST",
                 body: credentials,
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${Helpers.getItem("token")}`,
                 },
             }),
+            async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+                try {
+                    const { data } = await queryFulfilled; // Data will be user object after successful login
+                    dispatch(setUser(data.user)); // Dispatch the action to set the user data
+                    Helpers.setItem("user", JSON.stringify(data.user));
+                    Helpers.setItem("token", data.token);
+                } catch (error) {
+                    console.error("Error logging in user:", error);
+                }
+            },
         }),
-        // Login with Google
-        loginWithGoogle: builder.mutation({
-            query: (token) => ({
-                url: `http://192.168.18.5:8080/user/auth/google?token=${token}`, // Google auth endpoint without /api/v1
-                method: "GET", // GET method for Google login
-            }),
-        }),
+
         // Update user
         updateUser: builder.mutation({
             query: (userData) => ({
@@ -48,17 +52,81 @@ export const apiSlice = createApi({
                     Authorization: `Bearer ${Helpers.getItem("token")}`,
                 },
             }),
+            async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+                try {
+                    const { data } = await queryFulfilled;
+                    dispatch(setUser(data));
+                    Helpers.setItem("user", JSON.stringify(data));
+                } catch (error) {
+                    console.error("Error updating user:", error);
+                }
+            },
         }),
-        // Get all users
-        getAllUsers: builder.query({
-            query: () => ({
-                url: "user/",
+
+        // Get user by ID
+        getUserById: builder.query({
+            query: (userId) => ({
+                url: `user/${userId}`,
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${Helpers.getItem("token")}`,
                 },
             }),
+            async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+                try {
+                    const { data } = await queryFulfilled;
+                    dispatch(setUser(data));
+                    Helpers.setItem("user", JSON.stringify(data));
+                } catch (error) {
+                    console.error("Error fetching user details:", error);
+                }
+            },
+        }),
+
+        // Forgot Password
+        forgotPassword: builder.mutation({
+            query: (email) => ({
+                url: "user/forget-password",
+                method: "POST",
+                body: { email },
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            }),
+        }),
+
+        // Reset Password
+        resetPassword: builder.mutation({
+            query: ({ token, newPassword }) => ({
+                url: "user/reset-password",
+                method: "POST",
+                body: { token, newPassword },
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            }),
+        }),
+
+        // Get all users
+        getAllUsers: builder.query({
+            query: () => ({
+                url: "user/all-users",
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${Helpers.getItem("token")}`,
+                },
+            }),
+            async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+                try {
+                    const { data } = await queryFulfilled;
+                    // You can handle data as needed, for example, storing in local state
+                    console.log("Fetched all users:", data);
+                } catch (error) {
+                    console.error("Error fetching all users:", error);
+                }
+            },
         }),
     }),
 });
@@ -67,7 +135,9 @@ export const apiSlice = createApi({
 export const {
     useRegisterUserMutation,
     useLoginMutation,
-    useLoginWithGoogleMutation,
-    useUpdateUserMutation, // Export the update user hook
-    useGetAllUsersQuery, // Export the get all users hook
+    useUpdateUserMutation,
+    useGetUserByIdQuery,
+    useForgotPasswordMutation,
+    useResetPasswordMutation,
+    useGetAllUsersQuery, // Export the hook for getting all users
 } = apiSlice;

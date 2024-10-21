@@ -1,9 +1,14 @@
 import React, { useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { useForgotPasswordMutation } from "../../features/api/apiSlice"; // Import the forgotPassword hook
+import { Notyf } from "notyf";
+import "notyf/notyf.min.css";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
+  const [forgotPassword, { isLoading }] = useForgotPasswordMutation(); // Hook for forgotPassword mutation
+  const notyf = new Notyf();
 
   // Handle email input
   const handleChange = (e) => {
@@ -11,10 +16,18 @@ const ForgotPassword = () => {
   };
 
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Here, you would call your API to send the reset password link to the email
-    console.log("Reset password email sent to:", email);
+
+    try {
+      // Trigger the forgot password mutation
+      await forgotPassword(email).unwrap();
+      // Show success toast
+      notyf.success("Reset password email sent successfully.");
+    } catch (err) {
+      // Show error message
+      notyf.error(err?.data?.message || "Failed to send reset email. Please try again.");
+    }
   };
 
   return (
@@ -47,8 +60,12 @@ const ForgotPassword = () => {
                             required
                           />
                         </div>
-                        <Button type="submit" className="btn-default mt-4">
-                          Send Reset Link
+                        <Button
+                          type="submit"
+                          className="btn-default mt-4"
+                          disabled={isLoading}
+                        >
+                          {isLoading ? "Sending..." : "Send Reset Link"}
                         </Button>
                       </Form>
                     </div>

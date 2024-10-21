@@ -1,21 +1,38 @@
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
-import { useUpdateUserMutation } from "./../../../features/api/apiSlice"; // Assuming this API exists
+import React, { useEffect, useState } from "react";
+import { useGetUserByIdQuery, useUpdateUserMutation } from "./../../../features/api/apiSlice";
 import { Notyf } from "notyf";
+import useEnsureUser from "./../../../Hooks/useEnsureUser"; // Import the custom hook
+import { CircleGauge } from "lucide-react";
 
 const ProfileDetailsForm = () => {
-  const { user } = useSelector((state) => state.user); // Get user data from the Redux store
-  const [updateUser, { isLoading, error }] = useUpdateUserMutation(); // API mutation hook
+  // Use custom hook to ensure user data is available
+  const { user, isLoading: isFetching, error: fetchError } = useEnsureUser();
+
+  const [updateUser, { isLoading: isUpdating, error: updateError }] = useUpdateUserMutation(); // API mutation hook
 
   // Local state to handle form input
   const [formData, setFormData] = useState({
-    name: `${user?.firstname || ""} ${user?.lastname || ""}`, // Combine first and last name into fullname
-    username: user?.username || "",
-    phonenumber: user?.phonenumber || "",
+    name: "",
+    username: "",
+    phoneNumber: "",
   });
+
+  // Populate form data when user data is fetched
+  useEffect(() => {
+    if (user) {
+      setFormData({
+        name: `${user.name || ""}`, // Set name
+        username: user.username || "",
+        phoneNumber: user.phoneNumber || "",
+      });
+    }
+  }, [user]);
 
   // Handle form input changes
   const handleChange = (e) => {
+    e.preventDefault();
+
+    console.log(e.target.id);
     setFormData({
       ...formData,
       [e.target.id]: e.target.value,
@@ -32,11 +49,21 @@ const ProfileDetailsForm = () => {
 
       const notyf = new Notyf();
       notyf.success("Profile updated successfully.");
+      
+
     } catch (err) {
       const notyf = new Notyf();
       notyf.error("Failed to update profile. Please try again.");
     }
   };
+
+  if (isFetching) {
+    return <div>Loading user data...</div>;
+  }
+
+  if (fetchError) {
+    return <div>Error loading user data. Please try again later.</div>;
+  }
 
   return (
     <div
@@ -79,9 +106,9 @@ const ProfileDetailsForm = () => {
           <div className="form-group">
             <label htmlFor="phonenumber">Phone Number</label>
             <input
-              id="phonenumber"
+              id="phoneNumber"
               type="tel"
-              value={formData.phonenumber}
+              value={formData.phoneNumber}
               onChange={handleChange}
               placeholder="+1-234-567-890"
               required
@@ -90,12 +117,12 @@ const ProfileDetailsForm = () => {
         </div>
         <div className="col-12 mt--20">
           <div className="form-group mb--0">
-            <button type="submit" className="btn-default" disabled={isLoading}>
-              {isLoading ? "Updating..." : "Update Info"}
+            <button type="submit" className="btn-default" disabled={isUpdating}>
+              {isUpdating ? "Updating..." : "Update Info"}
             </button>
           </div>
         </div>
-        {error && <p className="text-danger">Error: {error.data.message}</p>}
+        {updateError && <p className="text-danger">Error: {updateError.data?.message}</p>}
       </form>
     </div>
   );

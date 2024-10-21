@@ -98,7 +98,7 @@
     --color-nav-color: '#1C1E24';
     --color-link: #BCC3D7;
     --color-text-off: #565e78;
-    --color-dark: #000000;
+    --color-dark: #101010;
     --color-darker: rgba(46, 45, 45, 0.7);
     --color-darkest: rgba(62, 62, 62, 0.3);
     --color-lessdark: #0f1015;
@@ -350,6 +350,10 @@ figure {
 
 form {
     margin: 0;
+    padding: 20px;
+    background-color: #101010;
+    border-radius: 5px;
+    border-radius: 20px;
 }
 
 fieldset {
@@ -8995,13 +8999,20 @@ textarea:-ms-input-placeholder {
 }
 
 .loader {
-    position: absolute;
+    position: fixed;
+    /* Use fixed position for full viewport coverage */
     top: 50%;
+    /* Center vertically */
     left: 50%;
-    transform: translateX(-50%) translateY(-50%);
+    /* Center horizontally */
+    transform: translate(-50%, -50%);
+    /* Adjust position to center */
     width: 70px;
+    /* Width of loader */
     height: 70px;
-    margin: auto;
+    /* Height of loader */
+    z-index: 9999999;
+    /* Ensure the loader is on top of other elements */
 }
 
 .loader .circle {
@@ -23216,6 +23227,7 @@ body.active-light-mode .slider-area.bg-transparent .inner button.btn-default.btn
     margin-bottom: 120px;
     margin-right: auto;
     margin-top: 80px;
+    background-color: #101010;
 }
 
 @media only screen and (min-width: 768px) and (max-width: 991px) {
@@ -23243,11 +23255,12 @@ body.active-light-mode .slider-area.bg-transparent .inner button.btn-default.btn
 }
 
 .rbt-dashboard-content .content-page {
-    padding-top: 20px;
+    padding-top: 10px;
+    background-color: #101010;
 }
 
 .rbt-dashboard-content .banner-area {
-    padding: 30px 15px;
+    background-color: #101010;
 }
 
 .chat-box-section {
@@ -24019,13 +24032,13 @@ body.active-light-mode .slider-area.bg-transparent .inner button.btn-default.btn
 
 @media only screen and (min-width: 768px) and (max-width: 991px) {
     .rbt-static-bar {
-        width: calc(100% - 120px);
+        width: calc(100% - 180px);
     }
 }
 
 @media only screen and (max-width: 767px) {
     .rbt-static-bar {
-        width: calc(100% - 60px);
+        width: calc(100% - 100px);
     }
 }
 
@@ -25282,6 +25295,7 @@ body.active-light-mode .slider-area.bg-transparent .inner button.btn-default.btn
 
 .settings-area {
     margin-bottom: 30px;
+    background-color: #101010;
 }
 
 @media only screen and (max-width: 575px) {
@@ -25363,7 +25377,7 @@ body.active-light-mode .slider-area.bg-transparent .inner button.btn-default.btn
     margin-bottom: 30px;
     padding: 30px;
     border-radius: var(--radius);
-    background-color: var(--color-dark);
+    background-color: transparent;
     position: relative;
 }
 

@@ -1,41 +1,39 @@
 import React from "react";
-import UserDashboard from "./Layout/Index";
-import Searchbar from "../../components/Arenas/Searchbar";
-import "./../../components/Arenas/arenas.css";
+import { useNavigate } from "react-router-dom";
 import ArenaCategory from "../../components/Arenas/ArenaCategory";
+import "./../../components/Arenas/arenas.css";
+
 export default function ArenaDashboard() {
-  
+  const navigate = useNavigate();
+
   const popularArenas = [
     {
       id: 1,
       name: "Battle Royale",
       description: "By @GameMaster",
-      image: "public/assets/images/anime-demo.webp",
+      image: "/assets/images/anime-demo.png",
       participants: "1.2M members",
-      path: "/arena",
     },
     {
       id: 2,
       name: "Strategy Masters",
       description: "By @TacticalGenius",
-      image: "public/assets/images/anime-demo.webp",
+      image: "/assets/images/anime-demo.png",
       participants: "890K members",
-      path: "/arena",
     },
     {
       id: 3,
       name: "Puzzle Challenge",
       description: "By @BrainTeaser",
-      image: "public/assets/images/anime-demo.webp",
+      image: "/assets/images/anime-demo.png",
       participants: "567K members",
     },
     {
       id: 4,
       name: "Sci-Fi Showdown",
       description: "By @FutureWarrior",
-      image: "public/assets/images/anime-demo.webp",
+      image: "/assets/images/anime-demo.png",
       participants: "345K members",
-      path: "/arena",
     },
   ];
 
@@ -44,37 +42,37 @@ export default function ArenaDashboard() {
       id: 5,
       name: "Practice Spellcasting",
       description: "with Wizard Academy",
-      image: "public/assets/images/anime-demo.webp",
+      image: "/assets/images/anime-demo.png",
     },
     {
       id: 6,
       name: "Build an Empire",
       description: "with Empire Simulator",
-      image: "public/assets/images/anime-demo.webp",
+      image: "/assets/images/anime-demo.png",
     },
     {
       id: 7,
       name: "Solve Mysteries",
       description: "with Detective Agency",
-      image: "public/assets/images/anime-demo.webp",
+      image: "/assets/images/anime-demo.png",
     },
     {
       id: 8,
       name: "Explore Space",
       description: "with Galactic Explorer",
-      image: "public/assets/images/anime-demo.webp",
+      image: "/assets/images/anime-demo.png",
     },
     {
       id: 9,
       name: "Master Martial Arts",
       description: "with Dojo Master",
-      image: "public/assets/images/anime-demo.webp",
+      image: "/assets/images/anime-demo.png",
     },
     {
       id: 10,
       name: "Race to Victory",
       description: "with Speed Racer",
-      image: "public/assets/images/anime-demo.webp",
+      image: "/assets/images/anime-demo.png",
     },
   ];
 
@@ -83,43 +81,49 @@ export default function ArenaDashboard() {
       id: 11,
       name: "Epic Quest",
       description: "Your journey begins here",
-      image: "public/assets/images/anime-demo.webp",
+      image: "/assets/images/anime-demo.png",
       participants: "2.5M members",
-      path: "/arena",
     },
     {
       id: 12,
       name: "Tactical Warfare",
       description: "Lead your army to victory",
-      image: "public/assets/images/anime-demo.webp",
+      image: "/assets/images/anime-demo.png",
       participants: "1.8M members",
-      path: "/arena",
     },
     {
       id: 13,
       name: "Mystic Realms",
       description: "Explore magical worlds",
-      image: "public/assets/images/anime-demo.webp",
+      image: "/assets/images/anime-demo.png",
       participants: "1.3M members",
-      path: "/arena",
     },
   ];
 
+  const handleArenaClick = (id) => {
+    navigate(`/arena-chat/${id}`);
+  };
+
   return (
-    <UserDashboard>
-      <div className="arena-dashboard" style={{ backgroundColor: "#000000" }}>
-      <Searchbar />
+    <div className="container">
+      <div className="arena-dashboard">
         <ArenaCategory
           title="Featured Arenas"
           arenas={featuredArenas}
           cardSize="large"
-          path={featuredArenas.path}
+          handleClick={handleArenaClick}
         />
-                <ArenaCategory title="Popular Arenas" arenas={popularArenas} />
-                <ArenaCategory title="Recommended for you" arenas={recommendedArenas} />
+        <ArenaCategory
+          title="Popular Arenas"
+          arenas={popularArenas}
+          handleClick={handleArenaClick}
+        />
+        <ArenaCategory
+          title="Recommended for you"
+          arenas={recommendedArenas}
+          handleClick={handleArenaClick}
+        />
       </div>
-
-   
-    </UserDashboard>
+    </div>
   );
 }

@@ -4,10 +4,11 @@ import TabNavigation from "./TabNavigation";
 import ProfileDetailsForm from "./ProfileDetailsForm";
 import PasswordUpdateForm from "./PasswordUpdateForm";
 import DeleteAccountForm from "./DeleteAccountForm";
+import PersonaForm from "./PersonaForm";
 
 const EditProfile = () => {
   return (
-    <UserDashboard>
+
       <div className="rbt-main-content mb--0">
         <div className="rbt-daynamic-page-content center-width">
           {/* Dashboard Center Content */}
@@ -26,6 +27,7 @@ const EditProfile = () => {
                     <TabNavigation />
                     <div className="tab-content">
                       <ProfileDetailsForm />
+                      <PersonaForm/>
                       <PasswordUpdateForm />
                       <DeleteAccountForm />
                     </div>
@@ -36,7 +38,7 @@ const EditProfile = () => {
           </div>
         </div>
       </div>
-    </UserDashboard>
+
   );
 };
 

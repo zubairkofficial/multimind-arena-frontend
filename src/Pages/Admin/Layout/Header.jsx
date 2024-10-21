@@ -51,7 +51,7 @@ const Header = () => {
                 <Link to="/">
                   <img
                     className="logo-light"
-                    src="/public/assets/images/logo/logo.png"
+                    src="/assets/images/logo/logo.png"
                     alt="ChatBot Logo"
                   />
                 </Link>
@@ -73,13 +73,13 @@ const Header = () => {
                     <div className="inner d-flex align-items-center">
                       <div className="img-box">
                         <img
-                          src="/public/assets/images/team/team-01sm.jpg"
+                          src="/assets/images/team/team-01sm.jpg"
                           alt="Admin"
                         />
                       </div>
                       <div className="content">
                         <span className="title ">{userDetails.name}</span>
-                        <p>{userDetails.email}</p>
+                       
                       </div>
                     </div>
                     <div className="icon">
@@ -92,7 +92,7 @@ const Header = () => {
                     <div className="rbt-admin-profile">
                       <div className="admin-thumbnail">
                         <img
-                          src="/public/assets/images/team/team-01sm.jpg"
+                          src="/assets/images/team/team-01sm.jpg"
                           alt="User Images"
                         />
                       </div>
@@ -100,7 +100,7 @@ const Header = () => {
                         <span className="name">{userDetails.name}</span>
                         <Link
                           className="rbt-btn-link color-primary"
-                          to="/profile"
+                          to="/admin/view-profile"
                         >
                           View Profile
                         </Link>
