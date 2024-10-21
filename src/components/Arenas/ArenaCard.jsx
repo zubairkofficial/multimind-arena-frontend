@@ -1,9 +1,10 @@
 import React from "react";
-import './arenas.css'
+import './arenas.css';
+import { Link } from "react-router-dom";
 
-
-const ArenaCard = ({ arena, size = "small" }) => (
-    <div className={`arena-card ${size}`}>
+const ArenaCard = ({ arena, size = "small" , onClick}) => (
+  <Link >
+    <div className={`arena-card ${size}`} style={{ backgroundColor: "#202020" } } onClick ={onClick}>
       <img src={arena.image} alt={arena.name} className="arena-image" />
       <div className="arena-info">
         <h3>{arena.name}</h3>
@@ -13,5 +14,7 @@ const ArenaCard = ({ arena, size = "small" }) => (
         )}
       </div>
     </div>
-  );
-  export default ArenaCard
+  </Link>
+);
+
+export default ArenaCard;

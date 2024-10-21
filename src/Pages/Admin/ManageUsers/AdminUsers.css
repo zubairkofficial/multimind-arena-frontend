@@ -1,0 +1,37 @@
+:root {
+    --color-dark-bg: #121212;
+    --color-dark-card: #101010;
+    --color-dark-border: #101010;
+    --color-focus-green: #00ff00;
+    --btn-hover-color: #00cc00;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #333333;
+    color: #ffffff;
+}
+
+.table-bordered {
+    border: 1px solid var(--color-dark-border);
+}
+
+.table-bordered th,
+.table-bordered td {
+    border: 1px solid var(--color-dark-border);
+}
+
+.badge {
+    font-size: 1em;
+    padding: 0.5rem;
+}
+
+.pagination button {
+    margin: 0.25rem;
+    color: #ffffff;
+    border: 1px solid var(--color-focus-green);
+}
+
+.pagination button.active {
+    background-color: var(--color-focus-green);
+    color: #000000;
+}

@@ -71,21 +71,7 @@ const Footer = () => {
                         <h4 className="title">Services</h4>
                         <div className="inner">
                           <ul className="footer-link link-hover">
-                            <li>
-                              <a href="image-generator.html">Image Generator</a>
-                            </li>
-                            <li>
-                              <a href="vedio-generator.html">Video Generator</a>
-                            </li>
-                            <li>
-                              <a href="text-generator.html">Text Generator</a>
-                            </li>
-                            <li>
-                              <a href="code-generator.html">Code Generator</a>
-                            </li>
-                            <li>
-                              <a href="#">Education Feedback</a>
-                            </li>
+                            
                           </ul>
                         </div>
                       </div>

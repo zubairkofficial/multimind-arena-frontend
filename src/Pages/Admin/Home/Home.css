@@ -1,0 +1,144 @@
+/* Admin Dashboard Custom Styles */
+
+.admin-dashboard-container {
+    color: #e0e0e0;
+    padding-top: 2rem;
+}
+
+.admin-card {
+    background-color: #101010;
+    /* Set the background color */
+    color: #4caf50;
+    /* Set text color to green */
+    border-radius: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* Increase card height */
+}
+
+.admin-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.8);
+    /* Green box shadow on hover */
+}
+
+.card-title {
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.card-text {
+    font-size: 2.5rem;
+    /* Increase the font size */
+    font-weight: bold;
+    color: #4caf50;
+    /* Ensure text color is green */
+}
+
+.total-users-card {
+    background: #101010;
+}
+
+.active-arenas-card {
+    background: #101010;
+}
+
+.ai-figures-card {
+    background: #101010;
+}
+
+.daily-active-users-card {
+    background: #101010;
+}
+
+.recent-activities-card,
+.system-status-card {
+    border-radius: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.recent-activities-header,
+.system-status-header {
+    background-color: #333;
+    border-radius: 20px 20px 0 0;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.recent-activities-table,
+.system-status-table {
+    background-color: #1c1c1c;
+    color: #e0e0e0;
+    border-radius: 20px 20px 20px 20px;
+}
+
+.recent-activities-table th,
+.system-status-table th {
+    background-color: #444;
+}
+
+.view-profile-btn {
+    background-color: #4caf50;
+    color: #fff;
+}
+
+.manage-arena-btn {
+    background-color: #ffa726;
+    color: #fff;
+}
+
+.review-btn {
+    background-color: #e53935;
+    color: #fff;
+}
+
+.edit-ai-btn {
+    background-color: #039be5;
+    color: #fff;
+}
+
+.btn:hover {
+    opacity: 0.9;
+}
+
+
+/* General card styling */
+
+.card {
+    background-color: #101010;
+    border: none;
+    border-radius: 20px;
+    padding: 2rem;
+}
+
+.card-body {
+    padding: 2rem;
+    /* Increase padding to give more space */
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+
+/* Custom scrollbar for better user experience */
+
+ ::-webkit-scrollbar {
+    width: 8px;
+}
+
+ ::-webkit-scrollbar-track {
+    background: #1c1c1c;
+}
+
+ ::-webkit-scrollbar-thumb {
+    background: #333;
+    border-radius: 4px;
+}
+
+ ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}

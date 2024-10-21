@@ -57,10 +57,7 @@ const Banner = () => {
           </div>
         </div>
         <div className="bg-shape">
-          <img
-            src="assets/images/cta-img/bg-shape-01.png"
-            alt="BG Shape"
-          />
+
         </div>
       </div>
     </div>

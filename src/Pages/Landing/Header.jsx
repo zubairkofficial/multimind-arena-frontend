@@ -43,8 +43,7 @@ const Header = () => {
                     src="assets/images/logo/logo.png"
                     alt="ChatBot Logo"
                     style={{
-                      height: '550px',
-                      width: '180px'
+                      height: "550px",
                     }}
                   />
                 </Link>
@@ -87,11 +86,11 @@ const Header = () => {
                 <div className="header-btn d-none d-lg-block">
                   <Link
                     className="rainbow-gradient-btn"
-                    to="/register"
+                    to="/login"
                     style={{
                       color: "#000000",
                       padding: "2px 2px",
-                      borderRadius: "2px",
+                      // borderRadius: "2px",
                       textDecoration: "none",
                       fontWeight: "bolder",
                     }}
@@ -108,8 +107,21 @@ const Header = () => {
                       onClick={handleSidebar}
                       style={{ color: "#00ff00" }}
                     >
-                      <i className="fa fa-bars fa-2x" />
+                      <i
+                        className="fa fa-bars fa-2x "
+                        style={{ color: "#0f0" }}
+                      />
                     </button>
+
+                    {/* <div className="d-flex justify-content-between align-items-center mb-4">
+          <h4 className="fw-bold" style={{ color: "#00ff00" }}>
+            Menu
+          </h4>
+
+          <button className="fw-bold btn-close" onClick={handleSidebar}>
+            <IoMdClose className="fw-bold" color="#00ff00" />
+          </button>
+        </div> */}
                   </div>
                 </div>
                 {/* End Mobile-Menu-Bar */}
@@ -137,9 +149,9 @@ const Header = () => {
             Menu
           </h4>
           <button
-            className="btn-close"
+            className="btn-close "
             onClick={handleSidebar}
-            style={{ backgroundColor: "#00ff00", color: "#000000" }}
+            style={{  backgroundColor: "#00ff00", borderRadius: '30px', padding: '0.6rem' }}
           />
         </div>
 

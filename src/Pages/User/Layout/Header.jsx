@@ -1,18 +1,26 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { toggleSidebar } from "./../../../features/sidebarSlice"; // Import the action
+import { toggleSidebar, toggleRightSidebar } from "./../../../features/sidebarSlice"; // Import actions
+
 const Header = () => {
-    const dispatch = useDispatch();
-    const sidebarOpen = useSelector((state) => state.sidebar.sidebarOpen);
-  
-    const handleSidebar = () => {
-      dispatch(toggleSidebar()); // Dispatch action to toggle sidebar state
-    };
-  
-    const handleLogout = () => {
-      localStorage.clear();
-    };
+  const dispatch = useDispatch();
+  const sidebarOpen = useSelector((state) => state.sidebar.sidebarOpen);
+  const rightSidebarOpen = useSelector((state) => state.rightSidebar.rightSidebarOpen);
+  const user = useSelector((state) => state.user.user); // Access user data directly from Redux store
+
+  const handleSidebar = () => {
+    dispatch(toggleSidebar()); // Dispatch action to toggle sidebar state
+  };
+
+  const handleRightSidebar = () => {
+    dispatch(toggleRightSidebar()); // Dispatch action to toggle right sidebar state
+  };
+
+  const handleLogout = () => {
+    localStorage.clear(); // Assuming you want to clear localStorage on logout (you could also dispatch an action to clear the Redux store)
+  };
+
   return (
     <header className="rbt-dashboard-header rainbow-header header-default header-left-align rbt-fluid-header">
       <div className="container-fluid position-relative">
@@ -22,9 +30,7 @@ const Header = () => {
               <div className="expand-btn-grp">
                 <button
                   onClick={handleSidebar}
-                  className={`bg-solid-primary popup-dashboardleft-btn ${
-                    sidebarOpen ? "" : "collapsed"
-                  }`}
+                  className={`bg-solid-primary popup-dashboardleft-btn ${sidebarOpen ? "" : "collapsed"}`}
                 >
                   <i className="fa-sharp fa-regular fa-sidebar" />
                 </button>
@@ -33,7 +39,7 @@ const Header = () => {
                 <Link to="/">
                   <img
                     className="logo-light"
-                    src="assets/images/logo/logo.png"
+                    src="/assets/images/logo/logo.png"
                     alt="ChatBot Logo"
                   />
                 </Link>
@@ -45,9 +51,7 @@ const Header = () => {
             <div className="header-right">
               {/* Start Mobile-Menu-Bar */}
               <div className="mobile-menu-bar ml--10 d-block d-lg-none">
-                <div className="hamberger">
-                
-                </div>
+                <div className="hamberger"></div>
               </div>
               {/* Start Mobile-Menu-Bar */}
               {/* Start Admin meta Group */}
@@ -57,13 +61,12 @@ const Header = () => {
                     <div className="inner d-flex align-items-center">
                       <div className="img-box">
                         <img
-                          src="assets/images/team/team-01sm.jpg"
+                          src="/assets/images/team/team-01sm.jpg"
                           alt="Admin"
                         />
                       </div>
                       <div className="content">
-                        <span className="title ">Test User</span>
-                        <p>test@gmail.com</p>
+                        <span className="title">{user?.name || "Test User"}</span>
                       </div>
                     </div>
                     <div className="icon">
@@ -76,15 +79,15 @@ const Header = () => {
                     <div className="rbt-admin-profile">
                       <div className="admin-thumbnail">
                         <img
-                          src="assets/images/team/team-01sm.jpg"
+                          src="/assets/images/team/team-01sm.jpg"
                           alt="User Images"
                         />
                       </div>
                       <div className="admin-info">
-                        <span className="name">Adam Milner</span>
+                        <span className="name">{user?.name || "Test User"}</span>
                         <Link
                           className="rbt-btn-link color-primary"
-                          to="profile-details.html"
+                          to="/view-profile"
                         >
                           View Profile
                         </Link>
@@ -92,67 +95,29 @@ const Header = () => {
                     </div>
                     <ul className="user-list-wrapper user-nav">
                       <li>
-                        <Link to="profile-details.html">
+                        <Link to="/view-profile">
                           <i className="fa-sharp fa-regular fa-user" />
                           <span>Profile Details</span>
                         </Link>
                       </li>
                       <li>
-                        <Link to="notification.html">
-                          <i className="fa-sharp fa-regular fa-shopping-bag" />
-                          <span>Notification</span>
-                        </Link>
-                      </li>
-                      <li>
-                        <Link to="chat-export.html">
-                          <i className="fa-sharp fa-regular fa-users" />
-                          <span>Chat Export</span>
-                        </Link>
-                      </li>
-                      <li>
-                        <Link to="appearance.html">
-                          <i className="fa-sharp fa-regular fa-home" />
-                          <span>Apperance</span>
-                        </Link>
-                      </li>
-                      <li>
-                        <Link to="plans-billing.html">
+                        <Link to="/billing">
                           <i className="fa-sharp fa-regular fa-briefcase" />
                           <span>Plans and Billing</span>
                         </Link>
                       </li>
                       <li>
-                        <Link to="sessions.html">
+                        <Link to="/history">
                           <i className="fa-sharp fa-regular fa-users" />
-                          <span>Sessions</span>
-                        </Link>
-                      </li>
-                      <li>
-                        <Link to="application.html">
-                          <i className="fa-sharp fa-regular fa-list" />
-                          <span>Application</span>
+                          <span>History</span>
                         </Link>
                       </li>
                     </ul>
-                    <hr className="mt--10 mb--10" />
-                    <ul className="user-list-wrapper user-nav">
-                      <li>
-                        <Link to="#">
-                          <i className="fa-solid fa-comments-question" />
-                          <span>Help Center</span>
-                        </Link>
-                      </li>
-                      <li>
-                        <Link to="profile-details.html">
-                          <i className="fa-sharp fa-solid fa-gears" />
-                          <span>Settings</span>
-                        </Link>
-                      </li>
-                    </ul>
+
                     <hr className="mt--10 mb--10" />
                     <ul className="user-list-wrapper">
                       <li>
-                        <Link to="/" onCliclk={handleLogout}>
+                        <Link to="/" onClick={handleLogout}>
                           <i className="fa-sharp fa-solid fa-right-to-bracket" />
                           <span>Logout</span>
                         </Link>
@@ -165,6 +130,14 @@ const Header = () => {
               <div className="expand-btn-grp d-none">
                 <button className="bg-solid-primary popup-dashboardright-btn">
                   <i className="fa-sharp fa-regular fa-sidebar-flip" />
+                </button>
+              </div>
+              <div className="expand-btn-grp">
+                <button
+                  onClick={handleRightSidebar}
+                  className={`bg-solid-primary popup-dashboardright-btn ${rightSidebarOpen ? "" : "collapsed"}`}
+                >
+                  <i className="fa-sharp fa-regular fa-sidebar-flip"></i>
                 </button>
               </div>
             </div>

@@ -1,5 +1,5 @@
 import React from "react";
-
+import {Link} from 'react-router-dom'
 const AdvancedTab = () => {
   return (
     <>
@@ -40,7 +40,8 @@ const AdvancedTab = () => {
                                 data-sal-duration={400}
                                 data-sal-delay={200}
                               >
-                                Connect with Al chatbot
+                                Join Multimind Chat Arena Today – Your Gateway
+                                to Dynamic Conversations
                               </h2>
                               <p
                                 className="description sal-animate"
@@ -48,10 +49,11 @@ const AdvancedTab = () => {
                                 data-sal-duration={400}
                                 data-sal-delay={300}
                               >
-                                Dentify the platform or interface through which
-                                you can access the chatbot. This could be a
-                                website, a messaging app, or a dedicated
-                                application.
+                                Unlock the world of interactive chat arenas with
+                                just one click. Register now to customize your
+                                experience, connect with real people, and engage
+                                with AI-powered discussions designed to expand
+                                your mind.
                               </p>
                               <div
                                 className="view-more-button mt--35 sal-animate"
@@ -61,7 +63,7 @@ const AdvancedTab = () => {
                               >
                                 <a
                                   className="btn-default color-blacked"
-                                  href="contact.html"
+                                  href="/login"
                                 >
                                   Try It Now{" "}
                                   <i className="fa-sharp fa-light fa-arrow-right ml--5" />
@@ -95,7 +97,7 @@ const AdvancedTab = () => {
                             <div className="split-inner">
                               <div className="subtitle">
                                 <span className="theme-gradient">
-                                  Exploring Efficiency
+                                  Explore a Universe of Chat Arenas 
                                 </span>
                               </div>
                               <h2
@@ -104,7 +106,7 @@ const AdvancedTab = () => {
                                 data-sal-duration={400}
                                 data-sal-delay={200}
                               >
-                                Streamline Your Workflow
+                                Endless Conversations Await
                               </h2>
                               <p
                                 className="description sal-animate"
@@ -112,9 +114,12 @@ const AdvancedTab = () => {
                                 data-sal-duration={400}
                                 data-sal-delay={300}
                               >
-                                Discover tools and techniques to optimize your
-                                workflow, making your tasks more efficient and
-                                manageable.
+                                Dive into a variety of themed arenas where every
+                                topic is an opportunity for discovery. Whether
+                                you're into tech, creativity, or casual talk,
+                                there's an arena tailored just for you. AI
+                                companions and live participants make it more
+                                engaging.
                               </p>
                               <div
                                 className="view-more-button mt--35 sal-animate"
@@ -122,13 +127,13 @@ const AdvancedTab = () => {
                                 data-sal-duration={400}
                                 data-sal-delay={400}
                               >
-                                <a
+                                <Link
                                   className="btn-default color-blacked"
-                                  href="contact.html"
+                                  to="/login"
                                 >
                                   Try It Now{" "}
                                   <i className="fa-sharp fa-light fa-arrow-right ml--5" />
-                                </a>
+                                </Link>
                               </div>
                             </div>
                           </div>
@@ -158,7 +163,7 @@ const AdvancedTab = () => {
                             <div className="split-inner">
                               <div className="subtitle">
                                 <span className="theme-gradient">
-                                  Navigating Cybersecurity
+                                  Enter the Arena
                                 </span>
                               </div>
                               <h2
@@ -167,7 +172,7 @@ const AdvancedTab = () => {
                                 data-sal-duration={400}
                                 data-sal-delay={200}
                               >
-                                Protecting Your Digital Presence
+                                Where Minds Meet and Ideas Spark
                               </h2>
                               <p
                                 className="description sal-animate"
@@ -175,9 +180,11 @@ const AdvancedTab = () => {
                                 data-sal-duration={400}
                                 data-sal-delay={300}
                               >
-                                Gain insights into cybersecurity measures and
-                                strategies to safeguard your online identity and
-                                sensitive information.
+                                Step into the chat arena and immerse yourself in
+                                lively discussions. Whether you're here to
+                                learn, share, or simply have fun, joining an
+                                arena gives you access to a dynamic environment
+                                filled with people and AI ready to interact.
                               </p>
                               <div
                                 className="view-more-button mt--35 sal-animate"
@@ -185,13 +192,13 @@ const AdvancedTab = () => {
                                 data-sal-duration={400}
                                 data-sal-delay={400}
                               >
-                                <a
+                                <Link
                                   className="btn-default color-blacked"
-                                  href="contact.html"
+                                  to="/login"
                                 >
                                   Try It Now{" "}
                                   <i className="fa-sharp fa-light fa-arrow-right ml--5" />
-                                </a>
+                                </Link>
                               </div>
                             </div>
                           </div>
@@ -221,7 +228,7 @@ const AdvancedTab = () => {
                             <div className="split-inner">
                               <div className="subtitle">
                                 <span className="theme-gradient">
-                                  Mastering Data Analysis
+                                  Converse Freely
                                 </span>
                               </div>
                               <h2
@@ -230,7 +237,7 @@ const AdvancedTab = () => {
                                 data-sal-duration={400}
                                 data-sal-delay={200}
                               >
-                                Demystifying Data Analytics
+                                Engage with AI and People Like Never Befores
                               </h2>
                               <p
                                 className="description sal-animate"
@@ -238,9 +245,11 @@ const AdvancedTab = () => {
                                 data-sal-duration={400}
                                 data-sal-delay={300}
                               >
-                                Learn the fundamentals of data analysis,
-                                including tools and methodologies, to extract
-                                meaningful insights from raw data.
+                                From casual chats to deep discussions, connect
+                                with like-minded individuals or challenge AI in
+                                stimulating exchanges. Your voice matters in
+                                every conversation, whether it’s one-on-one or
+                                in group interactions.
                               </p>
                               <div
                                 className="view-more-button mt--35 sal-animate"
@@ -286,7 +295,7 @@ const AdvancedTab = () => {
                           <div className="count-text">
                             <span className="theme-gradient">01</span>
                           </div>
-                          <h4 className="title">Connect with AI </h4>
+                          <h4 className="title">Register </h4>
                         </div>
                       </a>
                     </li>
@@ -305,7 +314,7 @@ const AdvancedTab = () => {
                           <div className="count-text">
                             <span className="theme-gradient">02</span>
                           </div>
-                          <h4 className="title">Streamline Workflow</h4>
+                          <h4 className="title">Browse Different Arenas</h4>
                         </div>
                       </a>
                     </li>
@@ -324,7 +333,7 @@ const AdvancedTab = () => {
                           <div className="count-text">
                             <span className="theme-gradient">03</span>
                           </div>
-                          <h4 className="title">Cybersecurity</h4>
+                          <h4 className="title">Join Arena</h4>
                         </div>
                       </a>
                     </li>
@@ -343,7 +352,7 @@ const AdvancedTab = () => {
                           <div className="count-text">
                             <span className="theme-gradient">04</span>
                           </div>
-                          <h4 className="title">Data Analysis</h4>
+                          <h4 className="title">Chat</h4>
                         </div>
                       </a>
                     </li>

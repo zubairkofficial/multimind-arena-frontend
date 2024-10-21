@@ -1,4 +1,3 @@
-// src/features/user/userSlice.js
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {

@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
-
+import { Link } from "react-router-dom";
 const Slider = () => {
-  const [text, setText] = useState("AI Chating");
+  const [text, setText] = useState("MultiMind");
   const [isFading, setIsFading] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
       setIsFading(true);
       setTimeout(() => {
-        setText((prevText) => (prevText === "AI Chating" ? "AI Writing" : "AI Chating"));
+        setText((prevText) => (prevText === "MultiMind" ? "MultiMind" : "MultiMind"));
         setIsFading(false);
       }, 500);
     }, 2000);
@@ -33,30 +33,22 @@ const Slider = () => {
             <div className="col-lg-12">
               <div className="inner text-center mt--140">
                 <h1 className="title display-one">
-                  Examine the Potential of
+                 Enter the
                   <br />{" "}
-                  <b className="theme-gradient is-visible mx-5" style={fadeInOutStyles}>{text}</b>
-                  AI Hack
+                 <b className="theme-gradient is-visible mx-5" style={fadeInOutStyles}>{text}</b> 
+                 Arena
                 </h1>
                 <h6 className="description">
-                  Unleash Brainwave's AI potential. Use the open AI <br />{" "}
-                  conversation app Pixcels Themes
+                  <br />
+                Challenge AI-powered historical figures in debates, games, and conversations.
                 </h6>
-                <div className="form-group">
-                  <textarea
-                    name="text"
-                    id="slider-text-area"
-                    cols={30}
-                    rows={2}
-                    placeholder="Enter a prompt, for example: a fundraising deck to a mobile finance app called Intuitive"
-                    defaultValue={""}
-                  />
-                  <a
+                <div className="">
+                  <Link
                     className="btn-default @@btnClass"
-                    href="text-generator.html"
+                    to='/login'
                   >
-                    Start with AI
-                  </a>
+               Join the Simulation
+                  </Link>
                 </div>
                 <div className="inner-shape">
                   <img

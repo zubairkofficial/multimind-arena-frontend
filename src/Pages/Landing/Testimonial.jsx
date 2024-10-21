@@ -5,24 +5,24 @@ const testimonials = [
   {
     id: 1,
     name: "Guy Hawkins",
-    position: "Nursing Assistant",
+    position: "Nursing Assistant dsld",
     description:
-      "Pixcels-Themes has become such an integral part of our work! By putting our",
+      "Pixcels-Themes has become such an sdfsfw integral part of our work! By putting our",
     img: "assets/images/team/team-02sm.jpg",
     video: "https://www.youtube.com/watch?v=ikEdN260zRg",
     brandImg: "assets/images/brand/brand-t.png",
   },
+  // {
+  //   id: 2,
+  //   name: "Jane Doe",
+  //   position: "Software Engineer",
+  //   description: "This is another amazing testimonial.",
+  //   img: "assets/images/team/team-02sm.jpg",
+  //   video: "https://www.youtube.com/watch?v=ikEdN260zRg",
+  //   brandImg: "assets/images/brand/brand-t.png",
+  // },
   {
-    id: 2,
-    name: "Jane Doe",
-    position: "Software Engineer",
-    description: "This is another amazing testimonial.",
-    img: "assets/images/team/team-02sm.jpg",
-    video: "https://www.youtube.com/watch?v=ikEdN260zRg",
-    brandImg: "assets/images/brand/brand-t.png",
-  },
-  {
-    id: 3,
+    id: 1,
     name: "Guy Hawkins",
     position: "Nursing Assistant",
     description:
@@ -32,14 +32,25 @@ const testimonials = [
     brandImg: "assets/images/brand/brand-t.png",
   },
   {
-    id: 4,
-    name: "Jane Doe",
-    position: "Software Engineer",
-    description: "This is another amazing testimonial.",
+    id: 1,
+    name: "Guy Hawkins",
+    position: "Nursing Assistant",
+    description:
+      "Pixcels-Themes has become such an integral part of our work! By putting our",
     img: "assets/images/team/team-02sm.jpg",
     video: "https://www.youtube.com/watch?v=ikEdN260zRg",
     brandImg: "assets/images/brand/brand-t.png",
   },
+  // {
+  //   id: 2,
+  //   name: "Jane Doe",
+  //   position: "Software Engineer",
+  //   description: "This is another amazing testimonial.",
+  //   img: "assets/images/team/team-02sm.jpg",
+  //   video: "https://www.youtube.com/watch?v=ikEdN260zRg",
+  //   brandImg: "assets/images/brand/brand-t.png",
+  // },
+  // Add more testimonials as needed
 ];
 
 const Testimonial = () => {
@@ -67,132 +78,59 @@ const Testimonial = () => {
     ],
   };
 
-  const cardStyle = {
-    height: '350px',
-    display: 'flex',
-    margin: '15px 15px 15px 15px',
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    padding: '20px',
-    boxSizing: 'border-box',
-    border: '2px solid #00ff00',
-    borderRadius: '15px',
-    backgroundColor: '#003300',
-    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.5)',
-    transition: 'transform 0.3s',
-  };
-
-  const slideStyle = {
-    padding: '0 25px',
-  };
-
-  const sliderContainerStyle = {
-    margin: '0 -25px',
-  };
-
-  const ratingStyle = {
-    display: 'flex',
-    marginBottom: '15px',
-    color: '#00ff00',
-  };
-
-  const bottomContentStyle = {
-    display: 'flex',
-    flexDirection: 'column',
-    marginTop: 'auto',
-  };
-
-  const metaInfoStyle = {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: '20px',
-  };
-
-  const imageStyle = {
-    width: '70px',
-    height: 'auto',
-    marginRight: '15px',
-    borderRadius: '50%',
-    border: '2px solid #00ff00',
-  };
-
-  const videoButtonStyle = {
-    display: 'flex',
-    alignItems: 'center',
-    marginRight: '15px',
-    color: '#00ff00',
-    fontSize: '24px',
-  };
-
-  const descriptionStyle = {
-    marginBottom: '20px',
-    fontSize: '16px',
-    lineHeight: '1.6',
-    color: '#e0ffe0',
-  };
-
   return (
-    <div style={{ padding: '60px 0', backgroundColor: '#000000' }}>
+    <div className="rainbow-testimonial-area rainbow-section-gap m-5">
       <div className="container">
         <div className="row">
-          <div className="col-lg-12">
-            <div style={{ marginBottom: '60px', textAlign: 'center' }}>
-              <h4 style={{ color: '#00ff00', fontSize: '28px', marginBottom: '10px' }}>
-                Assisting individuals
-              </h4>
-              <h2 style={{ fontSize: '36px', color: '#e0ffe0' }}>The opinions of the community</h2>
-            </div>
-          </div>
-        </div>
-
-        <div className="row">
           <div className="col-md-12">
-            <Slider {...settings} style={sliderContainerStyle}>
+            <Slider
+              {...settings}
+              className="service-wrapper rainbow-service-slider-actvation slick-grid-15 rainbow-slick-dot"
+            >
               {testimonials.map((testimonial) => (
-                <div key={testimonial.id} style={slideStyle}>
-                  <div
-                    style={cardStyle}
-                    onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
-                    onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
-                  >
-                    <div style={ratingStyle}>
-                      {[...Array(5)].map((_, i) => (
-                        <a key={i} href="#rating">
-                          <i className="fa-sharp fa-solid fa-star" />
-                        </a>
-                      ))}
-                    </div>
-                    <div>
-                      <p style={descriptionStyle}>{testimonial.description}</p>
-                    </div>
-                    <div style={bottomContentStyle}>
-                      <div style={metaInfoStyle}>
-                        <div>
-                          <p style={{ marginBottom: '5px', fontWeight: 'bold', color: '#e0ffe0' }}>{testimonial.name}</p>
-                          <p style={{ marginBottom: '0px', color: '#00ff00' }}>{testimonial.position}</p>
+                <div key={testimonial.id} className=" h-25 slide-single-layout p-3 w-30">
+                  <div className="rainbow-box-card card-style-default testimonial-style-defalt has-bg-shaped">
+                    <div className="inner">
+                      <div className="rating py-2">
+                        {[...Array(5)].map((_, i) => (
+                          <a key={i} href="#rating">
+                            <i className="fa-sharp fa-solid fa-star"></i>
+                          </a>
+                        ))}
+                      </div>
+                      <div className="content">
+                        <p className="description">{testimonial.description}</p>
+                        <div className="bottom-content">
+                          <div className="meta-info-section">
+                            <p className="title-text">{testimonial.name}</p>
+                            <p className="desc">{testimonial.position}</p>
+                            <div className="desc-img">
+                              <img
+                                src={testimonial.brandImg}
+                                alt="Brand Image"
+                              />
+                            </div>
+                          </div>
+                          <div className="meta-img-section">
+                       
+                            <a className="image" href="#">
+                              <img src={testimonial.img} alt="Team Image" />
+                            </a>
+                          </div>
                         </div>
-                        <img
-                          src={testimonial.brandImg}
-                          alt="Brand Image"
-                          style={imageStyle}
-                        />
                       </div>
-                      <div style={{ display: 'flex', alignItems: 'center', marginTop: '20px' }}>
-                        <a
-                          href={testimonial.video}
-                          style={videoButtonStyle}
-                        >
-                          <i className="fa-duotone fa-play" />
-                        </a>
-                        <a href="#">
-                          <img
-                            src={testimonial.img}
-                            alt="Team Image"
-                            style={{ width: '70px', height: 'auto', borderRadius: '10px', border: '2px solid #00ff00' }}
-                          />
-                        </a>
-                      </div>
+                    </div>
+                    <div className="bg-shape">
+                      <img
+                        src="assets/images/service/bg-testimonial.png"
+                        alt=""
+                        className="bg"
+                      />
+                      <img
+                        src="assets/images/icons/bg-testimonial-hover.png"
+                        alt=""
+                        className="bg-hover"
+                      />
                     </div>
                   </div>
                 </div>

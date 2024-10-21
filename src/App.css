@@ -1,0 +1,71 @@
+select {
+    color: white;
+    background-color: #101010;
+}
+
+.table-container {
+    background-color: var(--color-dark-card);
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-top: 9rem;
+    /* Increase margin-top by 20px */
+}
+
+.table-container:hover {
+    /* Green box shadow on hover */
+}
+
+input {
+    background-color: #101010;
+}
+
+form-control:disabled {
+    background-color: #303030;
+    /* Light grey background */
+    color: #aaaaaa;
+    /* Grey text color */
+    border: 1px solid #cccccc;
+    /* Light grey border */
+    cursor: not-allowed;
+    /* Change cursor to 'not-allowed' */
+    opacity: 0.7;
+    /* Make it slightly transparent */
+}
+
+.search-bar {
+    width: 100%;
+    /* Make the search bar take the full width */
+    max-width: 400px;
+    /* Set a maximum width */
+    height: 40px;
+    /* Set the height */
+    padding: 0 15px;
+    /* Add padding inside the search bar */
+    border-radius: 5px;
+    /* Round the corners */
+    ;
+    /* Add a light border */
+    margin-bottom: 20px;
+    /* Add spacing below the search bar */
+    font-size: 16px;
+    /* Increase the font size */
+    transition: border-color 0.3s ease;
+    /* Smooth transition for border change */
+}
+
+.search-bar:focus {
+    border-color: #007bff;
+    /* Change border color on focus */
+    outline: none;
+    /* Remove default outline */
+}
+
+.search-bar-container {
+    display: flex;
+    justify-content: flex-start;
+    /* Align search bar to the left */
+    margin-bottom: 20px;
+    /* Add space below the search container */
+}

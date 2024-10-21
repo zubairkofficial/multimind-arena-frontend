@@ -1,9 +1,9 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { Link } from "react-router-dom";
 import {
   useRegisterUserMutation,
-  useLoginWithGoogleMutation,
+  
 } from "./../../features/api/apiSlice"; // Import the register and Google login mutation
 import Helpers from "../../Config/Helpers";
 import { Notyf } from "notyf";
@@ -11,7 +11,6 @@ import { Notyf } from "notyf";
 const Register = () => {
   const navigate = useNavigate();
   const [registerUser, { isLoading }] = useRegisterUserMutation(); // Hook to trigger the register API
-  const [loginWithGoogle] = useLoginWithGoogleMutation(); // Hook to trigger Google login API
 
   const [formData, setFormData] = useState({
     name: "",
@@ -35,7 +34,7 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null); // Reset previous error messages
-
+  
     // Validate form data
     if (
       !formData.name ||
@@ -51,7 +50,7 @@ const Register = () => {
       setError("Passwords do not match");
       return;
     }
-
+  
     try {
       // Call the register API
       const userData = await registerUser({
@@ -60,10 +59,10 @@ const Register = () => {
         email: formData.email,
         password: formData.password,
       }).unwrap();
-
+  
       console.log("User registered:", userData);
       var notyf = new Notyf();
-
+  
       // Display a success notification
       notyf.success(
         "User Registered Successfully. Please Verify your email to continue",
@@ -71,39 +70,40 @@ const Register = () => {
       );
       navigate("/login"); // Redirect to the login page
     } catch (err) {
-      console.error("Failed to register:", err);
-      setError("Registration failed. Please try again.");
+      // Extract the error message from the API response
+      const errorMessage = err?.data?.message || "Registration failed. Please try again.";
+      console.error("Failed to register:", errorMessage);
+      setError(errorMessage); // Set the error message for display
     }
   };
-
- 
+  
   // Handle Google login
   const handleGoogleLogin = () => {
-    const googleLoginUrl = "https://accounts.google.com/o/oauth2/v2/auth?response_type=code&redirect_uri=http://localhost:8080/google-auth/redirect&scope=email profile&client_id=730787481005-daqp7eagna4m0evft1l5nhp2aspijmb3.apps.googleusercontent.com";
-  console.log(googleLoginUrl)
+    const googleLoginUrl =
+      "https://chat-arena-backend-4ba91b3feb6b.herokuapp.com/google-auth";
+    console.log(googleLoginUrl);
 
-  
     window.location.href = googleLoginUrl;
   };
   
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
-    console.log("path",queryParams)
-    const token = queryParams.get('token');
-    const user = queryParams.get('user');
+    console.log("path", queryParams);
+    const token = queryParams.get("token");
+    const user = queryParams.get("user");
+
     console.log("Query Parameters:", [...queryParams]); // Convert to array for better logging
 
     if (token) {
-      localStorage.setItem('token', token);
-      console.log("user",JSON.parse(user))
-      const result=JSON.stringify(JSON.parse(user))
-      localStorage.setItem('user', result); // Optionally store userId
+      localStorage.setItem("token", token);
+      const userObj = JSON.parse(user);
+      localStorage.setItem("type", userObj.isAdmin);
+      const result = JSON.stringify(JSON.parse(user));
+      localStorage.setItem("user", result); // Optionally store userId
 
-     
-      window.location.href = '/'; // Adjust as necessary
+      window.location.href = "/dashboard"; // Adjust as necessary
     }
   }, [location]);
-
 
   return (
     <div>
@@ -115,7 +115,11 @@ const Register = () => {
               <div className="col-lg-6 bg-color-blackest left-wrapper">
                 <div className="sign-up-box">
                   <div className="signup-box-top">
-                    <img src="assets/images/logo/logo.png" alt="sign-up logo" style={{height: '80px', width: 'auto'}} />
+                    <img
+                      src="assets/images/logo/logo.png"
+                      alt="sign-up logo"
+                      style={{ height: "80px", width: "auto" }}
+                    />
                   </div>
                   <div className="signup-box-bottom">
                     <div className="signup-box-content">

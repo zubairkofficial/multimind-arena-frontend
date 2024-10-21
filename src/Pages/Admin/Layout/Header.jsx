@@ -1,18 +1,36 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleSidebar } from "./../../../features/sidebarSlice"; // Import the action
+
 const Header = () => {
-    const dispatch = useDispatch();
-    const sidebarOpen = useSelector((state) => state.sidebar.sidebarOpen);
-  
-    const handleSidebar = () => {
-      dispatch(toggleSidebar()); // Dispatch action to toggle sidebar state
-    };
-  
-    const handleLogout = () => {
-      localStorage.clear();
-    };
+  const dispatch = useDispatch();
+  const sidebarOpen = useSelector((state) => state.sidebar.sidebarOpen);
+
+  const [userDetails, setUserDetails] = useState({
+    name: "Test User", // default values
+    email: "test@gmail.com",
+  });
+
+  useEffect(() => {
+    // Get user data from local storage
+    const user = JSON.parse(localStorage.getItem("user")); // Assuming user is stored as an object
+    if (user) {
+      setUserDetails({
+        name: user.name || "Test User",
+        email: user.email || "test@gmail.com",
+      });
+    }
+  }, []);
+
+  const handleSidebar = () => {
+    dispatch(toggleSidebar()); // Dispatch action to toggle sidebar state
+  };
+
+  const handleLogout = () => {
+    localStorage.clear();
+  };
+
   return (
     <header className="rbt-dashboard-header rainbow-header header-default header-left-align rbt-fluid-header">
       <div className="container-fluid position-relative">
@@ -33,7 +51,7 @@ const Header = () => {
                 <Link to="/">
                   <img
                     className="logo-light"
-                    src="assets/images/logo/logo.png"
+                    src="/assets/images/logo/logo.png"
                     alt="ChatBot Logo"
                   />
                 </Link>
@@ -45,9 +63,7 @@ const Header = () => {
             <div className="header-right">
               {/* Start Mobile-Menu-Bar */}
               <div className="mobile-menu-bar ml--10 d-block d-lg-none">
-                <div className="hamberger">
-                
-                </div>
+                <div className="hamberger"></div>
               </div>
               {/* Start Mobile-Menu-Bar */}
               {/* Start Admin meta Group */}
@@ -57,13 +73,13 @@ const Header = () => {
                     <div className="inner d-flex align-items-center">
                       <div className="img-box">
                         <img
-                          src="assets/images/team/team-01sm.jpg"
+                          src="/assets/images/team/team-01sm.jpg"
                           alt="Admin"
                         />
                       </div>
                       <div className="content">
-                        <span className="title ">Test User</span>
-                        <p>test@gmail.com</p>
+                        <span className="title ">{userDetails.name}</span>
+                       
                       </div>
                     </div>
                     <div className="icon">
@@ -76,15 +92,15 @@ const Header = () => {
                     <div className="rbt-admin-profile">
                       <div className="admin-thumbnail">
                         <img
-                          src="assets/images/team/team-01sm.jpg"
+                          src="/assets/images/team/team-01sm.jpg"
                           alt="User Images"
                         />
                       </div>
                       <div className="admin-info">
-                        <span className="name">Adam Milner</span>
+                        <span className="name">{userDetails.name}</span>
                         <Link
                           className="rbt-btn-link color-primary"
-                          to="profile-details.html"
+                          to="/admin/view-profile"
                         >
                           View Profile
                         </Link>
@@ -92,67 +108,30 @@ const Header = () => {
                     </div>
                     <ul className="user-list-wrapper user-nav">
                       <li>
-                        <Link to="profile-details.html">
+                        <Link to="/profile">
                           <i className="fa-sharp fa-regular fa-user" />
                           <span>Profile Details</span>
                         </Link>
                       </li>
+
                       <li>
-                        <Link to="notification.html">
-                          <i className="fa-sharp fa-regular fa-shopping-bag" />
-                          <span>Notification</span>
-                        </Link>
-                      </li>
-                      <li>
-                        <Link to="chat-export.html">
-                          <i className="fa-sharp fa-regular fa-users" />
-                          <span>Chat Export</span>
-                        </Link>
-                      </li>
-                      <li>
-                        <Link to="appearance.html">
-                          <i className="fa-sharp fa-regular fa-home" />
-                          <span>Apperance</span>
-                        </Link>
-                      </li>
-                      <li>
-                        <Link to="plans-billing.html">
+                        <Link to="/billing">
                           <i className="fa-sharp fa-regular fa-briefcase" />
                           <span>Plans and Billing</span>
                         </Link>
                       </li>
                       <li>
-                        <Link to="sessions.html">
+                        <Link to="/history">
                           <i className="fa-sharp fa-regular fa-users" />
-                          <span>Sessions</span>
-                        </Link>
-                      </li>
-                      <li>
-                        <Link to="application.html">
-                          <i className="fa-sharp fa-regular fa-list" />
-                          <span>Application</span>
+                          <span>History</span>
                         </Link>
                       </li>
                     </ul>
-                    <hr className="mt--10 mb--10" />
-                    <ul className="user-list-wrapper user-nav">
-                      <li>
-                        <Link to="#">
-                          <i className="fa-solid fa-comments-question" />
-                          <span>Help Center</span>
-                        </Link>
-                      </li>
-                      <li>
-                        <Link to="profile-details.html">
-                          <i className="fa-sharp fa-solid fa-gears" />
-                          <span>Settings</span>
-                        </Link>
-                      </li>
-                    </ul>
+
                     <hr className="mt--10 mb--10" />
                     <ul className="user-list-wrapper">
                       <li>
-                        <Link to="/" onCliclk={handleLogout}>
+                        <Link to="/" onClick={handleLogout}>
                           <i className="fa-sharp fa-solid fa-right-to-bracket" />
                           <span>Logout</span>
                         </Link>
