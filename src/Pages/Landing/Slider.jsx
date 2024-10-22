@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 const Slider = () => {
-  const [text, setText] = useState("MultiMind");
+  const [text, setText] = useState("Arena1");
   const [isFading, setIsFading] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
       setIsFading(true);
       setTimeout(() => {
-        setText((prevText) => (prevText === "MultiMind" ? "MultiMind" : "MultiMind"));
+        setText((prevText) => (prevText === "Arena1" ? "Arena1" : "Arena1"));
         setIsFading(false);
       }, 500);
     }, 2000);
@@ -36,7 +36,7 @@ const Slider = () => {
                  Enter the
                   <br />{" "}
                  <b className="theme-gradient is-visible mx-5" style={fadeInOutStyles}>{text}</b> 
-                 Arena
+                 Chat Now
                 </h1>
                 <h6 className="description">
                   <br />

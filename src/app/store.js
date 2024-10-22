@@ -1,16 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { apiSlice } from './../features/api/apiSlice';
-import { arenaSlice } from './../features/arenaSlice'; // Import the arena slice
+import { authApi } from "../features/api/authApi";
+import { userApi } from "../features/api/userApi"; // Import the arena slice
 import { sidebarReducer, rightSidebarReducer } from './../features/sidebarSlice';
 import userReducer from './../features/userSlice'; // Import the user slice reducer
 
 /* eslint-disable no-underscore-dangle */
 export const store = configureStore({
     reducer: {
-        // Add the API slice reducer
-        apiSlice: apiSlice,
-        // Add the Arena slice reducer
-        arenaSlice: arenaSlice,
+        [authApi.reducerPath]: authApi.reducer,
+        [userApi.reducerPath]: userApi.reducer,
         // Other reducers
         sidebar: sidebarReducer,
         rightSidebar: rightSidebarReducer,
@@ -19,6 +17,6 @@ export const store = configureStore({
 
     // Adding the API middleware enables caching, invalidation, polling, and other features of RTK Query
     middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware().concat(apiSlice.middleware, arenaSlice.middleware),
+        getDefaultMiddleware().concat(authApi.middleware, userApi.middleware),
 });
 /* eslint-enable */

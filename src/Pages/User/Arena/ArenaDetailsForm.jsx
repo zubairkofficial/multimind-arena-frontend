@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import { Notyf } from "notyf"; // For notifications
+import { useAddArenaMutation } from "../../../features/api/arenaApi"; // Import your mutation hook
 
 const ArenaDetailsForm = () => {
+  const [addArena, { isLoading, isSuccess, isError, error }] = useAddArenaMutation(); // Use addArena mutation hook
+
   // Local state to handle form input
   const [formData, setFormData] = useState({
     topic: "",
@@ -58,15 +61,17 @@ const ArenaDetailsForm = () => {
   };
 
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Log the submitted form data
-    console.log("Form Data Submitted:", formData);
-
-    // Notify success
     const notyf = new Notyf();
-    notyf.success("Arena created successfully.");
+
+    try {
+      // Trigger the API call to create an arena
+      await addArena(formData).unwrap();
+      notyf.success("Arena created successfully.");
+    } catch (err) {
+      notyf.error("Failed to create arena. Please try again.");
+    }
   };
 
   return (
@@ -179,11 +184,13 @@ const ArenaDetailsForm = () => {
 
         <div className="col-12 mt--20">
           <div className="form-group mb--0">
-            <button type="submit" className="btn-default">
-              Add Arena
+            <button type="submit" className="btn-default" disabled={isLoading}>
+              {isLoading ? "Creating Arena..." : "Add Arena"}
             </button>
           </div>
         </div>
+
+        {isError && <p className="text-danger">Error: {error?.data?.message}</p>}
       </form>
     </div>
   );

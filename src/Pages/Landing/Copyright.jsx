@@ -26,11 +26,11 @@ const Copyright = () => {
                     <p className="copyright-text">
                     © 2024 All rights reserved. {" "}
                       <a
-                        href="https://multimind-arena.cyberifyportfolio.com"
+                        href="https://arena1.app"
                         target ='_blank_'
                         className="btn-read-more"
                       >
-                        <span> MultiMind Arena</span>
+                        <span> Arena1</span>
                       </a>
                     </p>
                   </div>

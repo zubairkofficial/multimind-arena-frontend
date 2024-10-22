@@ -1,39 +1,18 @@
-import React, { useEffect, useState } from "react";
-import { useGetUserByIdQuery } from "../../../features/api/apiSlice";
+import React from "react";
+import { useSelector } from "react-redux"; // Import useSelector to get data from the global Redux state
 import { Link } from "react-router-dom";
 
 const ViewUserProfile = () => {
-  // State to store user ID
-  const [userId, setUserId] = useState(null);
+  // Access the global user data from Redux
+  const userData = useSelector((state) => state.user.user); // Assuming the user data is stored in the "user" slice
 
-
-  // Fetch user data using the user ID
-  const { data: userData, error, isLoading } = useGetUserByIdQuery(userId, {
-    skip: !userId, // Skip query if userId is not available yet
-  });
-console.log(userData)
-  // Load user ID from localStorage on component mount
-  useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      const parsedUser = JSON.parse(storedUser);
-      setUserId(parsedUser.id);
-    }
-  }, []);
-
-
-  useEffect(() => {
-    if (error) {
-      console.error("Error fetching user details:", error);
-    }
-  }, [error]);
-
-  if (isLoading) {
-    return <div>Loading...</div>;
+  // If user data is still loading or unavailable
+  if (!userData) {
+    return <div>Loading user profile...</div>;
   }
 
   return (
-    <div className=" container mt-4">
+    <div className="container mt-4">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h4>User Profile</h4>
         <Link to="/edit-profile" className="btn-default btn-small">
@@ -52,7 +31,6 @@ console.log(userData)
 
       <form className="d-flex justify-content-center">
         <div>
-          {/* Use flexbox to display fields in two columns */}
           <div className="row">
             <div className="col-md-5">
               <div className="form-group mb-3">

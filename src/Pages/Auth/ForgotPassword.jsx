@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { useForgotPasswordMutation } from "../../features/api/apiSlice"; // Import the forgotPassword hook
+import { useForgotPasswordMutation } from "../../features/api/authApi"; // Import the forgotPassword hook
 import { Notyf } from "notyf";
 import "notyf/notyf.min.css";
 

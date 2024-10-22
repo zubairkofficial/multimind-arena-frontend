@@ -4,7 +4,7 @@ import "./AdminUsers.css"; // Import the custom CSS file
 import Preloader from "../../Landing/Preloader";
 import CustomTable from './../../../components/Table/CustomTable'; // Reuse the CustomTable component
 import Pagination from './../../../components/Table/Pagination'; // Reuse the Pagination component
-import { useGetAllUsersQuery } from "./../../../features/api/apiSlice"; // Import the hook for getting all users
+import { useGetAllUsersQuery } from "./../../../features/api/userApi"; // Import the hook for getting all users
 
 const AdminUsers = () => {
   const [usersData, setUsersData] = useState([]);

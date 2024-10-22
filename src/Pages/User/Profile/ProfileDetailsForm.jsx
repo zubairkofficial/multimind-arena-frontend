@@ -1,14 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { useGetUserByIdQuery, useUpdateUserMutation } from "./../../../features/api/apiSlice";
+import { useGetUserByIdQuery, useUpdateUserMutation } from "../../../features/api/userApi";
 import { Notyf } from "notyf";
-import useEnsureUser from "./../../../Hooks/useEnsureUser"; // Import the custom hook
-import { CircleGauge } from "lucide-react";
+import "notyf/notyf.min.css"; // Import Notyf styles
+import { useSelector, useDispatch } from "react-redux"; // Import useSelector to get data from Redux
+import { setUser } from "../../../features/userSlice"; // Import your Redux action to update user
 
 const ProfileDetailsForm = () => {
-  // Use custom hook to ensure user data is available
-  const { user, isLoading: isFetching, error: fetchError } = useEnsureUser();
+  const dispatch = useDispatch(); // Hook to dispatch actions
 
-  const [updateUser, { isLoading: isUpdating, error: updateError }] = useUpdateUserMutation(); // API mutation hook
+  // Use useSelector to get the user ID and data from Redux
+  const user = useSelector((state) => state.user.user);
+  const userId = user?.id;
+
+  // Mutation hook for updating the user
+  const [updateUser, { isLoading: isUpdating, error: updateError }] = useUpdateUserMutation();
 
   // Local state to handle form input
   const [formData, setFormData] = useState({
@@ -21,7 +26,7 @@ const ProfileDetailsForm = () => {
   useEffect(() => {
     if (user) {
       setFormData({
-        name: `${user.name || ""}`, // Set name
+        name: user.name || "",
         username: user.username || "",
         phoneNumber: user.phoneNumber || "",
       });
@@ -30,9 +35,6 @@ const ProfileDetailsForm = () => {
 
   // Handle form input changes
   const handleChange = (e) => {
-    e.preventDefault();
-
-    console.log(e.target.id);
     setFormData({
       ...formData,
       [e.target.id]: e.target.value,
@@ -45,25 +47,22 @@ const ProfileDetailsForm = () => {
 
     try {
       // Trigger the API call to update user data
-      await updateUser(formData).unwrap();
+      const updatedUser = await updateUser({ id: userId, ...formData }).unwrap();
 
+      // Dispatch the updated user to the Redux store
+      dispatch(setUser({ user: updatedUser }));
+
+      // Update the user data in localStorage
+      localStorage.setItem("user", JSON.stringify(updatedUser.user));
+
+      // Notify the user of the success
       const notyf = new Notyf();
       notyf.success("Profile updated successfully.");
-      
-
     } catch (err) {
       const notyf = new Notyf();
       notyf.error("Failed to update profile. Please try again.");
     }
   };
-
-  if (isFetching) {
-    return <div>Loading user data...</div>;
-  }
-
-  if (fetchError) {
-    return <div>Error loading user data. Please try again later.</div>;
-  }
 
   return (
     <div
@@ -104,7 +103,7 @@ const ProfileDetailsForm = () => {
         </div>
         <div className="col-lg-6 col-md-6 col-sm-6 col-12">
           <div className="form-group">
-            <label htmlFor="phonenumber">Phone Number</label>
+            <label htmlFor="phoneNumber">Phone Number</label>
             <input
               id="phoneNumber"
               type="tel"

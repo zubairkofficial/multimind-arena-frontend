@@ -41,16 +41,19 @@ const AddArenaType = () => {
   };
 
   return (
+    <>
+    <h3>Create New Arena Type</h3>
     <div className="tab-pane fade active show" id="arena-type" role="tabpanel" aria-labelledby="arena-type-tab">
       <form onSubmit={handleSubmit} className="rbt-profile-row rbt-default-form row row--15">
         <div className="col-lg-12 col-md-12 col-sm-12 col-12">
           <div className="form-group">
-            <label htmlFor="name">Arena Type Name</label>
+            <label htmlFor="name" className="form-label">Arena Type Name</label>
             <input
               id="name"
               type="text"
               value={formData.name}
               onChange={handleChange}
+              className="form-control"
               placeholder="Enter Arena Type Name"
               required
             />
@@ -59,13 +62,14 @@ const AddArenaType = () => {
 
         <div className="col-lg-12 col-md-12 col-sm-12 col-12">
           <div className="form-group">
-            <label htmlFor="description">Description</label>
+            <label htmlFor="description" className="form-label">Description</label>
             <textarea
               id="description"
               value={formData.description}
               onChange={handleChange}
+              className=""
               placeholder="Enter a description for the arena type"
-              rows="4"
+              rows="2"
               required
             ></textarea>
           </div>
@@ -73,11 +77,12 @@ const AddArenaType = () => {
 
         <div className="col-lg-12 col-md-12 col-sm-12 col-12">
           <div className="form-group">
-            <label htmlFor="prompt">Prompt</label>
+            <label htmlFor="prompt" className="form-label">Prompt</label>
             <textarea
               id="prompt"
               value={formData.prompt}
               onChange={handleChange}
+              className=""
               placeholder="Enter a prompt for the arena type"
               rows="4"
               required
@@ -85,15 +90,16 @@ const AddArenaType = () => {
           </div>
         </div>
 
-        <div className="col-12 mt--20">
-          <div className="form-group mb--0">
-            <button type="submit" className="btn-default">
+        <div className="col-12 mt-3">
+          <div className="form-group mb-0 text-center">
+            <button type="submit" className="btn-default btn-lg">
               Create Arena Type
             </button>
           </div>
         </div>
       </form>
     </div>
+    </>
   );
 };
 

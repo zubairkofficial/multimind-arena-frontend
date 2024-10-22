@@ -40,7 +40,7 @@ const AdvancedTab = () => {
                                 data-sal-duration={400}
                                 data-sal-delay={200}
                               >
-                                Join Multimind Chat Arena Today – Your Gateway
+                                Join <span style={{color: "#00ff00"}}>Arena1 </span> Today – Your Gateway
                                 to Dynamic Conversations
                               </h2>
                               <p

@@ -39,12 +39,10 @@ const Header = () => {
               <div className="logo">
                 <Link to="/">
                   <img
-                    className="logo-light"
-                    src="assets/images/logo/logo.png"
+                    className=""
+                    src="/assets/images/logo/logo.png"
                     alt="ChatBot Logo"
-                    style={{
-                      height: "550px",
-                    }}
+                    style={{height: 'auto', width: '100vw'}}
                   />
                 </Link>
               </div>
@@ -257,7 +255,7 @@ const Header = () => {
         <div className="header-btn mt-4 d-flex justify-content-center d-md-none">
           <Link
             className="btn btn-default"
-            to="/"
+            to="/login"
             style={{
               backgroundColor: "#00ff00",
               color: "#000000",

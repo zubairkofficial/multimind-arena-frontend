@@ -1,22 +1,24 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { Link, useLocation } from "react-router-dom";
-import axios from "axios"; // Import Axios
-import { useDispatch } from "react-redux";
 import { Notyf } from "notyf";
 import "notyf/notyf.min.css";
 import Helpers from "../../Config/Helpers";
-import { setUser } from "./../../features/userSlice";
+import { useDispatch } from "react-redux";
+import { setUser } from "../../features/userSlice";
+import { useLoginMutation } from "../../features/api/authApi"; // Import the login mutation
 
 const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
+  
+  // Using the login mutation
+  const [login, { isLoading }] = useLoginMutation(); // Hook for login mutation
+  const [error, setError] = useState(null); // Local error state
 
-  // Local State
+  // Local State for form data
   const [formData, setFormData] = useState({ email: "", password: "" });
-  const [error, setError] = useState(null);
-  const [isLoading, setIsLoading] = useState(false); // Local loading state
 
   // Handle form input changes
   const handleChange = (e) => {
@@ -26,18 +28,16 @@ const Login = () => {
     });
   };
 
-  // Function to handle user redirection and localStorage setting
+  // Function to handle successful login
   const handleLoginSuccess = (userData) => {
     const notyf = new Notyf();
     notyf.success("Logged In Successfully");
 
-    // Update user in the Redux store
-    dispatch(setUser(userData.user));
-    console.log("User Data:", userData);
+    // Save user in Redux store
+    dispatch(setUser({ user: userData.user, token: userData.token }));
 
     // Save user data in localStorage
-    const userString = JSON.stringify(userData.user);
-    Helpers.setItem("user", userString);
+    Helpers.setItem("user", JSON.stringify(userData.user));
     Helpers.setItem("type", userData.user.isAdmin);
     Helpers.setItem("token", userData.token);
 
@@ -45,11 +45,11 @@ const Login = () => {
     if (userData.user.isAdmin) {
       navigate("/admin/dashboard");
     } else {
-      navigate("/dashboard");
+      navigate("/view-profile");
     }
   };
 
-  // Handle form submission
+  // Handle form submission using login mutation
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null); // Reset the error
@@ -60,26 +60,15 @@ const Login = () => {
       return;
     }
 
-    setIsLoading(true); // Set loading to true
-
     try {
-      // Make Axios request to login
-      const response = await axios.post(`${Helpers.apiUrl}user/login`, {
-        email: formData.email,
-        password: formData.password,
-      });
-
-      const userData = response.data; // Assuming your response includes user and token
-      handleLoginSuccess(userData);
+      // Trigger the login mutation
+      const userData = await login(formData).unwrap(); // `unwrap` to handle the fulfilled/rejected state manually
+      handleLoginSuccess(userData); // Handle login success
     } catch (err) {
-      // Handle error - log and display an appropriate error message
-      console.error("Failed to login:", err);
+      // Handle login error
       setError(
-        err.response?.data?.message || // Check if response.data.message exists
-        "Login failed. Please check your credentials and try again." // Fallback error message
+        err?.data?.message || "Login failed. Please check your credentials."
       );
-    } finally {
-      setIsLoading(false); // Set loading to false
     }
   };
 
@@ -101,13 +90,10 @@ const Login = () => {
         const userObj = JSON.parse(user);
         handleLoginSuccess({ user: userObj, token });
       } catch (error) {
-        console.error("Failed to parse user from Google login:", error);
         setError("Failed to log in with Google. Please try again.");
       }
     }
   }, [location]);
-
-
 
   return (
     <div>

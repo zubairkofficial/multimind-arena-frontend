@@ -1,0 +1,40 @@
+/* Slider.css */
+
+.sliding-text {
+    display: inline-block;
+    position: relative;
+}
+
+.sliding-text.animate {
+    animation: slideBackwardDisappear 1s ease-in-out, slideInFromBehind 1s ease-in-out 1s;
+}
+
+@keyframes slideBackwardDisappear {
+    0% {
+        transform: translateZ(0) rotateX(0deg);
+        opacity: 1;
+    }
+    50% {
+        transform: translateZ(50px) rotateX(90deg);
+        opacity: 0.5;
+    }
+    100% {
+        transform: translateZ(100px) rotateX(180deg);
+        opacity: 0;
+    }
+}
+
+@keyframes slideInFromBehind {
+    0% {
+        transform: translateZ(100px) rotateX(180deg);
+        opacity: 0;
+    }
+    50% {
+        transform: translateZ(50px) rotateX(90deg);
+        opacity: 0.5;
+    }
+    100% {
+        transform: translateZ(0) rotateX(0deg);
+        opacity: 1;
+    }
+}

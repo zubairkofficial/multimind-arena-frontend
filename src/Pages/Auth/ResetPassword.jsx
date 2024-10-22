@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useResetPasswordMutation } from "../../features/api/apiSlice"; // Import the resetPassword hook
+import { useResetPasswordMutation } from "../../features/api/authApi"; // Import the resetPassword hook
 import { useNavigate, useLocation,Link } from "react-router-dom";
 import { Notyf } from "notyf";
 import "notyf/notyf.min.css";

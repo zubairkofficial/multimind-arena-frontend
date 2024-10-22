@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { Link } from "react-router-dom";
-import axios from "axios"; // Import Axios
-import Helpers from "../../Config/Helpers";
 import { Notyf } from "notyf";
-import "notyf/notyf.min.css"; // Import Notyf for notifications
+import "notyf/notyf.min.css";
+import Helpers from "../../Config/Helpers";
+import { useRegisterUserMutation } from "../../features/api/authApi"; // Import the registerUser mutation
 
 const Register = () => {
   const navigate = useNavigate();
+  
+  // Hook for registerUser mutation
+  const [registerUser, { isLoading }] = useRegisterUserMutation(); // Use registerUser mutation from the API
 
   // Local State for form data
   const [formData, setFormData] = useState({
@@ -18,9 +21,8 @@ const Register = () => {
     confirmPassword: "",
   });
 
-  // Error and loading state
+  // Error state
   const [error, setError] = useState(null);
-  const [isLoading, setIsLoading] = useState(false); // Loading state
 
   // Handle form input changes
   const handleChange = (e) => {
@@ -51,31 +53,24 @@ const Register = () => {
       return;
     }
 
-    setIsLoading(true); // Set loading to true
-
     try {
-      // Make the Axios request to register the user
-      const response = await axios.post(`${Helpers.apiUrl}user/register`, {
+      // Trigger the registerUser mutation
+      const userData = await registerUser({
         name: formData.name,
         username: formData.username,
         email: formData.email,
         password: formData.password,
-      });
+      }).unwrap(); // Unwrap the mutation to handle success and error states manually
 
-      const userData = response.data; // Get the user data from the response
-      console.log("User registered:", userData);
       const notyf = new Notyf();
-
       // Display a success notification
       notyf.success("User Registered Successfully. Please verify your email to continue", 3000);
-      navigate("/login"); // Redirect to the login page
+      navigate("/login"); // Redirect to the login page after successful registration
     } catch (err) {
       // Extract the error message from the API response
-      const errorMessage = err?.response?.data?.message || "Registration failed. Please try again.";
+      const errorMessage = err?.data?.message || "Registration failed. Please try again.";
       console.error("Failed to register:", errorMessage);
       setError(errorMessage); // Set the error message for display
-    } finally {
-      setIsLoading(false); // Set loading to false
     }
   };
 
@@ -87,7 +82,7 @@ const Register = () => {
   };
 
   useEffect(() => {
-    const queryParams = new URLSearchParams(location.search);
+    const queryParams = new URLSearchParams(window.location.search);
     const token = queryParams.get("token");
     const user = queryParams.get("user");
 

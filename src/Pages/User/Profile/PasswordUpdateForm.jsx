@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useChangePasswordMutation } from "../../../features/api/apiSlice"; // Adjust the path as per your project structure
+import { useChangePasswordMutation } from "../../../features/api/authApi"; // Adjust the path as per your project structure
 
 const PasswordUpdateForm = () => {
   // State to hold form inputs

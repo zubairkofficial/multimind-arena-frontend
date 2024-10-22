@@ -2,6 +2,8 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleSidebar, toggleRightSidebar } from "./../../../features/sidebarSlice"; // Import actions
+import {clearUser} from "../../../features/userSlice";
+
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -18,7 +20,7 @@ const Header = () => {
   };
 
   const handleLogout = () => {
-    localStorage.clear(); // Assuming you want to clear localStorage on logout (you could also dispatch an action to clear the Redux store)
+    dispatch(clearUser());  // Assuming you want to clear localStorage on logout (you could also dispatch an action to clear the Redux store)
   };
 
   return (
@@ -95,9 +97,9 @@ const Header = () => {
                     </div>
                     <ul className="user-list-wrapper user-nav">
                       <li>
-                        <Link to="/view-profile">
+                        <Link to="/edit-profile">
                           <i className="fa-sharp fa-regular fa-user" />
-                          <span>Profile Details</span>
+                          <span>Edit Profile</span>
                         </Link>
                       </li>
                       <li>
