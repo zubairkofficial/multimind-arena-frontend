@@ -5,7 +5,7 @@ import Helpers from "../Config/Helpers";
 export const arenaSlice = createApi({
     reducerPath: "api", // Optional, defaults to 'api'
     baseQuery: fetchBaseQuery({ baseUrl: Helpers.apiUrl }), // Main base URL for your API
-    tagTypes: ["Arena", "ArenaType"], // Tags used for cache invalidation
+    // Tags used for cache invalidation
     endpoints: (builder) => ({
         // Get all arenas
         getAllArenas: builder.query({
@@ -17,7 +17,7 @@ export const arenaSlice = createApi({
                     Authorization: `Bearer ${Helpers.getItem("token")}`,
                 },
             }),
-            providesTags: ["Arena"], // Use this tag to invalidate cached data when arenas are added or deleted
+            // Use this tag to invalidate cached data when arenas are added or deleted
         }),
 
         // Add new arena
@@ -31,7 +31,6 @@ export const arenaSlice = createApi({
                     Authorization: `Bearer ${Helpers.getItem("token")}`,
                 },
             }),
-            invalidatesTags: ["Arena"], // Invalidate arenas cache to refresh the data
         }),
 
         // Delete an arena
@@ -44,7 +43,7 @@ export const arenaSlice = createApi({
                     Authorization: `Bearer ${Helpers.getItem("token")}`,
                 },
             }),
-            invalidatesTags: ["Arena"], // Invalidate arenas cache to refresh the data
+            // Invalidate arenas cache to refresh the data
         }),
 
         // Get all arena types
@@ -57,7 +56,7 @@ export const arenaSlice = createApi({
                     Authorization: `Bearer ${Helpers.getItem("token")}`,
                 },
             }),
-            providesTags: ["ArenaType"], // Use this tag to invalidate cached data when arena types are added or deleted
+            //Use this tag to invalidate cached data when arena types are added or deleted
         }),
 
         // Add new arena type
@@ -71,7 +70,6 @@ export const arenaSlice = createApi({
                     Authorization: `Bearer ${Helpers.getItem("token")}`,
                 },
             }),
-            invalidatesTags: ["ArenaType"], // Invalidate arena types cache to refresh the data
         }),
 
         // Delete an arena type
@@ -84,7 +82,6 @@ export const arenaSlice = createApi({
                     Authorization: `Bearer ${Helpers.getItem("token")}`,
                 },
             }),
-            invalidatesTags: ["ArenaType"], // Invalidate arena types cache to refresh the data
         }),
     }),
 });

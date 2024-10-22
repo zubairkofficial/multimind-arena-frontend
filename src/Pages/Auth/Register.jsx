@@ -1,17 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { Link } from "react-router-dom";
-import {
-  useRegisterUserMutation,
-  
-} from "./../../features/api/apiSlice"; // Import the register and Google login mutation
+import axios from "axios"; // Import Axios
 import Helpers from "../../Config/Helpers";
 import { Notyf } from "notyf";
+import "notyf/notyf.min.css"; // Import Notyf for notifications
 
 const Register = () => {
   const navigate = useNavigate();
-  const [registerUser, { isLoading }] = useRegisterUserMutation(); // Hook to trigger the register API
 
+  // Local State for form data
   const [formData, setFormData] = useState({
     name: "",
     username: "",
@@ -20,7 +18,9 @@ const Register = () => {
     confirmPassword: "",
   });
 
+  // Error and loading state
   const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false); // Loading state
 
   // Handle form input changes
   const handleChange = (e) => {
@@ -34,7 +34,7 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null); // Reset previous error messages
-  
+
     // Validate form data
     if (
       !formData.name ||
@@ -50,66 +50,62 @@ const Register = () => {
       setError("Passwords do not match");
       return;
     }
-  
+
+    setIsLoading(true); // Set loading to true
+
     try {
-      // Call the register API
-      const userData = await registerUser({
+      // Make the Axios request to register the user
+      const response = await axios.post(`${Helpers.apiUrl}user/register`, {
         name: formData.name,
         username: formData.username,
         email: formData.email,
         password: formData.password,
-      }).unwrap();
-  
+      });
+
+      const userData = response.data; // Get the user data from the response
       console.log("User registered:", userData);
-      var notyf = new Notyf();
-  
+      const notyf = new Notyf();
+
       // Display a success notification
-      notyf.success(
-        "User Registered Successfully. Please Verify your email to continue",
-        3000
-      );
+      notyf.success("User Registered Successfully. Please verify your email to continue", 3000);
       navigate("/login"); // Redirect to the login page
     } catch (err) {
       // Extract the error message from the API response
-      const errorMessage = err?.data?.message || "Registration failed. Please try again.";
+      const errorMessage = err?.response?.data?.message || "Registration failed. Please try again.";
       console.error("Failed to register:", errorMessage);
       setError(errorMessage); // Set the error message for display
+    } finally {
+      setIsLoading(false); // Set loading to false
     }
   };
-  
+
   // Handle Google login
   const handleGoogleLogin = () => {
     const googleLoginUrl =
       "https://chat-arena-backend-4ba91b3feb6b.herokuapp.com/google-auth";
-    console.log(googleLoginUrl);
-
     window.location.href = googleLoginUrl;
   };
-  
+
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
-    console.log("path", queryParams);
     const token = queryParams.get("token");
     const user = queryParams.get("user");
-
-    console.log("Query Parameters:", [...queryParams]); // Convert to array for better logging
 
     if (token) {
       localStorage.setItem("token", token);
       const userObj = JSON.parse(user);
       localStorage.setItem("type", userObj.isAdmin);
-      const result = JSON.stringify(JSON.parse(user));
-      localStorage.setItem("user", result); // Optionally store userId
+      localStorage.setItem("user", JSON.stringify(userObj));
 
-      window.location.href = "/dashboard"; // Adjust as necessary
+      window.location.href = "/dashboard"; // Redirect to dashboard after successful Google login
     }
-  }, [location]);
+  }, []);
 
   return (
     <div>
-      <main className="page-wrapper ">
+      <main className="page-wrapper">
         {/* Start Sign up Area */}
-        <div className="signup-area ">
+        <div className="signup-area">
           <div className="wrapper">
             <div className="row">
               <div className="col-lg-6 bg-color-blackest left-wrapper">
@@ -123,13 +119,13 @@ const Register = () => {
                   </div>
                   <div className="signup-box-bottom">
                     <div className="signup-box-content">
-                      <div class="social-btn-grp">
+                      <div className="social-btn-grp">
                         {/* Google login button */}
                         <button
-                          class="btn-default btn-border"
+                          className="btn-default btn-border"
                           onClick={handleGoogleLogin}
                         >
-                          <span class="icon-left">
+                          <span className="icon-left">
                             <img
                               src="assets/images/sign-up/google.png"
                               alt="Google Icon"
@@ -138,7 +134,7 @@ const Register = () => {
                           Continue with Google
                         </button>
                       </div>
-                      <div class="text-social-area">
+                      <div className="text-social-area">
                         <hr />
                         <span>Or continue with</span>
                         <hr />

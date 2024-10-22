@@ -1,11 +1,12 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import Helpers from "../../Config/Helpers";
-import { setUser } from "../userSlice"; // Import setUser action
 
 // Define your API slice
 export const apiSlice = createApi({
-    reducerPath: "api", // Optional, defaults to 'api'
-    baseQuery: fetchBaseQuery({ baseUrl: Helpers.apiUrl }), // Main base URL for your API
+    reducerPath: "api",
+    baseQuery: fetchBaseQuery({ baseUrl: Helpers.apiUrl }),
+    tagTypes: ["User"], // Define the tag types
+
     endpoints: (builder) => ({
         // Register user
         registerUser: builder.mutation({
@@ -17,6 +18,7 @@ export const apiSlice = createApi({
                     "Content-Type": "application/json",
                 },
             }),
+            invalidatesTags: ["User"], // Optionally invalidate the "User" tag if needed
         }),
 
         // Login user
@@ -29,16 +31,7 @@ export const apiSlice = createApi({
                     "Content-Type": "application/json",
                 },
             }),
-            async onQueryStarted(arg, { dispatch, queryFulfilled }) {
-                try {
-                    const { data } = await queryFulfilled; // Data will be user object after successful login
-                    dispatch(setUser(data.user)); // Dispatch the action to set the user data
-                    Helpers.setItem("user", JSON.stringify(data.user));
-                    Helpers.setItem("token", data.token);
-                } catch (error) {
-                    console.error("Error logging in user:", error);
-                }
-            },
+            invalidatesTags: ["User"], // Invalidate user data after login
         }),
 
         // Update user
@@ -52,15 +45,7 @@ export const apiSlice = createApi({
                     Authorization: `Bearer ${Helpers.getItem("token")}`,
                 },
             }),
-            async onQueryStarted(arg, { dispatch, queryFulfilled }) {
-                try {
-                    const { data } = await queryFulfilled;
-                    dispatch(setUser(data));
-                    Helpers.setItem("user", JSON.stringify(data));
-                } catch (error) {
-                    console.error("Error updating user:", error);
-                }
-            },
+            invalidatesTags: ["User"], // Invalidate user cache when user data is updated
         }),
 
         // Get user by ID
@@ -73,15 +58,7 @@ export const apiSlice = createApi({
                     Authorization: `Bearer ${Helpers.getItem("token")}`,
                 },
             }),
-            async onQueryStarted(arg, { dispatch, queryFulfilled }) {
-                try {
-                    const { data } = await queryFulfilled;
-                    dispatch(setUser(data));
-                    Helpers.setItem("user", JSON.stringify(data));
-                } catch (error) {
-                    console.error("Error fetching user details:", error);
-                }
-            },
+            providesTags: ["User"], // Provide the "User" tag for caching
         }),
 
         // Forgot Password
@@ -118,15 +95,21 @@ export const apiSlice = createApi({
                     Authorization: `Bearer ${Helpers.getItem("token")}`,
                 },
             }),
-            async onQueryStarted(arg, { dispatch, queryFulfilled }) {
-                try {
-                    const { data } = await queryFulfilled;
-                    // You can handle data as needed, for example, storing in local state
-                    console.log("Fetched all users:", data);
-                } catch (error) {
-                    console.error("Error fetching all users:", error);
-                }
-            },
+            providesTags: ["User"], // Provide the "User" tag for caching
+        }),
+
+        // Change Password
+        changePassword: builder.mutation({
+            query: ({ oldPassword, newPassword }) => ({
+                url: "user/change-password",
+                method: "POST",
+                body: { oldPassword, newPassword },
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${Helpers.getItem("token")}`,
+                },
+            }),
+            invalidatesTags: ["User"], // Invalidate user data after changing the password
         }),
     }),
 });
@@ -139,5 +122,6 @@ export const {
     useGetUserByIdQuery,
     useForgotPasswordMutation,
     useResetPasswordMutation,
-    useGetAllUsersQuery, // Export the hook for getting all users
+    useChangePasswordMutation,
+    useGetAllUsersQuery,
 } = apiSlice;

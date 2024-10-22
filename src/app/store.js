@@ -8,9 +8,9 @@ import userReducer from './../features/userSlice'; // Import the user slice redu
 export const store = configureStore({
     reducer: {
         // Add the API slice reducer
-        [apiSlice.reducerPath]: apiSlice.reducer,
+        apiSlice: apiSlice,
         // Add the Arena slice reducer
-        [arenaSlice.reducerPath]: arenaSlice.reducer,
+        arenaSlice: arenaSlice,
         // Other reducers
         sidebar: sidebarReducer,
         rightSidebar: rightSidebarReducer,

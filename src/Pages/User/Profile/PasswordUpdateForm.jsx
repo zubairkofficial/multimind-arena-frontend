@@ -1,43 +1,99 @@
-import React from "react";
+import React, { useState } from "react";
+import { useChangePasswordMutation } from "../../../features/api/apiSlice"; // Adjust the path as per your project structure
 
-const PasswordUpdateForm = () => (
-  <div
-    className="tab-pane fade"
-    id="password"
-    role="tabpanel"
-    aria-labelledby="password-tab"
-  >
-    <form
-      action="#"
-      className="rbt-profile-row rbt-default-form row row--15"
+const PasswordUpdateForm = () => {
+  // State to hold form inputs
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [retypeNewPassword, setRetypeNewPassword] = useState("");
+  
+  // Hook for changePassword mutation
+  const [changePassword, { isLoading, isSuccess, isError }] = useChangePasswordMutation();
+
+  // Handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (newPassword !== retypeNewPassword) {
+      alert("New passwords do not match");
+      return;
+    }
+
+    try {
+      await changePassword({
+        oldPassword: currentPassword,
+        newPassword: newPassword,
+      }).unwrap();
+      alert("Password updated successfully!");
+    } catch (error) {
+      console.error("Error updating password:", error);
+      alert("Failed to update password. Please try again.");
+    }
+  };
+
+  return (
+    <div
+      className="tab-pane fade"
+      id="password"
+      role="tabpanel"
+      aria-labelledby="password-tab"
     >
-      <div className="col-12">
-        <div className="form-group">
-          <label htmlFor="currentpassword">Current Password</label>
-          <input id="currentpassword" type="password" placeholder="Current Password" />
+      <form
+        action="#"
+        className="rbt-profile-row rbt-default-form row row--15"
+        onSubmit={handleSubmit}
+      >
+        <div className="col-12">
+          <div className="form-group">
+            <label htmlFor="currentpassword">Current Password</label>
+            <input
+              id="currentpassword"
+              type="password"
+              placeholder="Current Password"
+              value={currentPassword}
+              onChange={(e) => setCurrentPassword(e.target.value)}
+              required
+            />
+          </div>
         </div>
-      </div>
-      <div className="col-12">
-        <div className="form-group">
-          <label htmlFor="newpassword">New Password</label>
-          <input id="newpassword" type="password" placeholder="New Password" />
+        <div className="col-12">
+          <div className="form-group">
+            <label htmlFor="newpassword">New Password</label>
+            <input
+              id="newpassword"
+              type="password"
+              placeholder="New Password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              required
+            />
+          </div>
         </div>
-      </div>
-      <div className="col-12">
-        <div className="form-group">
-          <label htmlFor="retypenewpassword">Re-type New Password</label>
-          <input id="retypenewpassword" type="password" placeholder="Re-type New Password" />
+        <div className="col-12">
+          <div className="form-group">
+            <label htmlFor="retypenewpassword">Re-type New Password</label>
+            <input
+              id="retypenewpassword"
+              type="password"
+              placeholder="Re-type New Password"
+              value={retypeNewPassword}
+              onChange={(e) => setRetypeNewPassword(e.target.value)}
+              required
+            />
+          </div>
         </div>
-      </div>
-      <div className="col-12 mt--20">
-        <div className="form-group mb--0">
-          <a className="btn-default" href="#">
-            Update Password
-          </a>
+        <div className="col-12 mt--20">
+          <div className="form-group mb--0">
+            <button className="btn-default" type="submit" disabled={isLoading}>
+              {isLoading ? "Updating..." : "Update Password"}
+            </button>
+            {isSuccess && <p>Password updated successfully!</p>}
+            {isError && <p>Failed to update password. Please try again.</p>}
+          </div>
         </div>
-      </div>
-    </form>
-  </div>
-);
+      </form>
+    </div>
+  );
+};
 
 export default PasswordUpdateForm;

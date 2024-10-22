@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { Link, useLocation } from "react-router-dom";
-import { useLoginMutation } from "./../../features/api/apiSlice";
+import axios from "axios"; // Import Axios
 import { useDispatch } from "react-redux";
 import { Notyf } from "notyf";
 import "notyf/notyf.min.css";
@@ -13,9 +13,10 @@ const Login = () => {
   const dispatch = useDispatch();
   const location = useLocation();
 
-  const [login, { isLoading }] = useLoginMutation();
+  // Local State
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false); // Local loading state
 
   // Handle form input changes
   const handleChange = (e) => {
@@ -32,6 +33,7 @@ const Login = () => {
 
     // Update user in the Redux store
     dispatch(setUser(userData.user));
+    console.log("User Data:", userData);
 
     // Save user data in localStorage
     const userString = JSON.stringify(userData.user);
@@ -50,29 +52,41 @@ const Login = () => {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null);
+    setError(null); // Reset the error
 
+    // Check for empty fields
     if (!formData.email || !formData.password) {
       setError("Both fields are required");
       return;
     }
 
+    setIsLoading(true); // Set loading to true
+
     try {
-      const userData = await login({
+      // Make Axios request to login
+      const response = await axios.post(`${Helpers.apiUrl}user/login`, {
         email: formData.email,
         password: formData.password,
-      }).unwrap();
+      });
 
+      const userData = response.data; // Assuming your response includes user and token
       handleLoginSuccess(userData);
     } catch (err) {
+      // Handle error - log and display an appropriate error message
       console.error("Failed to login:", err);
-      setError(err?.data?.message || "Login failed. Please check your credentials and try again.");
+      setError(
+        err.response?.data?.message || // Check if response.data.message exists
+        "Login failed. Please check your credentials and try again." // Fallback error message
+      );
+    } finally {
+      setIsLoading(false); // Set loading to false
     }
   };
 
   // Handle Google login
   const handleGoogleLogin = () => {
-    const googleLoginUrl = "https://chat-arena-backend-4ba91b3feb6b.herokuapp.com/google-auth";
+    const googleLoginUrl =
+      "https://chat-arena-backend-4ba91b3feb6b.herokuapp.com/google-auth";
     window.location.href = googleLoginUrl;
   };
 
@@ -83,14 +97,17 @@ const Login = () => {
     const user = queryParams.get("user");
 
     if (token && user) {
-      localStorage.setItem("token", token);
-      const userObj = JSON.parse(user);
-      localStorage.setItem("type", userObj.isAdmin);
-      localStorage.setItem("user", JSON.stringify(userObj));
-
-      handleLoginSuccess({ user: userObj, token });
+      try {
+        const userObj = JSON.parse(user);
+        handleLoginSuccess({ user: userObj, token });
+      } catch (error) {
+        console.error("Failed to parse user from Google login:", error);
+        setError("Failed to log in with Google. Please try again.");
+      }
     }
   }, [location]);
+
+
 
   return (
     <div>
