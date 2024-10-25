@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useGetAllArenaTypesQuery } from "../../../../features/arenaSlice";
+import { useGetAllArenaTypesQuery } from "../../../../features/api/arenaApi";
 import CustomTable from "../../../../components/Table/CustomTable";
 import Pagination from "../../../../components/Table/Pagination";
 

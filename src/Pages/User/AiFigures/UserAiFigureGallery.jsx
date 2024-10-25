@@ -1,50 +1,46 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import AIFigureCard from "./AIFigureCard";
+import { useGetAllAIFiguresQuery } from "../../../features/api/aiFigureApi"; // Import the query hook
 import "./aifigures.css";
-
-// Dummy data for AI Figures
-const aiFigures = [
-  {
-    name: "AI Mentor",
-    emoji: "🧙‍♂️",
-    role: "The Mentor / Life Coach",
-  },
-  {
-    name: "AI Critic",
-    emoji: "🧐",
-    role: "The Analyst / Critic",
-  },
-  {
-    name: "AI Entertainer",
-    emoji: "🎭",
-    role: "The Humorist / Entertainer",
-  },
-  // Add more dummy data here
-];
+import Preloader from './../../Landing/Preloader'
 
 const AIFigureGallery = () => {
   const navigate = useNavigate();
+
+  // Fetch AI figures using the query hook
+  const { data: aiFigures, isLoading, isError, error } = useGetAllAIFiguresQuery();
 
   // Handle "Create AI Figure" button click
   const handleCreateFigure = () => {
     navigate("/add-ai-figure");
   };
 
+  // Render loading or error states
+  if (isLoading) {
+    return <Preloader/>;
+  }
+
+  if (isError) {
+    return <div>Error loading AI figures: {error.message}</div>;
+  }
+
   return (
     <div className="ai-figure-gallery">
       <div className="d-flex justify-content-between">
-      <h3 className="title">AI Figure Gallery</h3>
-      <button className="btn-default"
-      onClick={handleCreateFigure}>Create AI Figure</button>
+        <h3 className="title">AI Figure Gallery</h3>
+        <button className="btn-default" onClick={handleCreateFigure}>
+          Create AI Figure
+        </button>
       </div>
       <div className="gallery-grid">
-        {aiFigures.map((figure, index) => (
+        {aiFigures.map((figure) => (
           <AIFigureCard
-            key={index}
+            key={figure.id} // Use a unique key from the figure object
             name={figure.name}
-            emoji={figure.emoji}
-            role={figure.role}
+            emoji={figure.emoji} // Assuming the emoji is part of the figure data
+            role={figure.role} // Assuming the role is part of the figure data
+            description={figure.description} // Assuming the description is part of the figure data
           />
         ))}
       </div>

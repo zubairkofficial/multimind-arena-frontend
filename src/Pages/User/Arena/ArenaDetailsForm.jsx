@@ -1,55 +1,34 @@
 import React, { useState } from "react";
-import { Notyf } from "notyf"; // For notifications
-import { useAddArenaMutation } from "../../../features/api/arenaApi"; // Import your mutation hook
-
+import { Notyf } from "notyf";
+import { useAddArenaMutation, useGetAllArenaTypesQuery } from "../../../features/api/arenaApi";
+import { useGetAllAIFiguresQuery } from "../../../features/api/aiFigureApi";
+import Preloader from "../../Landing/Preloader";
 const ArenaDetailsForm = () => {
-  const [addArena, { isLoading, isSuccess, isError, error }] = useAddArenaMutation(); // Use addArena mutation hook
+  const [addArena, { isLoading, isSuccess, isError, error }] = useAddArenaMutation();
+  const { data: arenaTypesData, isLoading: isLoadingArenaTypes, error: arenaTypesError } = useGetAllArenaTypesQuery();
+  const { data: aiFiguresData, isLoading: isLoadingAIFigures, error: aiFiguresError } = useGetAllAIFiguresQuery();
 
-  // Local state to handle form input
+  const [isScheduled, setIsScheduled] = useState(false); // Toggle for scheduling
   const [formData, setFormData] = useState({
-    topic: "",
+    name: "",
     duration: "",
-    arenaType: "",
-    aiFigures: [], // Array to store multiple AI figures
+    arenaTypeId: "",
+    aiFigureId: [],
     description: "",
     maxParticipants: "",
+    scheduledTime: "", // New field for scheduled time
   });
-
-  // Arena types for dropdown
-  const arenaTypes = [
-    "Chill Salons",
-    "Debate Arena",
-    "Game Worlds",
-    "Learn Labs",
-    "Science Labs",
-    "Troll Pit",
-    "Dating Playground",
-    "Creative Writing Workshops",
-    "Time Travel Tours",
-    "Ethical Maze",
-    "Art Critic's Corner",
-  ];
-
-  // AI figures for dropdown
-  const aiFiguresList = [
-    "AI Figure 1",
-    "AI Figure 2",
-    "AI Figure 3",
-    "AI Figure 4",
-    // Add more AI figures
-  ];
 
   // Handle form input changes
   const handleChange = (e) => {
     const { id, value } = e.target;
 
-    // Handle multiple AI figures selection
-    if (id === "aiFigures") {
+    if (id === "aiFigureId") {
       const selectedValues = Array.from(e.target.selectedOptions, (option) => option.value);
       if (selectedValues.length <= 3) {
         setFormData({
           ...formData,
-          aiFigures: selectedValues,
+          aiFigureId: selectedValues,
         });
       }
     } else {
@@ -60,38 +39,68 @@ const ArenaDetailsForm = () => {
     }
   };
 
+  // Handle the toggle for scheduling the arena
+  const handleToggleSchedule = () => {
+    setIsScheduled(!isScheduled);
+    setFormData({
+      ...formData,
+      scheduledTime: "", // Reset the scheduled time if the toggle is turned off
+    });
+  };
+
+  // Calculate the expiry time based on the duration in minutes
+  const calculateExpiryTime = (durationInMinutes) => {
+    const now = new Date();
+    return new Date(now.getTime() + durationInMinutes * 60000).toISOString();
+  };
+
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     const notyf = new Notyf();
 
+    let expiryTime;
+
+    if (isScheduled && formData.scheduledTime) {
+      expiryTime = new Date(formData.scheduledTime).toISOString(); // Use the scheduled time as expiry time
+    } else {
+      expiryTime = calculateExpiryTime(Number(formData.duration));
+    }
+
+    const dataToSend = {
+      ...formData,
+      expiryTime,
+    };
+
     try {
-      // Trigger the API call to create an arena
-      await addArena(formData).unwrap();
+      await addArena(dataToSend).unwrap();
       notyf.success("Arena created successfully.");
     } catch (err) {
       notyf.error("Failed to create arena. Please try again.");
     }
   };
 
+  // Render loading or error states for arena types
+  if (isLoadingArenaTypes || isLoadingAIFigures) {
+    return <Preloader />;
+  }
+  if (arenaTypesError) {
+    return <div>Error loading arena types: {arenaTypesError.message}</div>;
+  }
+  if (aiFiguresError) {
+    return <div>Error loading AI figures: {aiFiguresError.message}</div>;
+  }
+
   return (
-    <div
-      className="tab-pane fade active show"
-      id="arena"
-      role="tabpanel"
-      aria-labelledby="arena-tab"
-    >
-      <form
-        onSubmit={handleSubmit}
-        className="rbt-profile-row rbt-default-form row row--15"
-      >
+    <div className="tab-pane fade active show" id="arena" role="tabpanel" aria-labelledby="arena-tab">
+      <form onSubmit={handleSubmit} className="rbt-profile-row rbt-default-form row row--15">
         <div className="col-lg-12 col-md-12 col-sm-12 col-12">
           <div className="form-group">
             <label htmlFor="topic">Topic</label>
             <input
-              id="topic"
+              id="name"
               type="text"
-              value={formData.topic}
+              value={formData.name}
               onChange={handleChange}
               placeholder="Enter Topic"
               required
@@ -101,17 +110,12 @@ const ArenaDetailsForm = () => {
 
         <div className="col-lg-6 col-md-6 col-sm-6 col-12">
           <div className="form-group">
-            <label htmlFor="arenaType">Arena Type</label>
-            <select
-              id="arenaType"
-              value={formData.arenaType}
-              onChange={handleChange}
-              required
-            >
+            <label htmlFor="arenaTypeId">Arena Type</label>
+            <select id="arenaTypeId" value={formData.arenaTypeId} onChange={handleChange} required>
               <option value="">Select Arena Type</option>
-              {arenaTypes.map((type) => (
-                <option key={type} value={type}>
-                  {type}
+              {arenaTypesData.map((type) => (
+                <option key={type.id} value={type.id}>
+                  {type.name}
                 </option>
               ))}
             </select>
@@ -120,36 +124,15 @@ const ArenaDetailsForm = () => {
 
         <div className="col-lg-6 col-md-6 col-sm-6 col-12">
           <div className="form-group">
-            <label htmlFor="aiFigures">Select AI Figures (max 3)</label>
-            <select
-              id="aiFigures"
-              value={formData.aiFigures}
-              onChange={handleChange}
-              multiple
-              required
-            >
-              {aiFiguresList.map((figure) => (
-                <option key={figure} value={figure}>
-                  {figure}
+            <label htmlFor="aiFigureId">Select AI Figures (max 3)</label>
+            <select id="aiFigureId" value={formData.aiFigureId} onChange={handleChange} multiple required>
+              {aiFiguresData.map((figure) => (
+                <option key={figure.id} value={figure.id}>
+                  {figure.name} - {figure.description}
                 </option>
               ))}
             </select>
             <small className="text-muted">Hold Ctrl (Cmd on Mac) to select multiple options.</small>
-          </div>
-        </div>
-
-        <div className="col-lg-6 col-md-6 col-sm-6 col-12">
-          <div className="form-group">
-            <label htmlFor="duration">Duration (in minutes)</label>
-            <input
-              id="duration"
-              type="number"
-              min="1"
-              value={formData.duration}
-              onChange={handleChange}
-              placeholder="Enter Duration"
-              required
-            />
           </div>
         </div>
 
@@ -167,6 +150,51 @@ const ArenaDetailsForm = () => {
             />
           </div>
         </div>
+
+        <div className="col-lg-6 col-md-6 col-sm-6 col-12">
+          <div className="form-group form-check">
+            <input
+              type="checkbox"
+              className="form-check-input"
+              id="scheduleArena"
+              checked={isScheduled}
+              onChange={handleToggleSchedule}
+            />
+            <label className="form-check-label" htmlFor="scheduleArena">
+              Schedule Arena
+            </label>
+          </div>
+        </div>
+
+        {isScheduled ? (
+          <div className="col-lg-6 col-md-6 col-sm-6 col-12">
+            <div className="form-group">
+              <label htmlFor="scheduledTime">Scheduled Time</label>
+              <input
+                id="scheduledTime"
+                type="datetime-local"
+                value={formData.scheduledTime}
+                onChange={handleChange}
+                required={isScheduled}
+              />
+            </div>
+          </div>
+        ) : (
+          <div className="col-lg-6 col-md-6 col-sm-6 col-12">
+            <div className="form-group">
+              <label htmlFor="duration">Duration (in minutes)</label>
+              <input
+                id="duration"
+                type="number"
+                min="1"
+                value={formData.duration}
+                onChange={handleChange}
+                placeholder="Enter Duration"
+                required={!isScheduled}
+              />
+            </div>
+          </div>
+        )}
 
         <div className="col-lg-12 col-md-12 col-sm-12 col-12">
           <div className="form-group">

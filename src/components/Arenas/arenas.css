@@ -1,151 +1,136 @@
-/* Container for the cards to make them appear in a grid with 3 cards per row */
+/* Container for the cards to appear in a responsive grid */
 
 .arena-list {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 20px;
-    /* Space between cards */
+    grid-gap: 20px;
     padding: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 }
 
 
-/* Small card styles */
+/* Standard card styles */
 
-.arena-card.small {
-    width: 100%;
-    padding: 10px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    border-radius: 10px;
-    transition: box-shadow 0.3s ease;
-    background-color: #202020;
-    height: 150px;
-    /* Fixed height for small cards */
-    overflow: hidden;
-    /* Ensure overflow content is hidden */
-}
-
-
-/* Large card styles */
-
-.arena-card.large {
-    width: 100%;
-    padding: 20px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+.arena-card {
+    background-color: #1e1e1e;
     border-radius: 15px;
-    transition: box-shadow 0.3s ease;
-    background-color: #202020;
-    /* height: 250px; */
-    /* Fixed height for large cards */
     overflow: hidden;
-    /* Ensure overflow content is hidden */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
-
-
-/* Hover effect */
 
 .arena-card:hover {
-    box-shadow: 0 4px 15px rgba(0, 255, 0, 0.4);
+    transform: translateY(-10px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
 }
 
 
-/* Image styles */
+/* Image container */
+
+.arena-image-container {
+    position: relative;
+    width: 100%;
+    height: 100px;
+}
 
 .arena-image {
-    height: auto;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
 }
 
-
-/* Small card image (circular) */
-
-.arena-card.small .arena-image {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
+.arena-image-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 20px;
+    background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.7));
 }
 
-
-/* Large card image (rounded corners) */
-
-.arena-card.large .arena-image {
-    width: 40%;
-    border-radius: 15px;
+.arena-title {
+    color: #fff;
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin: 0;
 }
 
 
 /* Content area */
 
 .arena-info {
+    padding: 20px;
+}
+
+.arena-details {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 0 20px;
-    overflow: hidden;
-    /* Ensure content overflow is hidden */
-    text-overflow: ellipsis;
-    /* Add ellipsis for overflowing content */
-    white-space: nowrap;
-    /* Prevent text from wrapping */
+    justify-content: space-between;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
 }
 
-
-/* Adjust content area width for large cards */
-
-.arena-card.large .arena-info {
-    width: 60%;
-}
-
-
-/* Optional: Adjust text alignment and styles */
-
-.arena-info h3 {
-    margin: 0;
-    font-size: 1.5rem;
+.detail-card {
+    background-color: #2a2a2a;
+    padding: 4px 8px;
+    margin: 4px;
+    border-radius: 15px;
     color: #fff;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    font-size: 0.8rem;
+    /* Made text smaller */
 }
 
-.arena-info p {
-    margin: 0.5rem 0;
-    color: #ccc;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    /* Ensures description does not wrap */
-}
-
-.arena-stats {
+.detail-card i {
+    margin-right: 6px;
     font-size: 1rem;
-    color: #00ff00;
-    margin-top: auto;
+    /* Reduced icon size */
+}
+
+
+/* Actions */
+
+.arena-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.join-button {
+    padding: 12px 14px;
+    background-color: #00d10a;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.join-button:hover {
+    background-color: #02be1e;
+}
+
+.status-badge {
+    padding: 7px 12px;
+    font-size: 1.2rem;
+    border-radius: 30px;
 }
 
 
 /* Responsive tweaks */
 
-@media (min-width: 992px) {
-    .arena-list {
-        grid-template-columns: repeat(3, 1fr);
-        /* 3 cards per row on large screens */
-    }
-}
-
-@media (max-width: 768px) {
-    .arena-list {
-        grid-template-columns: repeat(2, 1fr);
-        /* 2 cards per row on medium screens */
-    }
-}
-
 @media (max-width: 576px) {
-    .arena-list {
-        grid-template-columns: 1fr;
-        /* 1 card per row on small screens */
+    .arena-details {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .arena-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .join-button,
+    .status-badge {
+        width: 100%;
+        margin-bottom: 10px;
     }
 }

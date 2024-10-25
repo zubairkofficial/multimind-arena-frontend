@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useAddArenaTypeMutation } from "../../../../features/arenaSlice";
+import { useAddArenaTypeMutation } from "../../../../features/api/arenaApi";
 import { Notyf } from "notyf"; // For notifications
 
 const AddArenaType = () => {

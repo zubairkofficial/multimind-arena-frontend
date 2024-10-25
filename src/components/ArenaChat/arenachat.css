@@ -1,7 +1,7 @@
 .arena-info-card,
 .user-list-card {
-    border: 1px solid var(--color-primary);
-    border-radius: 8px;
+    border: 1px solid var(--color-dark);
+    border-radius: 12px;
     background-color: var(--color-dark);
 }
 
@@ -28,7 +28,25 @@
 .user-list-card li {
     list-style: none;
     padding: 5px 0;
-    border-bottom: 1px solid var(--color-primary);
+}
+
+.user-list-card li {
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    /* Smooth transition for background color and scale */
+    border-radius: 10px;
+    /* Subtle border radius for rounded corners */
+    padding: 3px;
+    /* Add some padding for spacing inside list items */
+    cursor: pointer;
+    /* Make it look clickable */
+}
+
+.user-list-card li:hover {
+    background-color: #505050;
+    /* Darker shade for a nice hover effect */
+    transform: scale(1.0);
+    /* Slight scaling to create a popping effect on hover */
+    /* Add a subtle shadow to lift the element */
 }
 
 .user-list-card li:last-child {
@@ -37,7 +55,7 @@
 
 .chat-message-area {
     overflow-y: auto;
-    max-height: calc(100vh - 110px);
+    min-height: calc(100vh - 150px);
     /* Adjust based on your header and input bar heights */
 }
 
@@ -56,4 +74,108 @@
 
 .message-bubble:hover+.message-tail {
     opacity: 0.8;
+}
+
+.notification-area {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    animation: fadeInOut 3s ease-in-out;
+}
+
+.notification-text {
+    font-weight: bold;
+}
+
+@keyframes fadeInOut {
+    0% {
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+
+/* ArenaInfoCard.css */
+
+
+/* Modal overlay with black background */
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1050;
+}
+
+
+/* Modal dialog styles */
+
+.modal-dialog {
+    background: #000;
+    color: #fff;
+    border-radius: 8px;
+    max-width: 400px;
+    width: 100%;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+}
+
+
+/* Modal content */
+
+.modal-content {
+    padding: 20px;
+}
+
+
+/* Modal header and close button */
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.btn-close {
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.btn-close-white {
+    color: #fff;
+}
+
+
+/* Animation for modal pop-up */
+
+.animate-pop-up {
+    animation: pop-up 0.4s ease forwards;
+}
+
+@keyframes pop-up {
+    0% {
+        transform: scale(0.7);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
 }

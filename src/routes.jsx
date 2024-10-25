@@ -138,11 +138,11 @@ export const router = createBrowserRouter([
         path:"arena-chat/:id",
         element: <ArenaChatPage/>},
       {
-        path: "/add-arena",
+        path: "add-arena",
         element: <UserAddArena />,
       },
       {
-        path: "/ai-figure-gallery",
+        path: "ai-figure-gallery",
         element: <UserAIFigureGallery />,
       },
       {

@@ -1,0 +1,138 @@
+.arena-card {
+    background-color: #202020;
+    border-radius: 20px;
+    padding: 2rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    max-width: 320px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.arena-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.3);
+}
+
+.arena-card-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.arena-image-wrapper {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 3px solid #ffffff;
+    overflow: hidden;
+}
+
+.arena-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.arena-name {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+.arena-info {
+    display: flex;
+    justify-content: center;
+    color: #cccccc;
+    font-size: 0.9rem;
+}
+
+.created-by {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: #111111;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+}
+
+.arena-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.custom-btn {
+    background-color: #28a745;
+    color: #ffffff;
+    font-weight: 500;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 30px;
+    transition: background-color 0.3s ease;
+}
+
+.custom-btn:hover {
+    background-color: #218838;
+}
+
+.arena-status-badge {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #ffffff;
+}
+
+
+/* Tooltip styling for info icon */
+
+.hover-info-box {
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.4);
+    max-width: 200px;
+    z-index: 100;
+    top: 30px;
+    /* Position it below the icon */
+    right: 100%;
+    /* Center it horizontally */
+    white-space: normal;
+    width: 250px;
+    font-size: 0.85rem;
+}
+
+
+/* Animation for tooltip */
+
+.hover-info-box p {
+    margin: 0;
+    font-size: 0.85rem;
+}
+
+@media (max-width: 576px) {
+    .arena-card {
+        padding: 1.5rem;
+    }
+    .arena-info {
+        flex-direction: column;
+    }
+    .arena-info>div {
+        margin-bottom: 0.5rem;
+    }
+    .arena-footer {
+        flex-direction: column;
+    }
+    .custom-btn {
+        margin-bottom: 1rem;
+        width: 100%;
+    }
+    .arena-status-badge {
+        width: 100%;
+        text-align: center;
+    }
+}

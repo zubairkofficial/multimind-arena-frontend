@@ -77,6 +77,19 @@ export const arenaApi = apiSlice.injectEndpoints({
                 },
             }),
         }),
+
+        // Join an arena by sending the ID
+        joinArena: builder.mutation({
+            query: (arenaId) => ({
+                url: `arenas/join-arena`,
+                method: "POST",
+                body: { arenaId: arenaId }, // Sending only the arena ID
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${Helpers.getItem("token")}`,
+                },
+            }),
+        }),
     }),
 });
 
@@ -88,4 +101,5 @@ export const {
     useGetAllArenaTypesQuery,
     useAddArenaTypeMutation,
     useDeleteArenaTypeMutation,
+    useJoinArenaMutation, // Export the joinArena mutation hook
 } = arenaApi;

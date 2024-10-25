@@ -36,10 +36,10 @@ const UserDashboard = ({ children }) => {
         .content-wrapper {
           transition: margin 0.3s ease; /* Smooth transition for both margins */
           margin-left: ${sidebarOpen
-            ? "290px"
+            ? "350px"
             : "30px"}; /* Adjust the left margin for the sidebar */
           margin-right: ${rightSidebarOpen
-            ? "320px"
+            ? "350px"
             : "30px"}; /* Adjust the right margin for the right sidebar */
        /* Add padding to ensure content is below the header */
           // background: radial-gradient(

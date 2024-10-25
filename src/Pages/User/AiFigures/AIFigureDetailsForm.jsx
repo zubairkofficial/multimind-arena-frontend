@@ -1,14 +1,17 @@
 import React, { useState } from "react";
 import { Notyf } from "notyf"; // For notifications
+import { useAddAIFigureMutation } from "../../../features/api/aiFigureApi"; // Import the mutation hook
 
 const AIFigureDetailsForm = () => {
   // Local state to handle form input
   const [formData, setFormData] = useState({
     name: "",
-    emoji: "",
     role: "",
     prompt: "",
   });
+
+  // Redux mutation hook for adding an AI figure
+  const [addAIFigure, { isLoading }] = useAddAIFigureMutation();
 
   // AI roles for dropdown
   const aiRolesOptions = [
@@ -38,15 +41,28 @@ const AIFigureDetailsForm = () => {
   };
 
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Log the submitted form data
-    console.log("AI Figure Data Submitted:", formData);
+    try {
+      // Call the mutation to add the AI figure
+      await addAIFigure(formData).unwrap();
 
-    // Notify success
-    const notyf = new Notyf();
-    notyf.success("AI Figure created successfully.");
+      // Notify success
+      const notyf = new Notyf();
+      notyf.success("AI Figure created successfully.");
+
+      // Clear the form after successful submission
+      setFormData({
+        name: "",
+        role: "",
+        prompt: "",
+      });
+    } catch (error) {
+      // Notify failure
+      const notyf = new Notyf();
+      notyf.error("Failed to create AI Figure.");
+    }
   };
 
   return (
@@ -70,27 +86,12 @@ const AIFigureDetailsForm = () => {
 
       <div className="col-lg-6 col-md-6 col-sm-6 col-12">
         <div className="form-group">
-          <label htmlFor="emoji">Emoji</label>
-          <input
-            id="emoji"
-            type="text"
-            value={formData.emoji}
-            onChange={handleChange}
-            placeholder="Enter Emoji"
-            required
-          />
-        </div>
-      </div>
-
-      <div className="col-lg-6 col-md-6 col-sm-6 col-12">
-        <div className="form-group">
           <label htmlFor="role">Assign Role</label>
           <select
             id="role"
             value={formData.role}
             onChange={handleChange}
             required
-            
           >
             <option value="">Select AI Role</option>
             {aiRolesOptions.map((role) => (
@@ -118,8 +119,8 @@ const AIFigureDetailsForm = () => {
 
       <div className="col-12 mt--20">
         <div className="form-group mb--0">
-          <button type="submit" className="btn-default">
-            Add AI Figure
+          <button type="submit" className="btn-default" disabled={isLoading}>
+            {isLoading ? "Adding..." : "Add AI Figure"}
           </button>
         </div>
       </div>

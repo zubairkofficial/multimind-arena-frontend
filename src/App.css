@@ -10,11 +10,19 @@ select {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     margin-top: 9rem;
+    min-height: 85vh;
     /* Increase margin-top by 20px */
 }
 
-.table-container:hover {
-    /* Green box shadow on hover */
+.table-container-user {
+    background-color: transparent;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-top: 9rem;
+    min-height: 85vh;
+    /* Increase margin-top by 20px */
 }
 
 input {

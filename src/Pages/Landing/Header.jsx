@@ -36,13 +36,14 @@ const Header = () => {
         <div className="container position-relative">
           <div className="row align-items-center row--0">
             <div className="col-lg-2 col-md-6 col-6">
-              <div className="logo">
+              <div className="">
                 <Link to="/">
                   <img
-                    className=""
+                    className="logo"
                     src="/assets/images/logo/logo.png"
                     alt="ChatBot Logo"
-                    style={{height: 'auto', width: '100vw'}}
+                    style={{height: '80px', width: 'auto'}}
+                  
                   />
                 </Link>
               </div>

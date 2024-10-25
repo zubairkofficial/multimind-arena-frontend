@@ -15,7 +15,7 @@ const ChatPage = () => {
     },
     {
       id: 2,
-      author: "AiWave",
+      author: "Arena1",
       avatar: "assets/images/team/avater.png",
       content:
         "Here's a fun fact about the Roman Empire: Ancient Romans used a condiment called 'garum'...",
@@ -30,17 +30,17 @@ const ChatPage = () => {
     },
     {
       id: 4,
-      author: "AiWave",
+      author: "Arena1",
       avatar: "assets/images/team/avater.png",
       content:
-        "AiWave boost operational efficiency and bring cost savings to businesses...",
+        "Arena1 boost operational efficiency and bring cost savings to businesses...",
       type: "ai",
     },
     {
       id: 5,
       author: "Adam Milner",
       avatar: "assets/images/team/team-01sm.jpg",
-      content: "How can I talk with AiWave?",
+      content: "How can I talk with Arena1?",
       type: "author",
     },
   ];

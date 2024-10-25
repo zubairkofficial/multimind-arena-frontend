@@ -2,7 +2,7 @@ import React from 'react';
 import ArenaCard from './ArenaCard';
 import './arenas.css';
 
-const ArenaCategory = ({ title, arenas, cardSize = "small", handleClick }) => (
+const ArenaCategory = ({ title, arenas, handleJoin }) => (
   <div className="arena-category">
     <h4>{title}</h4>
     <div className="arena-list">
@@ -10,8 +10,7 @@ const ArenaCategory = ({ title, arenas, cardSize = "small", handleClick }) => (
         <ArenaCard 
           key={arena.id} 
           arena={arena} 
-          size={cardSize} 
-          onClick={() => handleClick(arena.id)} // Trigger handleClick with the correct ID
+          onJoin={() => handleJoin(arena)} // Trigger handleJoin when the "Join" button is clicked
         />
       ))}
     </div>

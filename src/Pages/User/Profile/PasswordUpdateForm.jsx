@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useChangePasswordMutation } from "../../../features/api/authApi"; // Adjust the path as per your project structure
+import Helpers from "../../../Config/Helpers";
 
 const PasswordUpdateForm = () => {
   // State to hold form inputs
@@ -24,7 +25,7 @@ const PasswordUpdateForm = () => {
         oldPassword: currentPassword,
         newPassword: newPassword,
       }).unwrap();
-      alert("Password updated successfully!");
+      Helpers.toast("success","Password updated successfully!");
     } catch (error) {
       console.error("Error updating password:", error);
       alert("Failed to update password. Please try again.");
@@ -87,8 +88,7 @@ const PasswordUpdateForm = () => {
             <button className="btn-default" type="submit" disabled={isLoading}>
               {isLoading ? "Updating..." : "Update Password"}
             </button>
-            {isSuccess && <p>Password updated successfully!</p>}
-            {isError && <p>Failed to update password. Please try again.</p>}
+            
           </div>
         </div>
       </form>

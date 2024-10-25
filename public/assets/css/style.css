@@ -10604,7 +10604,7 @@ xclip
 }
 
 .header-default .logo a img {
-    max-height: 35px;
+    height: 80px;
 }
 
 .header-default .header-right {
@@ -20338,7 +20338,7 @@ only screen and (min-width: 768px) and (max-width: 991px) {
 ------------------------*/
 
 .logo a img {
-    max-height: 35px;
+    height: 80px;
 }
 
 .footer-style-1 {
@@ -23227,7 +23227,6 @@ body.active-light-mode .slider-area.bg-transparent .inner button.btn-default.btn
     margin-bottom: 120px;
     margin-right: auto;
     margin-top: 80px;
-    background-color: #101010;
 }
 
 @media only screen and (min-width: 768px) and (max-width: 991px) {
@@ -23256,12 +23255,9 @@ body.active-light-mode .slider-area.bg-transparent .inner button.btn-default.btn
 
 .rbt-dashboard-content .content-page {
     padding-top: 10px;
-    background-color: #101010;
 }
 
-.rbt-dashboard-content .banner-area {
-    background-color: #101010;
-}
+.rbt-dashboard-content .banner-area {}
 
 .chat-box-section {
     background: var(--color-dark);

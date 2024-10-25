@@ -50,11 +50,12 @@ const ProfileDetailsForm = () => {
       const updatedUser = await updateUser({ id: userId, ...formData }).unwrap();
 
       // Dispatch the updated user to the Redux store
-      dispatch(setUser({ user: updatedUser }));
+      dispatch(setUser({ user: updatedUser.user }));
 
       // Update the user data in localStorage
       localStorage.setItem("user", JSON.stringify(updatedUser.user));
 
+  
       // Notify the user of the success
       const notyf = new Notyf();
       notyf.success("Profile updated successfully.");

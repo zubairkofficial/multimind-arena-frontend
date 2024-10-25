@@ -1,128 +1,91 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import {
+  useGetAllArenasQuery,
+  useJoinArenaMutation,
+} from "../../features/api/arenaApi"; // Import the hooks
 import ArenaCategory from "../../components/Arenas/ArenaCategory";
 import "./../../components/Arenas/arenas.css";
+import { useNavigate } from "react-router";
+import { Modal, Spinner, Alert } from "react-bootstrap"; // Import Modal, Spinner, and Alert from React Bootstrap
+import Preloader from "../../Pages/Landing/Preloader"; // Import Preloader component
 
-export default function ArenaDashboard() {
+export default function UserDashboard() {
+  const { data: arenas, error, isLoading } = useGetAllArenasQuery();
   const navigate = useNavigate();
 
-  const popularArenas = [
-    {
-      id: 1,
-      name: "Battle Royale",
-      description: "By @GameMaster",
-      image: "/assets/images/anime-demo.png",
-      participants: "1.2M members",
-    },
-    {
-      id: 2,
-      name: "Strategy Masters",
-      description: "By @TacticalGenius",
-      image: "/assets/images/anime-demo.png",
-      participants: "890K members",
-    },
-    {
-      id: 3,
-      name: "Puzzle Challenge",
-      description: "By @BrainTeaser",
-      image: "/assets/images/anime-demo.png",
-      participants: "567K members",
-    },
-    {
-      id: 4,
-      name: "Sci-Fi Showdown",
-      description: "By @FutureWarrior",
-      image: "/assets/images/anime-demo.png",
-      participants: "345K members",
-    },
-  ];
+  // Hook for joining an arena
+  const [joinArena, { isLoading: isJoining }] = useJoinArenaMutation();
 
-  const recommendedArenas = [
-    {
-      id: 5,
-      name: "Practice Spellcasting",
-      description: "with Wizard Academy",
-      image: "/assets/images/anime-demo.png",
-    },
-    {
-      id: 6,
-      name: "Build an Empire",
-      description: "with Empire Simulator",
-      image: "/assets/images/anime-demo.png",
-    },
-    {
-      id: 7,
-      name: "Solve Mysteries",
-      description: "with Detective Agency",
-      image: "/assets/images/anime-demo.png",
-    },
-    {
-      id: 8,
-      name: "Explore Space",
-      description: "with Galactic Explorer",
-      image: "/assets/images/anime-demo.png",
-    },
-    {
-      id: 9,
-      name: "Master Martial Arts",
-      description: "with Dojo Master",
-      image: "/assets/images/anime-demo.png",
-    },
-    {
-      id: 10,
-      name: "Race to Victory",
-      description: "with Speed Racer",
-      image: "/assets/images/anime-demo.png",
-    },
-  ];
+  const [showModal, setShowModal] = useState(false); // State to control modal visibility
+  const [joinError, setJoinError] = useState(null); // State to store error message
 
-  const featuredArenas = [
-    {
-      id: 11,
-      name: "Epic Quest",
-      description: "Your journey begins here",
-      image: "/assets/images/anime-demo.png",
-      participants: "2.5M members",
-    },
-    {
-      id: 12,
-      name: "Tactical Warfare",
-      description: "Lead your army to victory",
-      image: "/assets/images/anime-demo.png",
-      participants: "1.8M members",
-    },
-    {
-      id: 13,
-      name: "Mystic Realms",
-      description: "Explore magical worlds",
-      image: "/assets/images/anime-demo.png",
-      participants: "1.3M members",
-    },
-  ];
+  const handleJoinArena = async (arena) => {
+    if (!arena) {
+      console.error("Arena data is missing or undefined!");
+      return;
+    }
 
-  const handleArenaClick = (id) => {
-    navigate(`/arena-chat/${id}`);
+    try {
+      // Reset error and show the modal when joining starts
+      setJoinError(null);
+      setShowModal(true);
+      // Join the arena by sending the arena ID
+      const response = await joinArena(arena.id).unwrap();
+
+      // Close the modal and navigate to the arena chat after joining
+      setShowModal(false);
+      navigate(`/arena-chat/${arena.id}`, { state: response });
+    } catch (error) {
+      console.error("Error joining arena:", error);
+      setJoinError(error?.data.message || "Failed to join the arena."); // Set error message
+      setShowModal(true); // Keep the modal open to show the error message
+    }
   };
+
+  if (isLoading) {
+    return <Preloader />; // Display Preloader while loading
+  }
+
+  if (error) {
+    return <div>Error loading arenas: {error.message}</div>;
+  }
 
   return (
     <div className="container">
       <div className="arena-dashboard">
-        <ArenaCategory
-          title="Featured Arenas"
-          arenas={featuredArenas}
-          cardSize="large"
-          handleClick={handleArenaClick}
-        />
-        <ArenaCategory
-          title="Popular Arenas"
-          arenas={popularArenas}
-          handleClick={handleArenaClick}
-        />
-        <ArenaCategory
-          title="Recommended for you"
-          arenas={recommendedArenas}
-          handleClick={handleArenaClick}
-        />
+        {arenas && arenas.length > 0 ? (
+          <>
+            <ArenaCategory
+              title="All Arenas"
+              arenas={arenas} // Pass the fetched arenas data
+              cardSize="small"
+              handleJoin={handleJoinArena}
+            />
+
+            {/* Modal for "Joining the arena" or showing error */}
+            <Modal show={isJoining || showModal} onHide={() => setShowModal(false)} centered>
+              <Modal.Body className="text-center bg-dark text-white">
+                {/* Show spinner if loading */}
+                {isJoining && (
+                  <>
+                    <Spinner animation="border" role="status" className="mb-3">
+                      <span className="visually-hidden">Loading...</span>
+                    </Spinner>
+                    <div>Joining the arena...</div>
+                  </>
+                )}
+                {/* Show error message if there is any */}
+                {joinError && (
+                  <Alert variant="danger" className="mt-3">
+                    {joinError}
+                  </Alert>
+                )}
+              </Modal.Body>
+            </Modal>
+          </>
+        ) : (
+          <div>No arenas available</div>
+        )}
       </div>
     </div>
   );
