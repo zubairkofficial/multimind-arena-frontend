@@ -1,167 +1,238 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import MessageBubble from "./../../../components/ArenaChat/MessageBubble";
 import ParticipantsCard from "./../../../components/ArenaChat/ParticipantsCard";
 import ArenaInfoCard from "./../../../components/ArenaChat/ArenaInfoCard";
+import UserListCard from "./UserListCard";
 import { getSocket, initiateSocketConnection } from "./../../../app/socket";
 import "./../../../components/ArenaChat/arenachat.css";
 
 export default function ArenaChatPage() {
   const location = useLocation();
   const navigate = useNavigate();
-  const [arena,setArena] = useState(location.state); // Retrieve the arena data passed through state
-
+  const [arena, setArena] = useState(location.state);
   const userId = useSelector((state) => state.user.user.id);
-  console.log("User ID:", userId);
-
   const [message, setMessage] = useState("");
   const [chatMessages, setChatMessages] = useState([]);
-  const [notification, setNotification] = useState(null); // State for notifications
-
+  const [notification, setNotification] = useState(null);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [showParticipants, setShowParticipants] = useState(false);
+  const [showUsers, setShowUsers] = useState(false);
+  const chatContainerRef = useRef(null);
+  console.log("Arena:",arena);
   useEffect(() => {
-    // Initialize socket connection if not already connected
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener("resize", handleResize);
+
     initiateSocketConnection();
     const socket = getSocket();
 
     if (arena?.id && socket) {
-      // Join the room
       socket.emit("joinRoom", { arenaId: arena.id, userId });
 
-      // Listen for incoming messages
       socket.on("receiveMessage", (data) => {
         if (data.senderId !== userId) {
-          const receivedMessage = {
-            sender: data.senderName,
-            content: data.content,
-            isUser: false,
-            time: new Date().toLocaleTimeString(),
-          };
-          setChatMessages((prevMessages) => [...prevMessages, receivedMessage]);
+          setChatMessages((prevMessages) => [
+            ...prevMessages,
+            {
+              sender: data.senderName,
+              content: data.content,
+              isUser: false,
+              time: new Date().toLocaleTimeString(),
+            },
+          ]);
         }
-      });
-      socket.on("userRejoined", (data) => {
-        console.log("User rejoined:", data);
-        if (data.userId !== userId) {
-          setNotification(`User ${data.userName || data.userId} has rejoined the room.`);
-          setArena((prevArena) => ({ ...prevArena, ...data})); // Update arena state
-          setTimeout(() => {
-            setNotification(null); // Clear notification after 3 seconds
-          }, 3000);
-        }
-      });
-      
-      // Listen for user joined event
-      socket.on("userJoined", (data) => {
-        console.log("User joined:", data);
-        if (data.userId !== userId) {
-          setNotification(`User ${data.userName || data.userId} has joined the room.`);
-          setArena((prevArena) => ({ ...prevArena, ...data })); // Update arena state
-          setTimeout(() => {
-            setNotification(null); // Clear notification after 3 seconds
-          }, 3000);
-        }
-      });
-      // Listen for user left event
-      socket.on("userLeft", (data) => {
-        console.log("User left:", data);
-        setNotification(`User ${data.userName || data.userId} has left the room.`);
-        setTimeout(() => {
-          setNotification(null); // Clear notification after 3 seconds
-        }, 3000);
       });
 
-      // Cleanup listeners when component unmounts
+      socket.on("userRejoined", (data) => {
+        if (data.userId !== userId) {
+          setNotification(`User ${data.userName || data.userId} has rejoined.`);
+          setArena((prevArena) => ({ ...prevArena, ...data }));
+          setTimeout(() => setNotification(null), 3000);
+        }
+      });
+
+      socket.on("userJoined", (data) => {
+        if (data.userId !== userId) {
+          setNotification(`User ${data.userName || data.userId} has joined.`);
+          setArena((prevArena) => ({ ...prevArena, ...data }));
+          setTimeout(() => setNotification(null), 3000);
+        }
+      });
+
+      socket.on("userLeft", (data) => {
+        setNotification(`User ${data.userName || data.userId} has left.`);
+        setTimeout(() => setNotification(null), 3000);
+      });
+
       return () => {
         socket.off("receiveMessage");
         socket.off("userJoined");
         socket.off("userLeft");
         socket.emit("leaveRoom", { arenaId: arena.id, userId });
+        window.removeEventListener("resize", handleResize);
       };
     }
   }, [arena?.id, userId]);
+
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop =
+        chatContainerRef.current.scrollHeight;
+    }
+  }, [chatMessages]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const socket = getSocket();
     if (message.trim() && arena?.id && socket) {
-      const newMessage = {
+      socket.emit("sendMessage", {
         content: message,
         userId,
         arenaId: arena.id,
-      };
-      socket.emit("sendMessage", newMessage);
-
-      // Add the message to the local state immediately for responsiveness
-      const localMessage = {
-        sender: "You",
-        content: message,
-        isUser: true,
-        time: new Date().toLocaleTimeString(),
-      };
-      setChatMessages([...chatMessages, localMessage]);
+      });
+      setChatMessages([
+        ...chatMessages,
+        {
+          sender: "You",
+          content: message,
+          isUser: true,
+          time: new Date().toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
+        },
+      ]);
       setMessage("");
     }
   };
 
   const handleLeaveRoom = () => {
-    const socket = getSocket();
-    if (socket) {
-      socket.emit("leaveRoom", { arenaId: arena.id, userId });
-    }
+    getSocket().emit("leaveRoom", { arenaId: arena.id, userId });
     navigate("/dashboard");
   };
 
+  const toggleParticipants = () => setShowParticipants(!showParticipants);
+
+  const toggleUsers = () => setShowUsers(!showUsers);
+
   return (
-    <div className="d-flex h-100 bg-color-lessdark text-color-light">
-      {/* Sidebar with Participants */}
-      <ParticipantsCard
-        participants={
-          arena?.userArenas?.map((userArena) => userArena.user?.name) || ["Ahsan"]
-        } // Extract user names from each userArena
-        totalParticipants={arena?.userArenas?.length || 0}
-        expiryTime={arena?.expiryTime}
-        aiStatus="Active"
-      />
+    <div className="d-flex h-100 bg-transparent text-color-light">
+      <button
+        className="btn-default btn-small"
+        onClick={toggleParticipants}
+        style={{
+          position: "absolute",
+          top: "10px",
+          left: "10px",
+          backgroundColor: showParticipants ? "#45db34" : "#1c1c1c",
+          color: "#f8f9fa",
+          border: "none",
+          padding: "0.5rem",
+          borderRadius: "50%",
+          cursor: "pointer",
+          fontSize: "1.2rem",
+          transition: "transform 0.3s ease, background-color 0.3s ease",
+          transform: showParticipants ? "scale(1)" : "scale(1.1)",
+        }}
+      >
+        <i className={`fas ${showParticipants ? "fa-users" : "fa-times"}`} />
+      </button>
 
-      {/* Main Chat Area */}
-      <div className="flex-grow-1 d-flex flex-column chat-message-area">
-        {/* Arena Information (Header - Static) */}
-        <ArenaInfoCard name={arena?.name || "Chat Arena"} handleLeaveRoom={handleLeaveRoom} />
+      <div
+        className={showParticipants ? "slide-in-left" : "slide-out-left"}
+        style={{
+          width: showParticipants ? (isMobile ? "50%" : "250px") : "0",
+          opacity: showParticipants ? 1 : 0,
+          overflow: "hidden",
+          position: isMobile ? "absolute" : "static",
+          top: isMobile ? "100px" : "0",
+          zIndex: isMobile ? 10 : "auto",
+        }}
+      >
+        {showParticipants && (
+          <ParticipantsCard
+            participants={
+              arena?.arenaAIFigures?.map((userArena) => userArena.aiFigure?.name) || [
+                "Ahsan",
+              ]
+            }
+            totalParticipants={arena?.userArenas?.length || 0}
+            expiryTime={arena?.expiryTime}
+            aiStatus="Active"
+          />
+        )}
+      </div>
 
-        {/* Notification Area */}
+      <div
+        className={`flex-grow-1 d-flex flex-column chat-message-area ${
+          showParticipants && !isMobile ? "" : "full-width"
+        }`}
+      >
+        <ArenaInfoCard
+          name={arena?.name || "Chat Arena"}
+          handleLeaveRoom={handleLeaveRoom}
+          toggleParticipants={toggleParticipants}
+          toggleUsers={toggleUsers}
+        />
+
         {notification && (
           <div className="notification-area text-center mt-3 p-4 bg-success text-dark">
             <span className="notification-text">{notification}</span>
           </div>
         )}
 
-        {/* Chat Messages (Scrollable Section) */}
         <div
-          className="flex-grow-1 p-3 overflow-auto chat-message-container"
-          style={{ height: "50vh" }}
+          ref={chatContainerRef}
+          className="flex-grow-1 pt-4 px-2 overflow-auto chat-message-container"
         >
           {chatMessages.map((msg, index) => (
             <MessageBubble key={index} message={msg} />
           ))}
         </div>
 
-        {/* Input Message & Leave Button (Static) */}
-        <div className="p-3 border-top border-color-light">
-          <form onSubmit={handleSubmit} className="d-flex align-items-center">
+        <div className="p-1 border-color-light chat-input-container">
+          <form
+            onSubmit={handleSubmit}
+            className="mt-5 d-flex align-items-center w-110 position-relative bg-transparent"
+          >
             <input
               type="text"
-              className="form-control me-2 bg-color-black text-light border-success"
+              className="form-control p-3 bg-color-black text-light pr-5"
+              style={{ borderRadius: "50px" }}
               placeholder="Type your message..."
               value={message}
               onChange={(e) => setMessage(e.target.value)}
             />
-            <button type="submit" className="btn-default btn-small me-2">
-              <i className="fas fa-paper-plane"></i>
+            <button
+              type="submit"
+              className="btn btn-large rounded-circle position-absolute end-0 top-50 translate-middle-y me-5 btn-success text-white shadow"
+            >
+              <i className="fas fa-send"></i>
             </button>
           </form>
         </div>
       </div>
+
+      {showUsers && (
+        <div
+          className={showUsers ? "slide-in-right" : "slide-out-right"}
+          style={{
+            width: "250px",
+            backgroundColor: "#101010",
+            color: "#fff",
+            padding: "1rem",
+            overflow: "auto",
+          }}
+        >
+          <UserListCard
+            users={
+              arena?.userArenas?.map((userArena) => userArena.user?.name) || []
+            }
+          />
+        </div>
+      )}
     </div>
   );
 }

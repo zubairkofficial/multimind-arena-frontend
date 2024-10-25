@@ -1,8 +1,7 @@
 import { Notyf } from "notyf";
-import { io } from "socket.io-client";
 
 class Helpers {
-  static localhost = "http://192.168.18.5:8080";
+  static localhost = "http://192.168.18.123:8080/";
   static server = "https://chat-arena-backend-4ba91b3feb6b.herokuapp.com";
 
   static basePath = `${this.server}`;

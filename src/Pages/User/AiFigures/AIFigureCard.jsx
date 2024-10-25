@@ -1,15 +1,30 @@
 import React from "react";
+import "./aifigures.css";
 
-const AIFigureCard = ({ name, emoji, role }) => {
+export default function AIFigureCard({ figure, onSelect }) {
   return (
-    <div className="ai-figure-card">
-      <div className="card-content">
-        <div className="emoji-display">{emoji}</div>
-        <h4 className="ai-figure-name">{name}</h4>
-        <p className="ai-figure-role">{role}</p>
+    <div className="aifigure-card" onClick={() => onSelect(figure)}>
+      <div className="aifigure-card-content">
+        <div className="aifigure-card-image-wrapper">
+          <img
+            alt={figure.name}
+            className="aifigure-card-image"
+            src={figure.image}
+          />
+        </div>
+        <h3 className="aifigure-card-title">{figure.name}</h3>
+        <p className="aifigure-card-description">{figure.description}</p>
+        <div className="aifigure-card-footer">
+          <span className="aifigure-card-creator">By: @{figure.creator}</span>
+          <span
+            className={`aifigure-card-status ${
+              figure.status === "active" ? "active" : "inactive"
+            }`}
+          >
+            {figure.status}
+          </span>
+        </div>
       </div>
     </div>
   );
-};
-
-export default AIFigureCard;
+}

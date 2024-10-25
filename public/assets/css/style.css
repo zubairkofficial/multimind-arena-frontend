@@ -2791,7 +2791,7 @@ iframe {
 }
 
 .bg-color-lessdark {
-    background: var(--color-lessdark);
+    background: var(--color-dark);
 }
 
 .bg-color-2 {

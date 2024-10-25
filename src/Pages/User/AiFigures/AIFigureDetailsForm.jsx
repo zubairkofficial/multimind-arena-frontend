@@ -1,38 +1,18 @@
 import React, { useState } from "react";
-import { Notyf } from "notyf"; // For notifications
-import { useAddAIFigureMutation } from "../../../features/api/aiFigureApi"; // Import the mutation hook
+import { Notyf } from "notyf";
+import axios from "axios";
+import Helpers from "../../../Config/Helpers";
 
 const AIFigureDetailsForm = () => {
-  // Local state to handle form input
   const [formData, setFormData] = useState({
     name: "",
-    role: "",
+    description: "",
     prompt: "",
+    type: "anime", // Default type
   });
+  const [image, setImage] = useState(null); // Store the image file
+  const [imagePreview, setImagePreview] = useState(null); // Store the image preview
 
-  // Redux mutation hook for adding an AI figure
-  const [addAIFigure, { isLoading }] = useAddAIFigureMutation();
-
-  // AI roles for dropdown
-  const aiRolesOptions = [
-    "The Participant / Peer",
-    "The Moderator / Referee",
-    "The Instructor / Guru",
-    "The Antagonist / Devil's Advocate",
-    "The Mentor / Life Coach",
-    "The Storyteller / Narrator",
-    "The Facilitator / Catalyst",
-    "The Analyst / Critic",
-    "The Roleplayer / Character Actor",
-    "The Humorist / Entertainer",
-    "The Collaborator / Teammate",
-    "The Emotional Support / Empathy Bot",
-    "The Fact-Checker / Accuracy Arbiter",
-    "The Innovator / Idea Generator",
-    "The Synthesizer / Summarizer",
-  ];
-
-  // Handle form input changes
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -40,26 +20,50 @@ const AIFigureDetailsForm = () => {
     });
   };
 
-  // Handle form submission
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    setImage(file);
+    setImagePreview(URL.createObjectURL(file)); // Generate preview URL
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Prepare FormData payload
+    const aiFigure = new FormData();
+    aiFigure.append("name", formData.name);
+    aiFigure.append("description", formData.description);
+    aiFigure.append("prompt", formData.prompt);
+    aiFigure.append("type", formData.type);
+    if (image) {
+      aiFigure.append("file", image);
+    }
+    console.log("first", aiFigure);
     try {
-      // Call the mutation to add the AI figure
-      await addAIFigure(formData).unwrap();
+      // Send the FormData payload to the server using Axios
+      const response = await axios.post(
+        `${Helpers.apiUrl}ai-figures`,
+        aiFigure,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
 
-      // Notify success
       const notyf = new Notyf();
       notyf.success("AI Figure created successfully.");
 
-      // Clear the form after successful submission
       setFormData({
         name: "",
-        role: "",
+        description: "",
         prompt: "",
+        type: "anime",
       });
+      setImage(null);
+      setImagePreview(null);
     } catch (error) {
-      // Notify failure
       const notyf = new Notyf();
       notyf.error("Failed to create AI Figure.");
     }
@@ -86,20 +90,57 @@ const AIFigureDetailsForm = () => {
 
       <div className="col-lg-6 col-md-6 col-sm-6 col-12">
         <div className="form-group">
-          <label htmlFor="role">Assign Role</label>
+          <label htmlFor="image">Image</label>
+          <div className="custom-file-upload">
+            {imagePreview && (
+              <div className="image-preview">
+                <img src={imagePreview} alt="AI Figure Preview" />
+              </div>
+            )}
+            <div className="upload-section">
+              <input
+                id="image"
+                type="file"
+                onChange={handleImageChange}
+                accept="image/*"
+                className="file-input"
+              />
+              <label htmlFor="image" className="upload-button">
+                Choose Image
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="col-lg-6 col-md-6 col-sm-6 col-12">
+        <div className="form-group">
+          <label htmlFor="type">Type</label>
           <select
-            id="role"
-            value={formData.role}
+            id="type"
+            value={formData.type}
             onChange={handleChange}
             required
           >
-            <option value="">Select AI Role</option>
-            {aiRolesOptions.map((role) => (
-              <option key={role} value={role}>
-                {role}
-              </option>
-            ))}
+            <option value="creative">Creative</option>
+            <option value="anime">Anime</option>
+            <option value="famous_people">Famous People</option>
+            <option value="fictional_character">Fictional Character</option>
           </select>
+        </div>
+      </div>
+
+      <div className="col-lg-12 col-md-12 col-sm-12 col-12">
+        <div className="form-group">
+          <label htmlFor="description">Description</label>
+          <textarea
+            id="description"
+            value={formData.description}
+            onChange={handleChange}
+            placeholder="Enter description for the AI figure"
+            rows="2"
+            required
+          ></textarea>
         </div>
       </div>
 
@@ -119,8 +160,8 @@ const AIFigureDetailsForm = () => {
 
       <div className="col-12 mt--20">
         <div className="form-group mb--0">
-          <button type="submit" className="btn-default" disabled={isLoading}>
-            {isLoading ? "Adding..." : "Add AI Figure"}
+          <button type="submit" className="btn-default">
+            Add AI Figure
           </button>
         </div>
       </div>

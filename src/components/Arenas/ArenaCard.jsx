@@ -3,7 +3,9 @@ import { Clock, Info, Users } from "lucide-react";
 import "./ArenaCard.css";
 
 export default function ArenaCard({ arena, onJoin }) {
-  const [isHovered, setIsHovered] = useState(false); // State to track hover
+  const [isHovered, setIsHovered] = useState(false);
+  const [isInfoHovered, setIsInfoHovered] = useState(false);
+  const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
 
   const formatTime = (expiryTime) => {
     const date = new Date(expiryTime);
@@ -18,58 +20,81 @@ export default function ArenaCard({ arena, onJoin }) {
     setIsHovered(false);
   };
 
+  const handleInfoMouseEnter = (event) => {
+    setIsInfoHovered(true);
+    setTooltipPosition({
+      x: event.clientX,
+      y: event.clientY,
+    });
+  };
+
+  const handleInfoMouseLeave = () => {
+    setIsInfoHovered(false);
+  };
+
   return (
-    <div className="arena-card">
+    <div className="arena-card" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+      <div className="arena-card-image-wrapper">
+        <img
+          alt={arena.name}
+          className="arena-card-image"
+          src={arena.image}
+        />
+      </div>
       <div className="arena-card-content">
-        <div className="arena-image-wrapper mb-4">
-          <img
-            alt={arena.na}
-            className="arena-image"
-            src="/assets/images/logo/3(1).png"
-          />
-        </div>
-        <h3 className="arena-name text-uppercase mb-2">{arena.name}</h3>
-        <div className="arena-info mb-2 ">
-          <div className="d-flex align-items-center me-3">
+        <h3 className="arena-card-title">{arena.name}</h3>
+        <div className="arena-card-description">{arena.description}</div>
+        <div className="arena-info">
+          <div className="d-flex align-items-center">
             <Users className="me-2" size={18} />
-            <span>
-              {arena.userArenas.length}/{arena.maxParticipants}
-            </span>
+            <span>{arena.userArenas.length}/{arena.maxParticipants}</span>
           </div>
-          <div className="d-flex align-items-center me-4">
+          <div className="d-flex align-items-center">
             <Clock className="me-2" size={18} />
             <span>{formatTime(arena.expiryTime)}</span>
           </div>
-          {/* Info Icon with Hover Effect */}
           <div
-            className="d-flex  align-items-center position-relative"
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
+            className="d-flex align-items-center position-relative"
+            onMouseEnter={handleInfoMouseEnter}
+            onMouseLeave={handleInfoMouseLeave}
           >
-            <Info className="me-2" size={18} />
-            {/* Tooltip content */}
-            {isHovered && (
-              <div className="hover-info-box position-absolute">
-                <p>{arena.description}</p>
-                <p>Created by: @{arena.createdBy.username}</p>
-              </div>
-            )}
+            <Info className="me-2" size={18} style={{ cursor: "pointer" }} />
           </div>
         </div>
-        
-        <div className="arena-footer">
+        <div className="arena-card-footer">
           <button className="btn custom-btn" onClick={onJoin}>
             Join Arena
           </button>
-          <span
-            className={`arena-status-badge ${
-              arena.status === "open" ? "bg-success" : "bg-danger"
-            }`}
-          >
+          <div className=" d-flex gap-4">
+          <span className={`arena-card-status ${arena.status === "open" ? "active" : "inactive"}`}>
+            {arena.arenaType.name}
+          </span>
+          <span className={`arena-card-status ${arena.status === "open" ? "active" : "inactive"}`}>
             {arena.status}
           </span>
+        
+          </div>
         </div>
       </div>
+  
+      {isInfoHovered && (
+        <div
+          style={{
+            position: "fixed",
+            top: tooltipPosition.y + 15, // Offset to appear slightly below the cursor
+            left: tooltipPosition.x + 15, // Offset to appear slightly to the right of the cursor
+            zIndex: 1000,
+            backgroundColor: "white",
+            padding: "8px",
+            borderRadius: "4px",
+            boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+            width: "200px",
+          }}
+        >
+          <p><strong>Description:</strong> {arena.description}</p>
+          <p><strong>Created by:</strong> @{arena.createdBy.username}</p>
+        </div>
+      )}
     </div>
   );
 }

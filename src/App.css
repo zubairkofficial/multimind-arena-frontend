@@ -77,3 +77,49 @@ form-control:disabled {
     margin-bottom: 20px;
     /* Add space below the search container */
 }
+
+.custom-file-upload {
+    display: flex;
+    align-items: center;
+}
+
+.image-preview {
+    margin-right: 15px;
+}
+
+.image-preview img {
+    width: 150px;
+    height: 100px;
+    object-fit: contain;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+.upload-section {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.file-input {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.upload-button {
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #00aa00;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.upload-button:hover {
+    background-color: #0056b3;
+}

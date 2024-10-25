@@ -1,26 +1,27 @@
 import React, { useEffect, useState } from "react";
-import { useGetUserByIdQuery, useUpdateUserMutation } from "../../../features/api/userApi";
+import { useSelector, useDispatch } from "react-redux";
 import { Notyf } from "notyf";
-import "notyf/notyf.min.css"; // Import Notyf styles
-import { useSelector, useDispatch } from "react-redux"; // Import useSelector to get data from Redux
-import { setUser } from "../../../features/userSlice"; // Import your Redux action to update user
+import "notyf/notyf.min.css";
+import axios from "axios";
+import { setUser } from "../../../features/userSlice";
+import Helpers from "../../../Config/Helpers";
 
 const ProfileDetailsForm = () => {
-  const dispatch = useDispatch(); // Hook to dispatch actions
-
-  // Use useSelector to get the user ID and data from Redux
+  const dispatch = useDispatch();
   const user = useSelector((state) => state.user.user);
   const userId = user?.id;
 
-  // Mutation hook for updating the user
-  const [updateUser, { isLoading: isUpdating, error: updateError }] = useUpdateUserMutation();
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [updateError, setUpdateError] = useState(null);
 
-  // Local state to handle form input
+  // Local state to handle form input and image
   const [formData, setFormData] = useState({
     name: "",
     username: "",
     phoneNumber: "",
   });
+  const [image, setImage] = useState(null); // State for storing image file
+  const [imagePreview, setImagePreview] = useState(null); // State for image preview
 
   // Populate form data when user data is fetched
   useEffect(() => {
@@ -30,6 +31,7 @@ const ProfileDetailsForm = () => {
         username: user.username || "",
         phoneNumber: user.phoneNumber || "",
       });
+      setImagePreview(user.profileImage || null); // Set initial image preview if exists
     }
   }, [user]);
 
@@ -41,27 +43,58 @@ const ProfileDetailsForm = () => {
     });
   };
 
+  // Handle image file change and generate a preview
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    setImage(file);
+    setImagePreview(URL.createObjectURL(file)); // Generate preview URL
+  };
+
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const notyf = new Notyf();
+
+    setIsUpdating(true);
+    setUpdateError(null);
+
+    // Create FormData object
+    const dataToSend = new FormData();
+    dataToSend.append("name", formData.name);
+    dataToSend.append("username", formData.username);
+    dataToSend.append("phoneNumber", formData.phoneNumber);
+    if (image) {
+      dataToSend.append("file", image); // Add image file with 'file' key
+    }
 
     try {
-      // Trigger the API call to update user data
-      const updatedUser = await updateUser({ id: userId, ...formData }).unwrap();
+      // Send the form data using axios
+      const response = await axios.put(
+        `${Helpers.apiUrl}user/update`,
+        dataToSend,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      const updatedUser = response.data.user;
 
       // Dispatch the updated user to the Redux store
-      dispatch(setUser({ user: updatedUser.user }));
+      dispatch(setUser({ user: updatedUser }));
 
       // Update the user data in localStorage
-      localStorage.setItem("user", JSON.stringify(updatedUser.user));
+      localStorage.setItem("user", JSON.stringify(updatedUser));
 
-  
       // Notify the user of the success
-      const notyf = new Notyf();
       notyf.success("Profile updated successfully.");
     } catch (err) {
-      const notyf = new Notyf();
+      setUpdateError(err);
       notyf.error("Failed to update profile. Please try again.");
+    } finally {
+      setIsUpdating(false);
     }
   };
 
@@ -76,6 +109,7 @@ const ProfileDetailsForm = () => {
         onSubmit={handleSubmit}
         className="rbt-profile-row rbt-default-form row row--15"
       >
+        {/* Full Name Field */}
         <div className="col-lg-12 col-md-12 col-sm-12 col-12">
           <div className="form-group">
             <label htmlFor="name">Full Name</label>
@@ -89,6 +123,8 @@ const ProfileDetailsForm = () => {
             />
           </div>
         </div>
+
+        {/* Username Field */}
         <div className="col-lg-6 col-md-6 col-sm-6 col-12">
           <div className="form-group">
             <label htmlFor="username">User Name</label>
@@ -102,6 +138,8 @@ const ProfileDetailsForm = () => {
             />
           </div>
         </div>
+
+        {/* Phone Number Field */}
         <div className="col-lg-6 col-md-6 col-sm-6 col-12">
           <div className="form-group">
             <label htmlFor="phoneNumber">Phone Number</label>
@@ -115,6 +153,33 @@ const ProfileDetailsForm = () => {
             />
           </div>
         </div>
+
+        {/* Image Upload Section */}
+        <div className="form-group grid-item">
+          <label htmlFor="image">Upload Image</label>
+          <div className="custom-file-upload">
+            {imagePreview && (
+              <div className="image-preview">
+                <img src={imagePreview} alt="Arena Preview" />
+              </div>
+            )}
+            <div className="upload-section">
+              <input
+                id="image"
+                type="file"
+                onChange={handleImageChange}
+                accept="image/*"
+                className="file-input"
+                required
+              />
+              <label htmlFor="image" className="upload-button">
+                Choose Image
+              </label>
+            </div>
+          </div>
+        </div>
+
+        {/* Submit Button */}
         <div className="col-12 mt--20">
           <div className="form-group mb--0">
             <button type="submit" className="btn-default" disabled={isUpdating}>
@@ -122,7 +187,9 @@ const ProfileDetailsForm = () => {
             </button>
           </div>
         </div>
-        {updateError && <p className="text-danger">Error: {updateError.data?.message}</p>}
+
+        {/* Display update error */}
+        {updateError && <p className="text-danger">Error: {updateError.message}</p>}
       </form>
     </div>
   );

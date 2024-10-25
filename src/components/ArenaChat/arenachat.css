@@ -1,12 +1,30 @@
+:root {
+    --color-dark: #101010;
+    --color-light: #f8f9fa;
+    --color-primary: #45db34;
+}
+
+
+/* General container styling */
+
 .arena-info-card,
 .user-list-card {
     border: 1px solid var(--color-dark);
     border-radius: 12px;
     background-color: var(--color-dark);
+    padding: 1rem;
+    margin-bottom: 15px;
 }
 
-.arena-info-card {
-    margin-bottom: 15px;
+
+/* Responsive layout for info and list cards */
+
+@media (max-width: 768px) {
+    .arena-info-card,
+    .user-list-card {
+        padding: 0.5rem;
+        border-radius: 8px;
+    }
 }
 
 .info-details-card p,
@@ -21,6 +39,9 @@
     color: var(--color-primary);
 }
 
+
+/* User list styling */
+
 .user-list-card ul {
     padding-left: 0;
 }
@@ -28,36 +49,39 @@
 .user-list-card li {
     list-style: none;
     padding: 5px 0;
-}
-
-.user-list-card li {
     transition: background-color 0.3s ease, transform 0.3s ease;
-    /* Smooth transition for background color and scale */
     border-radius: 10px;
-    /* Subtle border radius for rounded corners */
     padding: 3px;
-    /* Add some padding for spacing inside list items */
     cursor: pointer;
-    /* Make it look clickable */
 }
 
 .user-list-card li:hover {
     background-color: #505050;
-    /* Darker shade for a nice hover effect */
-    transform: scale(1.0);
-    /* Slight scaling to create a popping effect on hover */
-    /* Add a subtle shadow to lift the element */
+    transform: scale(1.02);
 }
 
 .user-list-card li:last-child {
     border-bottom: none;
 }
 
+
+/* Chat message area */
+
 .chat-message-area {
     overflow-y: auto;
     min-height: calc(100vh - 150px);
-    /* Adjust based on your header and input bar heights */
+    /* Default height on larger screens */
 }
+
+@media (max-width: 768px) {
+    .chat-message-area {
+        min-height: 75vh;
+        /* Increased height on mobile screens */
+    }
+}
+
+
+/* Message bubble styles */
 
 .message-bubble {
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
@@ -76,16 +100,21 @@
     opacity: 0.8;
 }
 
+
+/* Notification styling */
+
 .notification-area {
     background-color: rgba(255, 255, 255, 0.1);
     color: #ffffff;
     border-radius: 8px;
+    padding: 0.5rem;
     margin-bottom: 10px;
     animation: fadeInOut 3s ease-in-out;
 }
 
 .notification-text {
     font-weight: bold;
+    font-size: 0.9rem;
 }
 
 @keyframes fadeInOut {
@@ -104,10 +133,7 @@
 }
 
 
-/* ArenaInfoCard.css */
-
-
-/* Modal overlay with black background */
+/* Modal overlay for dark background */
 
 .modal-overlay {
     position: fixed;
@@ -123,7 +149,7 @@
 }
 
 
-/* Modal dialog styles */
+/* Modal dialog and animation */
 
 .modal-dialog {
     background: #000;
@@ -132,17 +158,12 @@
     max-width: 400px;
     width: 100%;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    animation: pop-up 0.4s ease forwards;
 }
-
-
-/* Modal content */
 
 .modal-content {
     padding: 20px;
 }
-
-
-/* Modal header and close button */
 
 .modal-header {
     display: flex;
@@ -162,13 +183,6 @@
     color: #fff;
 }
 
-
-/* Animation for modal pop-up */
-
-.animate-pop-up {
-    animation: pop-up 0.4s ease forwards;
-}
-
 @keyframes pop-up {
     0% {
         transform: scale(0.7);
@@ -177,5 +191,134 @@
     100% {
         transform: scale(1);
         opacity: 1;
+    }
+}
+
+
+/* Toggle button for participants card */
+
+.toggle-participants-btn {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: var(--color-primary);
+    color: var(--color-light);
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.toggle-participants-btn:hover {
+    background-color: #34a02e;
+}
+
+
+/* Expanded Chat Area when Participants Card is Hidden */
+
+.full-width {
+    width: 100%;
+    transition: width 0.3s ease;
+}
+
+
+/* Transition for chat message area */
+
+.chat-message-area {
+    transition: width 0.3s ease;
+}
+
+.chat-message-container {
+    max-height: 60vh;
+}
+
+.user-list-card {
+    padding: 1rem;
+    border-radius: 8px;
+    background-color: #101010;
+    color: #fff;
+}
+
+.user-list-title {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: #45db34;
+}
+
+.user-list {
+    list-style: none;
+    padding: 0;
+}
+
+.user-list-item {
+    padding: 0.5rem 0;
+    border-bottom: 1px;
+    font-size: 2rem;
+}
+
+
+/* Slide in and out from the left */
+
+.slide-in-left {
+    animation: slideInLeft 0.3s forwards ease-in-out;
+}
+
+.slide-out-left {
+    animation: slideOutLeft 0.3s forwards ease-in-out;
+}
+
+@keyframes slideInLeft {
+    from {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOutLeft {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+}
+
+
+/* Slide in and out from the right */
+
+.slide-in-right {
+    animation: slideInRight 0.3s forwards ease-in-out;
+}
+
+.slide-out-right {
+    animation: slideOutRight 0.3s forwards ease-in-out;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOutRight {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
     }
 }

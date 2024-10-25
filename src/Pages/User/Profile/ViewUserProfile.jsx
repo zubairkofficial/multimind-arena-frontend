@@ -22,7 +22,7 @@ const ViewUserProfile = () => {
 
       <div className="text-center mb-4">
         <img
-          src="/assets/images/team/team-01.png" // Replace with any placeholder image
+          src={userData.image} // Replace with any placeholder image
           alt="User Profile"
           className="rounded-circle"
           style={{ width: "150px", height: "150px" }}
@@ -32,7 +32,7 @@ const ViewUserProfile = () => {
       <form className="d-flex justify-content-center">
         <div>
           <div className="row">
-            <div className="col-md-5">
+            <div className="col-md-6">
               <div className="form-group mb-3">
                 <label htmlFor="name">Name</label>
                 <input
@@ -45,7 +45,7 @@ const ViewUserProfile = () => {
               </div>
             </div>
 
-            <div className="col-md-5">
+            <div className="col-md-6">
               <div className="form-group mb-3">
                 <label htmlFor="username">Username</label>
                 <input
@@ -58,7 +58,7 @@ const ViewUserProfile = () => {
               </div>
             </div>
 
-            <div className="col-md-5">
+            <div className="col-md-6">
               <div className="form-group mb-3">
                 <label htmlFor="email">Email</label>
                 <input
@@ -71,7 +71,7 @@ const ViewUserProfile = () => {
               </div>
             </div>
 
-            <div className="col-md-5">
+            <div className="col-md-6">
               <div className="form-group mb-3">
                 <label htmlFor="phoneNumber">Phone Number</label>
                 <input
@@ -84,7 +84,7 @@ const ViewUserProfile = () => {
               </div>
             </div>
 
-            <div className="col-md-10">
+            <div className="col-md-12">
               <div className="form-group mb-3">
                 <label htmlFor="persona">Persona</label>
                 <input

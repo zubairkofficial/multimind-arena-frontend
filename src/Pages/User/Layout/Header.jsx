@@ -24,7 +24,7 @@ const Header = () => {
   };
 
   return (
-    <header className="rbt-dashboard-header rainbow-header header-default header-left-align rbt-fluid-header">
+    <header className="rbt-dashboard-header rainbow-header header-default header-left-align rbt-fluid-header" >
       <div className="container-fluid position-relative">
         <div className="row align-items-center justify-content-between">
           <div className="col-lg-3 col-md-6 col-6">

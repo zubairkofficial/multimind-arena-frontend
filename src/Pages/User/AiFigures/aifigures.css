@@ -1,43 +1,69 @@
-.ai-figure-gallery {
-    padding: 20px;
-}
+/* aifigures.css */
 
-.gallery-grid {
+.aifigure-card {
+    border-radius: 16px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    background-color: #202020;
+    transition: transform 0.2s ease-in-out;
+    cursor: pointer;
+    width: 200px;
+    margin: 1rem;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 20px;
-    margin-bottom: 20px;
 }
 
-.ai-figure-card {
-    background-color: #101010;
-    padding: 20px;
-    border-radius: 10px;
-    text-align: center;
-    box-shadow: 0px 2px 8px rgba(8, 216, 50, 0.1);
-    transition: ease-in-out 0.3s;
+.aifigure-card-content {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
 }
 
-.ai-figure-card:hover {
-    transform: translateY(4px);
-    box-shadow: 0px 10px 10px rgba(8, 216, 50, 0.1);
+.aifigure-card-image-wrapper {
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 1rem;
 }
 
-.emoji-display {
-    font-size: 40px;
+.aifigure-card-image {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
 }
 
-.ai-figure-name {
-    font-size: 18px;
+.aifigure-card-title {
+    font-size: 1.25rem;
     font-weight: bold;
-    margin: 10px 0;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
 }
 
-.ai-figure-role {
-    font-size: 14px;
+.aifigure-card-description {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
     color: #666;
 }
 
-.create-ai-figure {
-    text-align: center;
+.aifigure-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.aifigure-card-creator {
+    font-size: 0.875rem;
+    color: #333;
+}
+
+.aifigure-card-status {
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    color: #fff;
+}
+
+.aifigure-card-status.active {
+    background-color: #28a745;
+}
+
+.aifigure-card-status.inactive {
+    background-color: #6c757d;
 }

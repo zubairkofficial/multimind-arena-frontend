@@ -36,11 +36,7 @@ const AIFigureGallery = () => {
       <div className="gallery-grid">
         {aiFigures.map((figure) => (
           <AIFigureCard
-            key={figure.id} // Use a unique key from the figure object
-            name={figure.name}
-            emoji={figure.emoji} // Assuming the emoji is part of the figure data
-            role={figure.role} // Assuming the role is part of the figure data
-            description={figure.description} // Assuming the description is part of the figure data
+            figure={figure} // Assuming the description is part of the figure data
           />
         ))}
       </div>

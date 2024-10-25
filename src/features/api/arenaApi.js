@@ -23,7 +23,8 @@ export const arenaApi = apiSlice.injectEndpoints({
                 method: "POST",
                 body: newArena,
                 headers: {
-                    "Content-Type": "application/json",
+                    "Content-Type": "multipart/form-data",
+
                     Authorization: `Bearer ${Helpers.getItem("token")}`,
                 },
             }),

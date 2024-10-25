@@ -27,7 +27,7 @@ const Sidebar = () => {
     { path: "/dashboard", icon: "fa-home", label: "Dashboard" },
     { path: "/chats", icon: "fa-messages", label: "Chat" },
     { path: "/add-arena", icon: "fa-plus-circle", label: "Add Arena" },
-    { path: "/ai-figure-gallery", icon: "fa-images", label: "AI Figure Fallery" }, // Added Add Arena option
+    { path: "/ai-figure-gallery", icon: "fa-images", label: "AI Figure Gallery" }, // Added Add Arena option
   ];
 
   const settingMenuItems = [

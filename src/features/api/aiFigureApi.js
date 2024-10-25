@@ -24,7 +24,7 @@ export const aiFigureApi = apiSlice.injectEndpoints({
                 method: "POST",
                 body: newAIFigure,
                 headers: {
-                    "Content-Type": "application/json",
+                    "Content-Type": "multipart/form-data",
                     Authorization: `Bearer ${Helpers.getItem("token")}`,
                 },
             }),
@@ -49,7 +49,7 @@ export const aiFigureApi = apiSlice.injectEndpoints({
                 method: "PUT",
                 body: updatedAIFigure,
                 headers: {
-                    "Content-Type": "application/json",
+                    "Content-Type": "multipart/form-data",
                     Authorization: `Bearer ${Helpers.getItem("token")}`,
                 },
             }),

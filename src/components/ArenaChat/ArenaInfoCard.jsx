@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import './arenachat.css'; // Import the CSS file for custom styles
+import React, { useState } from "react";
+import "./arenachat.css"; // Import the CSS file for custom styles
 
-function ArenaInfoCard({ name, handleLeaveRoom }) {
+function ArenaInfoCard({ name, handleLeaveRoom, toggleParticipants,toggleUsers }) {
   const [showModal, setShowModal] = useState(false);
 
   // Functions to handle modal visibility
@@ -33,30 +33,35 @@ function ArenaInfoCard({ name, handleLeaveRoom }) {
           >
             <i className="fas fa-sign-out-alt text-danger fa-2xl"></i>
           </button>
+          <button
+            className="btn p-2 me-3"
+            onClick={toggleUsers}
+            title="Users"
+          >
+            <i className="fas fa-users text-success fa-xl"></i>
+          </button>
+
 
           {/* Three Dot Menu */}
           <div className="dropdown">
             <button
               className="btn text-white dropdown-toggle p-2"
-              type="button"
-              id="dropdownMenuButton"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
+              onClick={toggleParticipants}
             >
-              <i className="fas fa-ellipsis-v fa-lg"></i>
+              <i className="fas fa-ellipsis-v fa-2xl"></i>
             </button>
-            <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <li><a className="dropdown-item" href="#">Option 1</a></li>
-              <li><a className="dropdown-item" href="#">Option 2</a></li>
-              <li><a className="dropdown-item" href="#">Option 3</a></li>
-            </ul>
           </div>
         </div>
       </div>
 
       {/* Confirmation Modal */}
       {showModal && (
-        <div className="modal fade show d-block" tabIndex="-1" role="dialog" style={{ backgroundColor: 'rgba(0, 0, 0, 0.8)' }}>
+        <div
+          className="modal fade show d-block"
+          tabIndex="-1"
+          role="dialog"
+          style={{ backgroundColor: "rgba(0, 0, 0, 0.8)" }}
+        >
           <div className="modal-dialog modal-dialog-centered" role="document">
             <div className="modal-content bg-dark text-white">
               <div className="modal-header">
