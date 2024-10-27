@@ -1,9 +1,19 @@
-import React from "react";
-import "./aifigures.css";
+import React, { useState } from "react";
+import "./aifigure.css";
 
 export default function AIFigureCard({ figure, onSelect }) {
+  const [isSelected, setIsSelected] = useState(false);
+
+  const handleSelect = () => {
+    setIsSelected(!isSelected);
+    onSelect(figure);
+  };
+
   return (
-    <div className="aifigure-card" onClick={() => onSelect(figure)}>
+    <div
+      className={`aifigure-card ${isSelected ? "selected" : ""}`}
+      onClick={handleSelect}
+    >
       <div className="aifigure-card-image-wrapper">
         <img
           alt={figure.name}
@@ -25,6 +35,11 @@ export default function AIFigureCard({ figure, onSelect }) {
           </span>
         </div>
       </div>
+      {isSelected && (
+        <div className="aifigure-card-overlay">
+          <span className="tick-mark">&#10003;</span>
+        </div>
+      )}
     </div>
   );
 }

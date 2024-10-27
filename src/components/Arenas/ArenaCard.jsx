@@ -3,21 +3,12 @@ import { Clock, Info, Users } from "lucide-react";
 import "./ArenaCard.css";
 
 export default function ArenaCard({ arena, onJoin }) {
-  const [isHovered, setIsHovered] = useState(false);
   const [isInfoHovered, setIsInfoHovered] = useState(false);
   const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
 
   const formatTime = (expiryTime) => {
     const date = new Date(expiryTime);
     return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-  };
-
-  const handleMouseEnter = () => {
-    setIsHovered(true);
-  };
-
-  const handleMouseLeave = () => {
-    setIsHovered(false);
   };
 
   const handleInfoMouseEnter = (event) => {
@@ -33,17 +24,18 @@ export default function ArenaCard({ arena, onJoin }) {
   };
 
   return (
-    <div className="arena-card" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+    <div className="arena-card">
+      {/* Image at the top */}
       <div className="arena-card-image-wrapper">
-        <img
-          alt={arena.name}
-          className="arena-card-image"
-          src={arena.image}
-        />
+        <img alt={arena.name} className="arena-card-image" src="assets/images/logo/1.png" />
       </div>
+
+      {/* Content section */}
       <div className="arena-card-content">
         <h3 className="arena-card-title">{arena.name}</h3>
         <div className="arena-card-description">{arena.description}</div>
+        
+        {/* Arena Info Icons */}
         <div className="arena-info">
           <div className="d-flex align-items-center">
             <Users className="me-2" size={18} />
@@ -61,30 +53,32 @@ export default function ArenaCard({ arena, onJoin }) {
             <Info className="me-2" size={18} style={{ cursor: "pointer" }} />
           </div>
         </div>
+
+        {/* Footer */}
         <div className="arena-card-footer">
           <button className="btn custom-btn" onClick={onJoin}>
             Join Arena
           </button>
-          <div className=" d-flex gap-4">
-          <span className={`arena-card-status ${arena.status === "open" ? "active" : "inactive"}`}>
-            {arena.arenaType.name}
-          </span>
-          <span className={`arena-card-status ${arena.status === "open" ? "active" : "inactive"}`}>
-            {arena.status}
-          </span>
-        
+          <div className="d-flex gap-4">
+            <span className={`arena-card-status ${arena.status === "open" ? "active" : "inactive"}`}>
+              {arena.arenaType.name}
+            </span>
+            <span className={`arena-card-status ${arena.status === "open" ? "active" : "inactive"}`}>
+              {arena.status}
+            </span>
           </div>
         </div>
       </div>
-  
+
+      {/* Tooltip Hover Info */}
       {isInfoHovered && (
         <div
           style={{
             position: "fixed",
-            top: tooltipPosition.y + 15, // Offset to appear slightly below the cursor
-            left: tooltipPosition.x + 15, // Offset to appear slightly to the right of the cursor
+            top: tooltipPosition.y + 15,
+            left: tooltipPosition.x + 15,
             zIndex: 1000,
-            backgroundColor: "white",
+            backgroundColor: "#fff",
             padding: "8px",
             borderRadius: "4px",
             boxShadow: "0 4px 8px rgba(0,0,0,0.1)",

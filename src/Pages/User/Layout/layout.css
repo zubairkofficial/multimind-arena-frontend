@@ -1,0 +1,43 @@
+/* Main content wrapper styling */
+
+.content-wrapper {
+    transition: margin 0.3s ease;
+    /* Smooth transition for both margins */
+    margin-left: 30px;
+    /* Default left margin when sidebar is closed */
+    margin-right: 30px;
+    /* Default right margin when right sidebar is closed */
+}
+
+
+/* Adjust margin when sidebar is open */
+
+.content-wrapper.sidebar-open {
+    margin-left: 350px;
+}
+
+.content-wrapper.right-sidebar-open {
+    margin-right: 350px;
+}
+
+
+/* Hide content when either sidebar is open on mobile */
+
+@media (max-width: 768px) {
+    .content-wrapper.hide-on-mobile {
+        display: none;
+    }
+    /* Adjust margins for smaller screens */
+    .content-wrapper {
+        margin-left: 15px;
+        margin-right: 15px;
+        padding-top: 20px;
+        /* Adjust padding for mobile if the header height is smaller */
+    }
+    .content-wrapper.sidebar-open {
+        margin-left: 200px;
+    }
+    .content-wrapper.right-sidebar-open {
+        margin-right: 200px;
+    }
+}

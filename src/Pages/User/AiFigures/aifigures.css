@@ -1,63 +1,92 @@
-/* aifigures.css */
-
 .aifigure-card {
     border-radius: 16px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
     overflow: hidden;
     background-color: #202020;
-    transition: transform 0.2s ease-in-out;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
     cursor: pointer;
-    width: 200px;
-    margin: 1rem;
-    display: grid;
+    width: 220px;
+    height: 200px;
+    /* Slightly wider to give more room */
+    margin: 1.5rem;
+    /* More breathing room between cards */
+    display: flex;
+    flex-direction: column;
+    padding: 0.5rem;
+    /* Inner padding to make the card feel more spacious */
+}
+
+.aifigure-card:hover {
+    transform: scale(1.03);
+    /* Slight scaling effect on hover */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.aifigure-card-image-wrapper {
+    position: relative;
+    width: 100%;
+    height: 60%;
+    overflow: hidden;
+    border-radius: 12px;
+    /* Softer rounded corners on the image */
+}
+
+.aifigure-card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.aifigure-card-creator {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    font-size: 0.875rem;
+    color: #fff;
+    background-color: rgba(0, 0, 0, 0.6);
+    padding: 0.25rem 0.5rem;
+    border-radius: 8px;
 }
 
 .aifigure-card-content {
     padding: 1rem;
     display: flex;
     flex-direction: column;
-}
-
-.aifigure-card-image-wrapper {
-    border-radius: 16px;
-    overflow: hidden;
-    margin-bottom: 1rem;
-}
-
-.aifigure-card-image {
-    width: 100%;
-    height: 150px;
-    object-fit: cover;
+    height: 30%;
+    justify-content: space-between;
+    gap: 0.5rem;
+    /* Adds space between elements */
 }
 
 .aifigure-card-title {
-    font-size: 1.25rem;
+    font-size: 1.2rem;
     font-weight: bold;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.25rem;
     text-transform: uppercase;
+    color: #fff;
+    /* Ensures title is visible on dark background */
 }
 
 .aifigure-card-description {
-    font-size: 1rem;
-    margin-bottom: 0.5rem;
-    color: #666;
+    font-size: 0.95rem;
+    color: #bbb;
+    /* Softer color to create a visual hierarchy */
 }
 
 .aifigure-card-footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
-}
-
-.aifigure-card-creator {
-    font-size: 0.875rem;
-    color: #333;
+    margin-top: 0.5rem;
+    /* Adds space above footer for breathing room */
 }
 
 .aifigure-card-status {
-    padding: 0.25rem 0.5rem;
+    padding: 0.3rem 0.75rem;
     border-radius: 12px;
+    font-weight: 500;
     color: #fff;
+    font-size: 0.875rem;
 }
 
 .aifigure-card-status.active {
@@ -66,4 +95,34 @@
 
 .aifigure-card-status.inactive {
     background-color: #6c757d;
+}
+
+.category-btn {
+    font-size: 2rem;
+    /* Increase font size for better readability */
+    padding: 1rem 1.8rem;
+    /* Add padding for larger buttons */
+    margin: 0.6rem;
+    /* Space between buttons */
+    border-radius: 8px;
+    /* Rounded corners for a smoother look */
+    border: none;
+    color: #ffffff;
+    background-color: #111111;
+    /* Green background color */
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    /* Smooth transitions */
+    cursor: pointer;
+}
+
+.category-btn.active {
+    background-color: #218838;
+    /* Darker green for active state */
+}
+
+.category-btn:hover {
+    background-color: #218838;
+    /* Darker green on hover */
+    transform: scale(1.05);
+    /* Slight scaling effect */
 }

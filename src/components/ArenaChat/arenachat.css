@@ -117,18 +117,36 @@
     font-size: 0.9rem;
 }
 
-@keyframes fadeInOut {
-    0% {
+
+/* Fade-in and Slide */
+
+.fade-in {
+    animation: fadeIn 0.5s forwards ease-in-out;
+}
+
+.fade-out {
+    animation: fadeOut 0.5s forwards ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
         opacity: 0;
+        transform: scale(0.95);
     }
-    10% {
+    to {
         opacity: 1;
+        transform: scale(1);
     }
-    90% {
+}
+
+@keyframes fadeOut {
+    from {
         opacity: 1;
+        transform: scale(1);
     }
-    100% {
+    to {
         opacity: 0;
+        transform: scale(0.95);
     }
 }
 
@@ -152,7 +170,7 @@
 /* Modal dialog and animation */
 
 .modal-dialog {
-    background: #000;
+    background: transparent;
     color: #fff;
     border-radius: 8px;
     max-width: 400px;
@@ -230,7 +248,8 @@
 }
 
 .chat-message-container {
-    max-height: 60vh;
+    max-height: 53vh;
+    transition: margin 0.3s ease;
 }
 
 .user-list-card {
@@ -258,14 +277,14 @@
 }
 
 
-/* Slide in and out from the left */
+/* Slide animations for left and right */
 
 .slide-in-left {
-    animation: slideInLeft 0.3s forwards ease-in-out;
+    animation: slideInLeft 0.4s forwards ease-in-out;
 }
 
 .slide-out-left {
-    animation: slideOutLeft 0.3s forwards ease-in-out;
+    animation: slideOutLeft 0.4s forwards ease-in-out;
 }
 
 @keyframes slideInLeft {
@@ -290,15 +309,12 @@
     }
 }
 
-
-/* Slide in and out from the right */
-
 .slide-in-right {
-    animation: slideInRight 0.3s forwards ease-in-out;
+    animation: slideInRight 0.4s forwards ease-in-out;
 }
 
 .slide-out-right {
-    animation: slideOutRight 0.3s forwards ease-in-out;
+    animation: slideOutRight 0.4s forwards ease-in-out;
 }
 
 @keyframes slideInRight {

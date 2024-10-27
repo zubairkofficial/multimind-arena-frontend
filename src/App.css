@@ -123,3 +123,9 @@ form-control:disabled {
 .upload-button:hover {
     background-color: #0056b3;
 }
+
+.ai-figure-card.selected {
+    border: 2px solid #10f53e;
+    /* Highlight selected cards */
+    box-shadow: 0 4px 12px rgba(30, 144, 255, 0.3);
+}

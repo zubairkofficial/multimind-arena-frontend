@@ -8,6 +8,30 @@
 }
 
 
+/* Style each arena category section */
+
+.arena-category {
+    padding-bottom: 20px;
+    margin-bottom: 40px;
+    /* Add spacing below each section */
+    border-bottom: 2px solid #444;
+    /* Border to separate each section */
+}
+
+.arena-category h4 {
+    color: #fff;
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+}
+
+
+/* Optional: Increase padding around cards */
+
+.arena-list {
+    padding: 0 20px;
+}
+
+
 /* Standard card styles */
 
 .arena-card {
@@ -133,4 +157,26 @@
         width: 100%;
         margin-bottom: 10px;
     }
+}
+
+
+/* Search Bar Section at the Top */
+
+.search-bar-section {
+    padding: 20px 0;
+    margin-bottom: 30px;
+    border-bottom: 2px solid #444;
+    text-align: center;
+}
+
+.dashboard-title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #fff;
+    margin-bottom: 15px;
+}
+
+.search-bar-section .search-bar {
+    max-width: 600px;
+    margin: 0 auto;
 }

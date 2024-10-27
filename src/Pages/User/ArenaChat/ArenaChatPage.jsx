@@ -20,7 +20,7 @@ export default function ArenaChatPage() {
   const [showParticipants, setShowParticipants] = useState(false);
   const [showUsers, setShowUsers] = useState(false);
   const chatContainerRef = useRef(null);
-  console.log("Arena:",arena);
+  console.log("Arena:", arena);
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
     window.addEventListener("resize", handleResize);
@@ -143,7 +143,7 @@ export default function ArenaChatPage() {
       <div
         className={showParticipants ? "slide-in-left" : "slide-out-left"}
         style={{
-          width: showParticipants ? (isMobile ? "50%" : "250px") : "0",
+          width: showParticipants ? (isMobile ? "50%" : "420px") : "0",
           opacity: showParticipants ? 1 : 0,
           overflow: "hidden",
           position: isMobile ? "absolute" : "static",
@@ -154,9 +154,9 @@ export default function ArenaChatPage() {
         {showParticipants && (
           <ParticipantsCard
             participants={
-              arena?.arenaAIFigures?.map((userArena) => userArena.aiFigure?.name) || [
-                "Ahsan",
-              ]
+              arena?.arenaAIFigures?.map(
+                (userArena) => userArena.aiFigure?.name
+              ) || ["Ahsan"]
             }
             totalParticipants={arena?.userArenas?.length || 0}
             expiryTime={arena?.expiryTime}
@@ -185,7 +185,9 @@ export default function ArenaChatPage() {
 
         <div
           ref={chatContainerRef}
-          className="flex-grow-1 pt-4 px-2 overflow-auto chat-message-container"
+          className={`flex-grow-1 pt-4 px-4 overflow-auto chat-message-container ${
+            chatMessages.length ? "slideIn" : "fade-out"
+          }`}
         >
           {chatMessages.map((msg, index) => (
             <MessageBubble key={index} message={msg} />
@@ -195,7 +197,7 @@ export default function ArenaChatPage() {
         <div className="p-1 border-color-light chat-input-container">
           <form
             onSubmit={handleSubmit}
-            className="mt-5 d-flex align-items-center w-110 position-relative bg-transparent"
+            className="mt-5 d-flex align-items-center w-100 position-relative bg-transparent"
           >
             <input
               type="text"
@@ -219,7 +221,7 @@ export default function ArenaChatPage() {
         <div
           className={showUsers ? "slide-in-right" : "slide-out-right"}
           style={{
-            width: "250px",
+            width: "400px",
             backgroundColor: "#101010",
             color: "#fff",
             padding: "1rem",

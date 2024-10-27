@@ -1,0 +1,70 @@
+.aifigure-card {
+    position: relative;
+    transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.aifigure-card.selected {
+    transform: scale(0.95);
+    filter: grayscale(80%);
+}
+
+.aifigure-card-image-wrapper {
+    position: relative;
+}
+
+.aifigure-card-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 2rem;
+}
+
+.tick-mark {
+    font-size: 10rem;
+}
+
+.aifigure-card.selected .aifigure-card-overlay {
+    display: flex;
+}
+
+.aifigure-card-image {
+    width: 100%;
+    height: auto;
+}
+
+.aifigure-card-content {
+    padding: 1rem;
+}
+
+.aifigure-card-title {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.aifigure-card-description {
+    font-size: 1rem;
+    color: #666;
+}
+
+.aifigure-card-footer {
+    margin-top: 1rem;
+}
+
+.aifigure-card-status {
+    font-weight: bold;
+}
+
+.aifigure-card-status.active {
+    color: green;
+}
+
+.aifigure-card-status.inactive {
+    color: red;
+}

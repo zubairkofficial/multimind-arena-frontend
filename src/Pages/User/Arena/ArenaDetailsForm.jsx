@@ -5,6 +5,11 @@ import { useGetAllArenaTypesQuery } from "../../../features/api/arenaApi";
 import { useGetAllAIFiguresQuery } from "../../../features/api/aiFigureApi";
 import Preloader from "../../Landing/Preloader";
 import Helpers from "../../../Config/Helpers";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import Slider from "react-slick";
+import AIFigureCard from "./AIFigureCard";
+
 
 const ArenaDetailsForm = () => {
   const { data: arenaTypesData, isLoading: isLoadingArenaTypes, error: arenaTypesError } = useGetAllArenaTypesQuery();
@@ -26,20 +31,10 @@ const ArenaDetailsForm = () => {
   // Handle form input changes
   const handleChange = (e) => {
     const { id, value } = e.target;
-    if (id === "aiFigureId") {
-      const selectedValues = Array.from(e.target.selectedOptions, (option) => option.value);
-      if (selectedValues.length <= 3) {
-        setFormData({
-          ...formData,
-          aiFigureId: selectedValues,
-        });
-      }
-    } else {
-      setFormData({
-        ...formData,
-        [id]: value,
-      });
-    }
+    setFormData({
+      ...formData,
+      [id]: value,
+    });
   };
 
   // Handle image file change and generate a preview
@@ -55,6 +50,21 @@ const ArenaDetailsForm = () => {
     setFormData({
       ...formData,
       scheduledTime: "",
+    });
+  };
+
+  // Handle AI figure card selection
+  const handleAIFigureSelect = (figureId) => {
+    const isSelected = formData.aiFigureId.includes(figureId);
+    const updatedAIFigureId = isSelected
+      ? formData.aiFigureId.filter((id) => id !== figureId)
+      : formData.aiFigureId.length < 3
+      ? [...formData.aiFigureId, figureId]
+      : formData.aiFigureId;
+
+    setFormData({
+      ...formData,
+      aiFigureId: updatedAIFigureId,
     });
   };
 
@@ -124,6 +134,14 @@ const ArenaDetailsForm = () => {
   if (arenaTypesError) return <div>Error loading arena types: {arenaTypesError.message}</div>;
   if (aiFiguresError) return <div>Error loading AI figures: {aiFiguresError.message}</div>;
 
+  const sliderSettings = {
+    dots: true,
+    infinite: false,
+    speed: 500,
+    slidesToShow: 3,
+    slidesToScroll: 1,
+  };
+
   return (
     <div className="arena-details-form-container">
       <form onSubmit={handleSubmit} className="arena-form grid-container">
@@ -153,17 +171,18 @@ const ArenaDetailsForm = () => {
           </select>
         </div>
 
-        {/* AI Figure Selection */}
-        <div className="form-group grid-item">
+        {/* AI Figure Selection Carousel */}
+        <div className="form-group grid-item ai-figure-carousel">
           <label htmlFor="aiFigureId">Select AI Figures (max 3)</label>
-          <select id="aiFigureId" value={formData.aiFigureId} onChange={handleChange} multiple required>
+          <Slider {...sliderSettings}>
             {aiFiguresData.map((figure) => (
-              <option key={figure.id} value={figure.id}>
-                {figure.name} - {figure.description}
-              </option>
+              <AIFigureCard
+                key={figure.id}
+                figure={figure}
+                onSelect={() => handleAIFigureSelect(figure.id)}
+              />
             ))}
-          </select>
-          <small className="text-muted">Hold Ctrl (Cmd on Mac) to select multiple options.</small>
+          </Slider>
         </div>
 
         {/* Image Upload Section */}
