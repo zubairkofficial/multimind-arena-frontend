@@ -1,84 +1,71 @@
 .aifigure-card {
     border-radius: 16px;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     overflow: hidden;
     background-color: #202020;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.2s ease-in-out;
     cursor: pointer;
-    width: 220px;
-    height: 200px;
-    /* Slightly wider to give more room */
-    margin: 1.5rem;
-    /* More breathing room between cards */
+    width: 240px;
+    height: 400px;
+    /* Adjusted height */
+    margin: 1rem;
     display: flex;
     flex-direction: column;
-    padding: 0.5rem;
-    /* Inner padding to make the card feel more spacious */
 }
 
 .aifigure-card:hover {
-    transform: scale(1.03);
-    /* Slight scaling effect on hover */
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
 .aifigure-card-image-wrapper {
-    position: relative;
     width: 100%;
-    height: 60%;
+    height: 70%;
+    /* Occupies the top portion */
     overflow: hidden;
-    border-radius: 12px;
-    /* Softer rounded corners on the image */
 }
 
 .aifigure-card-image {
     width: 100%;
     height: 100%;
     object-fit: cover;
-}
-
-.aifigure-card-creator {
-    position: absolute;
-    bottom: 8px;
-    right: 8px;
-    font-size: 0.875rem;
-    color: #fff;
-    background-color: rgba(0, 0, 0, 0.6);
-    padding: 0.25rem 0.5rem;
-    border-radius: 8px;
+    border-radius: 0;
+    /* Edge-to-edge display without borders */
 }
 
 .aifigure-card-content {
-    padding: 1rem;
+    padding: 1.5rem;
     display: flex;
     flex-direction: column;
-    height: 30%;
     justify-content: space-between;
-    gap: 0.5rem;
-    /* Adds space between elements */
+    height: 30%;
 }
 
 .aifigure-card-title {
-    font-size: 1.2rem;
+    font-size: 1.25rem;
     font-weight: bold;
-    margin-bottom: 0.25rem;
+    color: #ffffff;
     text-transform: uppercase;
-    color: #fff;
-    /* Ensures title is visible on dark background */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .aifigure-card-description {
     font-size: 0.95rem;
-    color: #bbb;
-    /* Softer color to create a visual hierarchy */
+    color: #aaa;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-height: 1.2em;
+    /* Truncate after one line */
 }
 
 .aifigure-card-footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 0.5rem;
-    /* Adds space above footer for breathing room */
+    margin-top: 0.75rem;
 }
 
 .aifigure-card-status {
@@ -98,7 +85,7 @@
 }
 
 .category-btn {
-    font-size: 2rem;
+    font-size: 1.5rem;
     /* Increase font size for better readability */
     padding: 1rem 1.8rem;
     /* Add padding for larger buttons */
@@ -125,4 +112,73 @@
     /* Darker green on hover */
     transform: scale(1.05);
     /* Slight scaling effect */
+}
+
+.ai-figure-gallery {
+    padding: 20px;
+}
+
+
+/* Responsive grid layout */
+
+.gallery-grid {
+    display: grid;
+    gap: 2rem;
+    margin-bottom: 20px;
+    justify-items: center;
+    /* Centers items horizontally on mobile */
+}
+
+
+/* Mobile screens (1 column, centered cards) */
+
+@media (max-width: 767px) {
+    .gallery-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/* Medium screens (e.g., tablets) */
+
+@media (min-width: 768px) and (max-width: 1023px) {
+    .gallery-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+
+/* Large screens (4 columns) */
+
+@media (min-width: 1024px) {
+    .gallery-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+
+/* Extra-large screens (4 columns, larger spacing) */
+
+@media (min-width: 1440px) {
+    .gallery-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 3rem;
+        /* Adds more spacing for extra-large screens */
+    }
+}
+
+.category-menu {
+    border-radius: 10px;
+    overflow-x: auto;
+    white-space: nowrap;
+    scroll-behavior: smooth;
+    -ms-overflow-style: none;
+    /* Hides scrollbar in IE and Edge */
+    scrollbar-width: none;
+    /* Hides scrollbar in Firefox */
+}
+
+.category-menu::-webkit-scrollbar {
+    display: none;
+    /* Hides scrollbar in Chrome, Safari, and other WebKit browsers */
 }

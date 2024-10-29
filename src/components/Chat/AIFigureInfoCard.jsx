@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import "./arenachat.css"; // Import the CSS file for custom styles
+import "./../ArenaChat/arenachat.css"; // Import the CSS file for custom styles
 
-function ArenaInfoCard({
+function AIFigureInfoCard({
   image,
   name,
   handleLeaveRoom,
@@ -83,7 +83,7 @@ function ArenaInfoCard({
                 ></button>
               </div>
               <div className="modal-body">
-                <p>Are you sure you want to leave the arena?</p>
+                <p>Are you sure you want to leave the chat?</p>
               </div>
               <div className="modal-footer">
                 <button
@@ -109,4 +109,4 @@ function ArenaInfoCard({
   );
 }
 
-export default ArenaInfoCard;
+export default AIFigureInfoCard;

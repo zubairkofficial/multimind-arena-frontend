@@ -14,6 +14,7 @@ export default function ArenaChatPage() {
   const [arena, setArena] = useState(location.state);
   const userId = useSelector((state) => state.user.user.id);
   const [message, setMessage] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [chatMessages, setChatMessages] = useState([]);
   const [notification, setNotification] = useState(null);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
@@ -21,6 +22,7 @@ export default function ArenaChatPage() {
   const [showUsers, setShowUsers] = useState(false);
   const chatContainerRef = useRef(null);
   console.log("Arena:", arena);
+
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
     window.addEventListener("resize", handleResize);
@@ -32,6 +34,7 @@ export default function ArenaChatPage() {
       socket.emit("joinRoom", { arenaId: arena.id, userId });
 
       socket.on("receiveMessage", (data) => {
+        console.log("Socket Event - receiveMessage:", data); // Logging receiveMessage data
         if (data.senderId !== userId) {
           setChatMessages((prevMessages) => [
             ...prevMessages,
@@ -46,6 +49,7 @@ export default function ArenaChatPage() {
       });
 
       socket.on("userRejoined", (data) => {
+        console.log("Socket Event - userRejoined:", data); // Logging userRejoined data
         if (data.userId !== userId) {
           setNotification(`User ${data.userName || data.userId} has rejoined.`);
           setArena((prevArena) => ({ ...prevArena, ...data }));
@@ -54,6 +58,7 @@ export default function ArenaChatPage() {
       });
 
       socket.on("userJoined", (data) => {
+        console.log("Socket Event - userJoined:", data); // Logging userJoined data
         if (data.userId !== userId) {
           setNotification(`User ${data.userName || data.userId} has joined.`);
           setArena((prevArena) => ({ ...prevArena, ...data }));
@@ -62,6 +67,7 @@ export default function ArenaChatPage() {
       });
 
       socket.on("userLeft", (data) => {
+        console.log("Socket Event - userLeft:", data); // Logging userLeft data
         setNotification(`User ${data.userName || data.userId} has left.`);
         setTimeout(() => setNotification(null), 3000);
       });
@@ -82,11 +88,13 @@ export default function ArenaChatPage() {
         chatContainerRef.current.scrollHeight;
     }
   }, [chatMessages]);
+  const handleModal = () =>{ setIsModalOpen(true)}
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const socket = getSocket();
     if (message.trim() && arena?.id && socket) {
+      console.log("Sending Message:", { content: message, userId, arenaId: arena.id }); // Log the outgoing message
       socket.emit("sendMessage", {
         content: message,
         userId,
@@ -109,12 +117,12 @@ export default function ArenaChatPage() {
   };
 
   const handleLeaveRoom = () => {
+    console.log("Leaving Room:", { arenaId: arena.id, userId }); // Log the leave event
     getSocket().emit("leaveRoom", { arenaId: arena.id, userId });
     navigate("/dashboard");
   };
 
   const toggleParticipants = () => setShowParticipants(!showParticipants);
-
   const toggleUsers = () => setShowUsers(!showUsers);
 
   return (
@@ -143,7 +151,7 @@ export default function ArenaChatPage() {
       <div
         className={showParticipants ? "slide-in-left" : "slide-out-left"}
         style={{
-          width: showParticipants ? (isMobile ? "50%" : "420px") : "0",
+          width: showParticipants ? (isMobile ? "50%" : "250px") : "0",
           opacity: showParticipants ? 1 : 0,
           overflow: "hidden",
           position: isMobile ? "absolute" : "static",
@@ -158,6 +166,7 @@ export default function ArenaChatPage() {
                 (userArena) => userArena.aiFigure?.name
               ) || ["Ahsan"]
             }
+            handleModal = {handleModal}
             totalParticipants={arena?.userArenas?.length || 0}
             expiryTime={arena?.expiryTime}
             aiStatus="Active"
@@ -175,6 +184,7 @@ export default function ArenaChatPage() {
           handleLeaveRoom={handleLeaveRoom}
           toggleParticipants={toggleParticipants}
           toggleUsers={toggleUsers}
+          image={arena?.image || "/assets/images/logo/logo.png"}
         />
 
         {notification && (
@@ -203,7 +213,7 @@ export default function ArenaChatPage() {
               type="text"
               className="form-control p-3 bg-color-black text-light pr-5"
               style={{ borderRadius: "50px" }}
-              placeholder="Type your message..."
+              placeholder="Message..."
               value={message}
               onChange={(e) => setMessage(e.target.value)}
             />
@@ -221,7 +231,7 @@ export default function ArenaChatPage() {
         <div
           className={showUsers ? "slide-in-right" : "slide-out-right"}
           style={{
-            width: "400px",
+            width: "200px",
             backgroundColor: "#101010",
             color: "#fff",
             padding: "1rem",

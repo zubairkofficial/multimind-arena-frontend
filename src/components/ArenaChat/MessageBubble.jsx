@@ -15,7 +15,7 @@ function MessageBubble({ message }) {
     <div className={`mb-3 d-flex ${isSender ? 'justify-content-end' : 'justify-content-start'}`}>
       <div
         style={{
-          maxWidth: '50%',
+          maxWidth: '400px',
           padding: '1rem',
           boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
           borderRadius: isSender ? '20px 20px 0 20px' : '20px 20px 20px 0',

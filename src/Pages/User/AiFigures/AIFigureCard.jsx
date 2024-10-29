@@ -2,13 +2,15 @@ import React from "react";
 import "./aifigures.css";
 
 export default function AIFigureCard({ figure, onSelect }) {
+
+ 
   return (
     <div className="aifigure-card" onClick={() => onSelect(figure)}>
       <div className="aifigure-card-image-wrapper">
         <img
           alt={figure.name}
           className="aifigure-card-image"
-          src="assets/images/logo/2(1).png"
+          src={figure.image}
         />
         <span className="aifigure-card-creator">By: @{figure.creator}</span>
       </div>

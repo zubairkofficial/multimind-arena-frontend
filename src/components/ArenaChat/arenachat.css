@@ -248,7 +248,7 @@
 }
 
 .chat-message-container {
-    max-height: 53vh;
+    height: 53vh;
     transition: margin 0.3s ease;
 }
 

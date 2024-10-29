@@ -1,0 +1,77 @@
+/* Modal overlay */
+
+.custom-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    /* Dark overlay */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+
+/* Modal container */
+
+.custom-modal {
+    background-color: #1c1c1c;
+    padding: 2rem;
+    border-radius: 10px;
+    color: #e2e2e2;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    position: relative;
+}
+
+
+/* Close button */
+
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    color: #e2e2e2;
+    cursor: pointer;
+}
+
+
+/* Profile Image */
+
+.profile-image img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid #d1a954;
+    margin-bottom: 1rem;
+}
+
+
+/* Profile Name */
+
+.profile-name {
+    font-size: 1.5rem;
+    color: #d1a954;
+    margin: 0;
+    margin-bottom: 1rem;
+}
+
+
+/* Profile Details */
+
+.profile-details {
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.profile-detail strong {
+    color: #d1a954;
+}

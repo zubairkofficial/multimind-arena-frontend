@@ -170,7 +170,7 @@
 }
 
 .dashboard-title {
-    font-size: 1.8rem;
+    font-size: 3.4rem;
     font-weight: bold;
     color: #fff;
     margin-bottom: 15px;
@@ -179,4 +179,66 @@
 .search-bar-section .search-bar {
     max-width: 600px;
     margin: 0 auto;
+}
+
+
+/* Container styling for responsive padding and margin */
+
+.arena-category-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 16px;
+}
+
+.arena-category-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+.arena-slider {
+    display: flex;
+    justify-content: center;
+}
+
+.arena-card-wrapper {
+    padding: 8px;
+    /* Spacing between cards */
+}
+
+@media (max-width: 1024px) {
+    .arena-category-container {
+        padding: 12px;
+    }
+    .arena-category-title {
+        font-size: 1.4rem;
+    }
+    .arena-card-wrapper {
+        padding: 6px;
+    }
+}
+
+@media (max-width: 768px) {
+    .arena-category-container {
+        padding: 8px;
+    }
+    .arena-category-title {
+        font-size: 1.3rem;
+    }
+    .arena-card-wrapper {
+        padding: 4px;
+    }
+}
+
+@media (max-width: 600px) {
+    .arena-category-container {
+        padding: 4px;
+    }
+    .arena-category-title {
+        font-size: 1.2rem;
+    }
+    .arena-card-wrapper {
+        padding: 2px;
+    }
 }

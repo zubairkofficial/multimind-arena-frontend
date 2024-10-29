@@ -24,42 +24,33 @@ export default function ArenaCard({ arena, onJoin }) {
   };
 
   return (
-    <div className="arena-card">
-      {/* Image at the top */}
+    <div className="arena-card m-3 h-20">
       <div className="arena-card-image-wrapper">
         <img alt={arena.name} className="arena-card-image" src="assets/images/logo/1.png" />
       </div>
-
-      {/* Content section */}
       <div className="arena-card-content">
         <h3 className="arena-card-title">{arena.name}</h3>
         <div className="arena-card-description">{arena.description}</div>
-        
-        {/* Arena Info Icons */}
         <div className="arena-info">
-          <div className="d-flex align-items-center">
-            <Users className="me-2" size={18} />
+          <div className="arena-info-item">
+            <Users className="icon mx-2"  size={14} />
             <span>{arena.userArenas.length}/{arena.maxParticipants}</span>
           </div>
-          <div className="d-flex align-items-center">
-            <Clock className="me-2" size={18} />
+          <div className="arena-info-item ">
+            <Clock className="icon mx-2"  size={14}  />
             <span>{formatTime(arena.expiryTime)}</span>
           </div>
           <div
-            className="d-flex align-items-center position-relative"
+            className="arena-info-item info-hover"
             onMouseEnter={handleInfoMouseEnter}
             onMouseLeave={handleInfoMouseLeave}
           >
-            <Info className="me-2" size={18} style={{ cursor: "pointer" }} />
+            <Info className="icon" size={14}  />
           </div>
         </div>
-
-        {/* Footer */}
         <div className="arena-card-footer">
-          <button className="btn custom-btn" onClick={onJoin}>
-            Join Arena
-          </button>
-          <div className="d-flex gap-4">
+          <button className="btn custom-btn" onClick={onJoin}>Join Arena</button>
+          <div className="arena-status">
             <span className={`arena-card-status ${arena.status === "open" ? "active" : "inactive"}`}>
               {arena.arenaType.name}
             </span>
@@ -69,20 +60,12 @@ export default function ArenaCard({ arena, onJoin }) {
           </div>
         </div>
       </div>
-
-      {/* Tooltip Hover Info */}
       {isInfoHovered && (
         <div
+          className="tooltip"
           style={{
-            position: "fixed",
             top: tooltipPosition.y + 15,
             left: tooltipPosition.x + 15,
-            zIndex: 1000,
-            backgroundColor: "#fff",
-            padding: "8px",
-            borderRadius: "4px",
-            boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
-            width: "200px",
           }}
         >
           <p><strong>Description:</strong> {arena.description}</p>

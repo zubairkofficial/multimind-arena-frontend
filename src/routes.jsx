@@ -20,7 +20,7 @@ import ManageAiFigures from "./Pages/Admin/AiFigures/ManageAiFigures";
 import UserLayout from "./Pages/User/Layout/Index";
 import EditProfile from "./Pages/User/Profile/EditProfile";
 import UserDashboard from "./Pages/User/UserDashboard";
-import ChatPage from "./Pages/User/Chat/ChatPage";
+import ChatPage from "./Pages/User/Chat/AIChatPage";
 import UserAddArena from "./Pages/User/Arena/AddArena";
 import AddAIFigure from "./Pages/Admin/AiFigures/AddAIFigures";
 import Home from "./Pages/Admin/Home/Home";
@@ -31,6 +31,7 @@ import ArenaChatPage from "./Pages/User/ArenaChat/ArenaChatPage";
 import ResetPassword from "./Pages/Auth/ResetPassword";
 import ManageArenaType from "./Pages/Admin/Arena/ArenaType/ManageArenaType";
 import AddArenaType from "./Pages/Admin/Arena/ArenaType/AddArenaType";
+import AIChatPage from "./Pages/User/Chat/AIChatPage";
 
 
 // Define routes
@@ -131,8 +132,8 @@ export const router = createBrowserRouter([
         element: <ViewUserProfile />,
       },
       {
-        path: "chats",
-        element: <ChatPage />,
+        path: "chat/:figureId",
+        element: <AIChatPage />,
       },
       {
         path:"arena-chat/:id",

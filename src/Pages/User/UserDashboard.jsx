@@ -10,6 +10,7 @@ import { useNavigate } from "react-router";
 import { Modal, Spinner, Alert } from "react-bootstrap";
 import Preloader from "../../Pages/Landing/Preloader";
 
+
 export default function UserDashboard() {
   const { data: arenas, error, isLoading } = useGetAllArenasQuery();
   const navigate = useNavigate();
@@ -65,10 +66,10 @@ export default function UserDashboard() {
       <div className="arena-dashboard">
         {/* Search Bar Section */}
         <div className="search-bar-section">
-          <h2 className="dashboard-title">Find Your Arena</h2>
+          <h2 className="dashboard-title">Join Arena Now</h2>
           <SearchBar
           onClick={handleAddArena}
-          title="+ Create Arena"
+          title={"Create Arena"} 
           placeholder="Search for arenas..." />
         </div>
 

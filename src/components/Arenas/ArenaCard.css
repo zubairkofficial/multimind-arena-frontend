@@ -1,30 +1,23 @@
 .arena-card {
-    border-radius: 16px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    background-color: #202020;
-    transition: transform 0.2s ease-in-out;
-    cursor: pointer;
-    width: 280px;
+    width: 100%;
+    max-width: 250px;
+    /* Set a fixed height for the card */
     margin: 1rem;
-    padding: 0rem;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    background: #fff;
     display: flex;
     flex-direction: column;
-    height: 400px;
-    /* Adjusted height for more space */
-}
-
-.arena-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    justify-content: space-between;
+    /* Ensure consistent spacing */
 }
 
 .arena-card-image-wrapper {
     width: 100%;
-    height: 70%;
-    /* Occupies the top half */
-    overflow: hidden;
-    border-radius: 16px 16px 0 0;
+    height: 50%;
+    /* Adjust height to reserve space for content */
 }
 
 .arena-card-image {
@@ -34,75 +27,133 @@
 }
 
 .arena-card-content {
-    padding: 2.5rem;
+    padding: 1rem;
+    flex-grow: 1;
+    /* Allow content to grow but within limits */
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    height: 50%;
-    /* Occupies the bottom half */
 }
 
 .arena-card-title {
     font-size: 1.25rem;
-    font-weight: bold;
-    color: #ffffff;
-    text-transform: uppercase;
-    white-space: nowrap;
+    font-weight: 600;
+    margin-bottom: 4px;
+    max-height: 2.5rem;
+    /* Limit height to keep title size consistent */
     overflow: hidden;
+    /* Hide overflow text */
+    white-space: nowrap;
     text-overflow: ellipsis;
 }
 
 .arena-card-description {
-    font-size: 1rem;
+    font-size: 0.95rem;
     color: #666;
-    margin-bottom: 1rem;
+    margin-bottom: 4px;
+    max-height: 3rem;
+    /* Limit description height */
     overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    max-height: 1.2em;
+    /* Hide overflow text */
 }
 
 .arena-info {
     display: flex;
-    justify-content: space-between;
-    color: #cccccc;
-    font-size: 0.9rem;
-    margin-bottom: 1rem;
+    gap: 1rem;
+    justify-content: center;
+    width: 100%;
+    margin: 4px 0;
+    /* Add margin to balance the layout */
+}
+
+.arena-info-item {
+    font-size: 1rem
+}
+
+.icon {
+    font-size: 1rem;
 }
 
 .arena-card-footer {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     align-items: center;
+    gap: 8px;
+    margin-top: 8px;
 }
 
 .custom-btn {
-    background-color: #35dc5c;
-    color: #000000;
-    font-weight: 500;
+    padding: 8px 16px;
+    font-size: 1rem;
     border: none;
-    padding: 0.5rem 1rem;
+    background-color: #00ff00;
+    color: #000;
+    font-weight: 500;
     border-radius: 4px;
-    transition: background-color 0.3s ease;
+    cursor: pointer;
+    transition: background 0.3s ease;
 }
 
 .custom-btn:hover {
-    background-color: #218838;
+    background-color: #00aa00;
+}
+
+.arena-status {
+    display: flex;
+    gap: 8px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
 }
 
 .arena-card-status {
-    padding: 0.25rem 0.5rem;
-    border-radius: 12px;
-    font-size: 0.8rem;
-    font-weight: bold;
-    text-transform: uppercase;
-    color: #ffffff;
+    font-size: 0.9rem;
+    padding: 4px 8px;
+    border-radius: 4px;
+    text-transform: capitalize;
 }
 
-.arena-card-status.active {
+.active {
     background-color: #28a745;
+    color: #fff;
 }
 
-.arena-card-status.inactive {
-    background-color: #6c757d;
+.inactive {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+.tooltip {
+    position: fixed;
+    z-index: 1000;
+    background-color: #fff;
+    padding: 8px;
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 200px;
+}
+
+@media (min-width: 768px) {
+    .arena-card {
+        max-width: 250px;
+    }
+    .arena-card-content {
+        padding: 16px;
+    }
+    .arena-info {
+        margin: 4px 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .arena-card {
+        max-width: 100%;
+        margin: 1rem 8px;
+    }
+    .arena-card-content {
+        padding: 14px;
+    }
+    .arena-card-title {
+        font-size: 1.1rem;
+    }
 }

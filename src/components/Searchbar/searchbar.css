@@ -2,10 +2,11 @@
 
 .search-bar-container {
     width: 100%;
-    max-width: 500px;
+    max-width: 40rem;
     display: flex;
     align-items: center;
     border-radius: 30px;
+    margin-top: 1.5rem;
     background-color: #222222;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     overflow: hidden;
@@ -36,7 +37,6 @@
     padding: 12px 18px;
     border: none;
     background-color: #00ff00;
-    /* Soft blue color */
     color: #fff;
     display: flex;
     align-items: center;
@@ -47,18 +47,38 @@
 
 .search-button:hover {
     background-color: #1c86ee;
-    /* Slightly darker blue on hover */
     transform: scale(1.05);
-    /* Small scaling effect on hover */
 }
 
 .search-button:active {
     transform: scale(0.95);
-    /* Press effect on click */
 }
 
 .search-button i {
     font-size: 1.2rem;
+}
+
+
+/* Responsive Header */
+
+.searchbar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.searchbar-header .btn-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.btn-container .btn-default {
+    width: 100%;
+    max-width: 200px;
 }
 
 
@@ -73,5 +93,13 @@
     }
     .search-button i {
         font-size: 1rem;
+    }
+    /* Stack the search bar and button on smaller screens */
+    .searchbar-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .btn-container .btn-default {
+        width: 100%;
     }
 }

@@ -9,37 +9,34 @@ const ArenaCategory = ({ title, arenas, handleJoin }) => {
     dots: false,
     infinite: false,
     speed: 500,
-    slidesToShow: 4, // Number of cards to show in a row
+    slidesToShow: 4,
     slidesToScroll: 1,
-    initialSlide: 0, // Start at the leftmost position
-    centerMode: false, // Ensure cards are aligned to the left
-
+    initialSlide: 0,
+    centerMode: false,  // Ensure this is false to start from the left
     responsive: [
       {
-        breakpoint: 1024, // Adjust the number of slides on tablet screens
+        breakpoint: 1024,
         settings: {
           slidesToShow: 2,
-        }
+        },
       },
       {
-        breakpoint: 600, // Adjust the number of slides on mobile screens
+        breakpoint: 600,
         settings: {
           slidesToShow: 1,
-        }
-      }
-    ]
+          centerMode: false,  // Explicitly set to false on smaller screens
+        },
+      },
+    ],
   };
 
   return (
-    <div className="arena-category">
-      <h4>{title}</h4>
+    <div className="arena-category-container">
+      <h4 className="arena-category-title">{title}</h4>
       <Slider {...settings} className="arena-slider">
         {arenas.map((arena) => (
-          <div key={arena.id}>
-            <ArenaCard 
-              arena={arena} 
-              onJoin={() => handleJoin(arena)} // Trigger handleJoin when the "Join" button is clicked
-            />
+          <div key={arena.id} className="arena-card-wrapper">
+            <ArenaCard arena={arena} onJoin={() => handleJoin(arena)} />
           </div>
         ))}
       </Slider>
