@@ -11,21 +11,20 @@ import { useGetAllArenasQuery } from "../../../features/api/arenaApi";
 
 export default function ArenaChatPage() {
   const location = useLocation();
-  const userObj = useSelector((state) => state.user.user);
+  const userObj = useSelector((state)=> state.user.user);
   const navigate = useNavigate();
   const [arena, setArena] = useState();
   const userId = useSelector((state) => state.user.user.id);
   const { data: arenaData, refetch } = useGetAllArenasQuery();
   const [message, setMessage] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [sentMessages, setSentMessages] = useState([]);
-  const [receivedMessages, setReceivedMessages] = useState([]);
+  const [chatMessages, setChatMessages] = useState([]);
   const [notification, setNotification] = useState(null);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [showParticipants, setShowParticipants] = useState(false);
   const [showUsers, setShowUsers] = useState(false);
   const chatContainerRef = useRef(null);
-
+  console.log("chatMessages", chatMessages);
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
     window.addEventListener("resize", handleResize);
@@ -36,9 +35,11 @@ export default function ArenaChatPage() {
     if (arena?.id && socket) {
       socket.emit("joinRoom", { arenaId: arena.id, userId });
 
-      socket.on("receiveMessage", (data) => {
+      socket.on("receiveMessage", (data) => {  
+        console.log("Received.........",data);
         if (data.message.senderId !== userId) {
-          setReceivedMessages((prevMessages) => [
+          console.log("AGAYA");
+          setChatMessages((prevMessages) => [
             ...prevMessages,
             {
               sender: data.user.name,
@@ -52,7 +53,6 @@ export default function ArenaChatPage() {
           ]);
         }
       });
-
       socket.on("userRejoined", (data) => {
         refetch();
         if (data.userId !== userId) {
@@ -64,6 +64,7 @@ export default function ArenaChatPage() {
 
       socket.on("userJoined", (data) => {
         refetch();
+        console.log("Join data", data);
         if (data.userId !== userId) {
           setNotification(`User ${data.name || data.userId} has joined.`);
           setArena({ ...data.joinArena });
@@ -86,19 +87,17 @@ export default function ArenaChatPage() {
         window.removeEventListener("resize", handleResize);
       };
     }
-  }, [arena?.id, userId]);
+  }, [userId]);
 
   useEffect(() => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop =
         chatContainerRef.current.scrollHeight;
     }
-  }, [sentMessages, receivedMessages]);
-
+  }, [chatMessages]);
   useEffect(() => {
-    setArena(location?.state);
+    setArena(location?.state); // Update arena state when location changes  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location?.state]);
-
   const handleModal = () => {
     setIsModalOpen(true);
   };
@@ -107,13 +106,19 @@ export default function ArenaChatPage() {
     e.preventDefault();
     const socket = getSocket();
     if (message.trim() && arena?.id && socket) {
+      console.log("Sending Message:", {
+        content: message,
+        userId,
+        arenaId: arena.id,
+      }); // Log the outgoing message
+
       socket.emit("sendMessage", {
         content: message,
         userId,
         arenaId: arena.id,
       });
-      setSentMessages((prevMessages) => [
-        ...prevMessages,
+      setChatMessages([
+        ...chatMessages,
         {
           sender: "You",
           content: message,
@@ -135,17 +140,7 @@ export default function ArenaChatPage() {
 
   const toggleParticipants = () => setShowParticipants(!showParticipants);
   const toggleUsers = () => setShowUsers(!showUsers);
-  const sortedMessages = [...receivedMessages, ...sentMessages]
-  .sort((a, b) => new Date(a.time) - new Date(b.time))
-  .map(message => ({
-    ...message,
-    formattedTime: new Date(message.time).toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    }),
-  }));
-  
-  console.log("time>>>>>>>>>>>>>>>",sortedMessages)
+
   return (
     <div className="d-flex h-100 bg-transparent text-color-light">
       <button
@@ -216,51 +211,36 @@ export default function ArenaChatPage() {
 
         <div
           ref={chatContainerRef}
-          className="flex-grow-1 pt-4 px-4 overflow-auto chat-message-container"
+          className={`flex-grow-1 pt-4 px-4 overflow-auto chat-message-container ${
+            showUsers ? "slideOut" : "slideIn"
+          }`}
         >
-          {sortedMessages.map((msg, index) => (
-            <div
-              key={index}
-              className={`d-flex align-items-center ${
-                msg.sender === "You" ? "justify-content-end" : ""
-              }`}
-              style={{
-                marginBottom: "1rem",
-              }}
-            >
-              {/* If the message is received, show image on the left */}
-              {msg.sender !== "You" && (
-                <img
-                  src={msg.user.image}
-                  alt={msg.user.name}
-                  className="message-image"
-                  style={{
-                    width: "40px",
-                    height: "40px",
-                    borderRadius: "50%",
-                    marginRight: "0.5rem",
-                  }}
-                />
-              )}
-
-              <MessageBubble message={msg} />
-
-              {/* If the message is sent by the user, show image on the right */}
-              {msg.sender === "You" && (
-                <img
-                  src={userObj.image}
-                  alt="You"
-                  className="message-image"
-                  style={{
-                    width: "40px",
-                    height: "40px",
-                    borderRadius: "50%",
-                    marginLeft: "0.5rem",
-                  }}
-                />
-              )}
-            </div>
-          ))}
+          {chatMessages &&
+            chatMessages.map((msg, index) => {
+              console.log("............................", msg?.user?.image);
+              console.log("USER OBJ", userObj.image);
+              return (
+                <>
+                  <div style={{ width: "50px", margin: "0 10px" , float:userObj.image?"right":"left"}}>
+                    <img
+                      src={ msg?.user?.image??userObj.image}
+                      alt={`${msg.isUser ? "User" : "AI"} profile`}
+                      style={{
+                        width: "40px",
+                        height: "40px",
+                        borderRadius: "50%",
+                        objectFit: "cover",
+                       
+                      }}
+                    />
+                  </div>
+                  <MessageBubble
+                    message={msg}
+                    // user={msg?.user}
+                  />
+                </>
+              );
+            })}
         </div>
 
         <div className="p-1 border-color-light chat-input-container">

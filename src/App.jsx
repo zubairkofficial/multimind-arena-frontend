@@ -3,8 +3,7 @@ import { RouterProvider } from "react-router-dom";
 import { Provider } from "react-redux";
 import { store } from "./app/store";
 import { router } from "./routes";
-
-
+import { Helmet } from "react-helmet";
 function App() {
   return (
     <>

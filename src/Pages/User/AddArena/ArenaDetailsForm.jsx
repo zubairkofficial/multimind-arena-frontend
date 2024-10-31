@@ -93,7 +93,10 @@ const ArenaDetailsForm = () => {
 
   const calculateExpiryTime = (durationInMinutes) => {
     const now = new Date();
-    return new Date(now.getTime() + durationInMinutes * 60000).toISOString();
+    const expiryTime = new Date(now.getTime() + durationInMinutes * 60000);
+  
+    // Convert to UTC (GMT+0) and format as ISO string
+    return new Date(expiryTime.toISOString().slice(0, -1) + 'Z');
   };
 
   // Form submission

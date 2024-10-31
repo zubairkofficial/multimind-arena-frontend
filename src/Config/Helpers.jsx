@@ -1,10 +1,10 @@
 import { Notyf } from "notyf";
 
 class Helpers {
-  static localhost = "http://192.168.18.5:8080";
+  static localhost = "http://192.168.18.123:8080";
   static server = "https://chat-arena-backend-4ba91b3feb6b.herokuapp.com";
 
-  static basePath = `${this.server}`;
+  static basePath = `${this.localhost}`;
   static apiUrl = `${this.basePath}/api/v1/`;
 
   static authUser = JSON.parse(localStorage.getItem("user") ?? "{}");
@@ -61,6 +61,21 @@ class Helpers {
       duration: 3000,
     });
   };
+  static loadScript(scriptName, dashboard = false) {
+    return new Promise((resolve, reject) => {
+      const scriptPath = new URL(`/src/assets/js/${scriptName}`, import.meta.url).href;
+      const script = document.createElement('script');
+      script.src = scriptPath;
+      script.async = true;
+
+      script.onload = () => resolve(script);
+      script.onerror = () => reject(new Error(`Script load error: ${scriptPath}`));
+
+      document.body.appendChild(script);
+        });
+      }
+
 }
+
 
 export default Helpers;

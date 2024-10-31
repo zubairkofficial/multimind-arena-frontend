@@ -26,7 +26,7 @@ export default function ArenaCard({ arena, onJoin }) {
   return (
     <div className="arena-card m-3 h-20">
       <div className="arena-card-image-wrapper">
-        <img alt={arena.name} className="arena-card-image" src="assets/images/logo/1.png" />
+        <img alt={arena.name} className="arena-card-image" src={arena.image || 'assets/images/logo/logo.png'} />
       </div>
       <div className="arena-card-content">
         <h3 className="arena-card-title">{arena.name}</h3>
