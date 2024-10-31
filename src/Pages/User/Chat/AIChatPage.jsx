@@ -1,23 +1,28 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import MessageBubble from "./../../../components/ArenaChat/MessageBubble";
+import MessageBubble from "./MessageBubble";
 import AIFigureInfoCard from "./../../../components/Chat/AIFigureInfoCard";
 import "./../../../components/ArenaChat/arenachat.css";
-import { useGetAllAIFiguresQuery } from "../../../features/api/aiFigureApi";
 import Helpers from "../../../Config/Helpers";
 
 export default function AIChatPage() {
+  const navigate = useNavigate();
   const location = useLocation();
   const { figureId } = useParams();
   const [aiFigure, setAiFigure] = useState(location.state);
   const [message, setMessage] = useState("");
   const [chatMessages, setChatMessages] = useState([]);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [isLoading, setIsLoading] = useState(false); // Added loading state
   const chatContainerRef = useRef(null);
 
+  const userImage =
+    JSON.parse(localStorage.getItem("user"))?.image ||
+    "/assets/images/logo/logo.png";
+  const aiImage = aiFigure?.image || "/assets/images/logo/logo.png";
+
   useEffect(() => {
-    console.log("Data got", aiFigure);
     const handleResize = () => setIsMobile(window.innerWidth < 768);
     window.addEventListener("resize", handleResize);
     return () => {
@@ -32,6 +37,10 @@ export default function AIChatPage() {
     }
   }, [chatMessages]);
 
+  const handleLeaveRoom = () => {
+    navigate("/ai-figure-gallery");
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (message.trim()) {
@@ -42,18 +51,18 @@ export default function AIChatPage() {
         time: new Date().toLocaleTimeString([], {
           hour: "2-digit",
           minute: "2-digit",
+          hour12: true,
         }),
       };
 
       setChatMessages((prevMessages) => [...prevMessages, userMessage]);
       setMessage("");
-      console.log(figureId);
+      setIsLoading(true); // Start loading
+
       try {
         const response = await axios.post(
           `${Helpers.apiUrl}ai-figures/chat/${figureId}`,
-
           { message: userMessage.content },
-
           {
             headers: {
               "Content-Type": "application/json",
@@ -61,7 +70,7 @@ export default function AIChatPage() {
             },
           }
         );
-        console.log("Pakistan", response);
+
         const aiResponse = {
           sender: aiFigure.name,
           content: response.data || "This is an automated response.",
@@ -69,12 +78,12 @@ export default function AIChatPage() {
           time: new Date().toLocaleTimeString([], {
             hour: "2-digit",
             minute: "2-digit",
+            hour12: true,
           }),
         };
 
         setChatMessages((prevMessages) => [...prevMessages, aiResponse]);
       } catch (error) {
-        console.error("Error sending message to AI:", error);
         const errorMessage = {
           sender: "AI Bot",
           content: "Sorry, there was an error processing your request.",
@@ -82,19 +91,20 @@ export default function AIChatPage() {
           time: new Date().toLocaleTimeString([], {
             hour: "2-digit",
             minute: "2-digit",
+            hour12: true,
           }),
         };
         setChatMessages((prevMessages) => [...prevMessages, errorMessage]);
       }
 
-      setMessage("");
+      setIsLoading(false); // End loading
     }
   };
 
   return (
     <div className="d-flex h-100 bg-transparent text-color-light">
       <div
-        className={"arena-info-container"}
+        className="arena-info-container"
         style={{
           width: isMobile ? "100%" : "",
           opacity: 1,
@@ -105,22 +115,77 @@ export default function AIChatPage() {
         }}
       ></div>
 
-      <div
-        className={`flex-grow-1 d-flex flex-column chat-message-area full-width`}
-      >
+      <div className="flex-grow-1 d-flex flex-column chat-message-area full-width">
         <AIFigureInfoCard
           name={aiFigure?.name || "Chat Arena"}
-          image={aiFigure?.image || "/assets/images/logo/logo.png"}
+          image={aiImage}
+          handleLeaveRoom={handleLeaveRoom}
         />
         <div
           ref={chatContainerRef}
-          className={`flex-grow-1 pt-4 px-4 overflow-auto chat-message-container ${
-            chatMessages.length ? "slideIn" : "fade-out"
-          }`}
+          className="flex-grow-1 pt-4 px-4 overflow-auto chat-message-container"
         >
           {chatMessages.map((msg, index) => (
-            <MessageBubble key={index} message={msg} />
+            <div
+              key={index}
+              className={`d-flex ${msg.isUser ? "flex-row-reverse" : ""}`}
+            >
+              <div style={{ width: "50px", margin: "0 10px" }}>
+                <img
+                  src={msg.isUser ? userImage : aiImage}
+                  alt={`${msg.isUser ? "User" : "AI"} profile`}
+                  style={{
+                    width: "40px",
+                    height: "40px",
+                    borderRadius: "50%",
+                    objectFit: "cover",
+                  }}
+                />
+              </div>
+              <MessageBubble message={msg} />
+            </div>
           ))}
+
+          {/* Loading indicator */}
+          {isLoading && (
+            <div className="d-flex">
+              <div style={{ width: "50px", margin: "0 10px" }}>
+                <img
+                  src={aiImage}
+                  alt="AI profile"
+                  style={{
+                    width: "40px",
+                    height: "40px",
+                    borderRadius: "50%",
+                    objectFit: "cover",
+                  }}
+                />
+              </div>
+              <div
+                style={{
+                  maxWidth: "400px",
+                  padding: "1rem",
+                  margin: "1rem",
+                  boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
+                  borderRadius: "20px 20px 20px 0",
+                  backgroundColor: "#002200",
+                  color: "#fff",
+                  alignSelf: "flex-start",
+                  display: "flex",
+                  alignItems: "center",
+                }}
+              >
+                <div
+                  className="spinner-border text-light"
+                  role="status"
+                  style={{ marginRight: "10px" }}
+                >
+                  <span className="visually-hidden">Loading...</span>
+                </div>
+                <span>AI is thinking...</span>
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="p-1 border-color-light chat-input-container">
@@ -135,10 +200,12 @@ export default function AIChatPage() {
               placeholder="Message..."
               value={message}
               onChange={(e) => setMessage(e.target.value)}
+              disabled={isLoading} // Disable input while loading
             />
             <button
               type="submit"
               className="btn btn-large rounded-circle position-absolute end-0 top-50 translate-middle-y me-5 btn-success text-white shadow"
+              disabled={isLoading} // Disable button while loading
             >
               <i className="fas fa-send"></i>
             </button>

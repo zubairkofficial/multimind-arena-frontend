@@ -1,33 +1,32 @@
 import React from 'react';
-import './CustomModal.css';
+import './customModal.css';
 
-const CustomModal = ({ isOpen, onClose, profileData }) => {
-  if (!isOpen) return null;
+const CustomModal = ({ show, onClose, figure, onChatNow }) => {
+  if (!show) return null;
 
   return (
-    <div className="custom-modal-overlay">
-      <div className="custom-modal">
-        <button className="close-button" onClick={onClose} aria-label="Close modal">
-          &times;
-        </button>
-        <div className="modal-content">
-          <div className="profile-image">
+    <div className="modal-overlay">
+      <div className="modal-container no-shadow">
+        <div className="modal-header-small d-flex justify-content-between">
+          <h4>{figure?.name}</h4>
+          <div className='d-flex justify-content-end'>
+          <button onClick={onClose} className="close-button">✖</button>
+          </div>
+        </div>
+        <div className="modal-body">
+          <div className="image-container">
             <img
-              src={profileData?.image || '/assets/images/default-profile.png'}
-              alt={profileData?.name || 'Profile Image'}
-              className="rounded-circle"
+              src={figure?.image || "/assets/images/logo/logo.png"}
+              alt={figure?.name}
+              className="modal-image"
             />
           </div>
-          <h2 className="profile-name">{profileData?.name || 'Profile'}</h2>
-          <div className="profile-details">
-            {Object.keys(profileData || {}).map((key) =>
-              key !== 'image' && key !== 'name' ? (
-                <p key={key} className="profile-detail">
-                  <strong>{key.charAt(0).toUpperCase() + key.slice(1)}:</strong> {profileData[key]}
-                </p>
-              ) : null
-            )}
-          </div>
+          <p className="description-text">{figure?.description}</p>
+          <p className="figure-info">Type: {figure?.type}</p>
+          <p className="figure-info">Prompt: {figure?.prompt}</p>
+        </div>
+        <div className="modal-footer">
+          <button className="btn-custom" onClick={onChatNow}>Chat Now</button>
         </div>
       </div>
     </div>

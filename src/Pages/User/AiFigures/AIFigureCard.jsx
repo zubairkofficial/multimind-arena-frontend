@@ -17,15 +17,7 @@ export default function AIFigureCard({ figure, onSelect }) {
       <div className="aifigure-card-content">
         <h3 className="aifigure-card-title">{figure.name}</h3>
         <p className="aifigure-card-description">{figure.description}</p>
-        <div className="aifigure-card-footer">
-          <span
-            className={`aifigure-card-status ${
-              figure.status === "active" ? "active" : "inactive"
-            }`}
-          >
-            {figure.status}
-          </span>
-        </div>
+     
       </div>
     </div>
   );

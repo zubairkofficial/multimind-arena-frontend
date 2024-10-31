@@ -1,7 +1,8 @@
 import React from 'react';
 import Slider from 'react-slick';
+import './ArenaCard.css';
 import ArenaCard from './ArenaCard';
-import './arenas.css';
+
 
 const ArenaCategory = ({ title, arenas, handleJoin }) => {
   // Slider settings
@@ -35,7 +36,7 @@ const ArenaCategory = ({ title, arenas, handleJoin }) => {
       <h4 className="arena-category-title">{title}</h4>
       <Slider {...settings} className="arena-slider">
         {arenas.map((arena) => (
-          <div key={arena.id} className="arena-card-wrapper">
+          <div key={arena.id} className="arena-card-container">
             <ArenaCard arena={arena} onJoin={() => handleJoin(arena)} />
           </div>
         ))}

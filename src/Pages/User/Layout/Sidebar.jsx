@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 const Sidebar = () => {
   const sidebarOpen = useSelector((state) => state.sidebar.sidebarOpen);
 
+  const user = useSelector((state) => state.user.user); 
   // Local state to hold user details
   const [userDetails, setUserDetails] = useState({
     name: "User", // default value
@@ -25,7 +26,7 @@ const Sidebar = () => {
   // Sidebar menu items
   const mainMenuItems = [
     { path: "/dashboard", icon: "fa-home", label: "Dashboard" },
-    { path: "/chats", icon: "fa-messages", label: "Chat" },
+   
     { path: "/add-arena", icon: "fa-plus-circle", label: "Add Arena" },
     { path: "/ai-figure-gallery", icon: "fa-images", label: "AI Figure Gallery" }, // Added Add Arena option
   ];
@@ -122,7 +123,7 @@ const Sidebar = () => {
                 <div className="author-img active">
                   <img
                     className="w-100"
-                    src="/assets/images/team/team-01sm.jpg"
+                    src={user.image  || "assets/images/logo/logo.png"}
                     alt="Author"
                   />
                 </div>

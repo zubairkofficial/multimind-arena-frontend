@@ -1,77 +1,115 @@
-/* Modal overlay */
+/* Modal Overlay */
 
-.custom-modal-overlay {
+.modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.7);
-    /* Dark overlay */
+    background-color: rgba(0, 0, 0, 0.7);
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
     z-index: 1000;
 }
 
 
-/* Modal container */
+/* Modal Container */
 
-.custom-modal {
-    background-color: #1c1c1c;
-    padding: 2rem;
-    border-radius: 10px;
-    color: #e2e2e2;
-    max-width: 400px;
+.modal-container.no-shadow {
+    background-color: #121212;
+    color: #00ff00;
     width: 90%;
-    text-align: center;
+    max-width: 500px;
+    padding: 2rem;
+    border-radius: 15px;
     position: relative;
 }
 
 
-/* Close button */
+/* Modal Header - Smaller */
+
+.modal-header-small {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 0.5rem;
+    /* Adjust padding to make the header smaller */
+}
+
+.modal-header-small h4 {
+    margin: 0;
+    font-size: 1.2rem;
+    /* Smaller header text */
+}
 
 .close-button {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: transparent;
+    background: none;
     border: none;
+    color: #00ff00;
     font-size: 1.5rem;
-    color: #e2e2e2;
     cursor: pointer;
+    transition: color 0.3s;
+}
+
+.close-button:hover {
+    color: #ff0000;
 }
 
 
-/* Profile Image */
+/* Modal Body - Centralized */
 
-.profile-image img {
-    width: 100px;
-    height: 100px;
-    object-fit: cover;
+.modal-body {
+    padding: 1rem 0;
+    text-align: center;
+    /* Centralize the content */
+}
+
+.image-container {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.modal-image {
+    width: 150px;
+    height: 150px;
     border-radius: 50%;
-    border: 3px solid #d1a954;
-    margin-bottom: 1rem;
+    border: 3px solid #00ff00;
 }
 
 
-/* Profile Name */
+/* Description and Figure Info */
 
-.profile-name {
-    font-size: 1.5rem;
-    color: #d1a954;
-    margin: 0;
+.description-text {
+    font-size: 1.1rem;
     margin-bottom: 1rem;
 }
 
-
-/* Profile Details */
-
-.profile-details {
+.figure-info {
     font-size: 1rem;
-    line-height: 1.5;
+    color: #00ff00;
 }
 
-.profile-detail strong {
-    color: #d1a954;
+
+/* Modal Footer */
+
+.modal-footer {
+    display: flex;
+    justify-content: center;
+    padding-top: 1rem;
+}
+
+.btn-custom {
+    background-color: #00ff00;
+    color: #121212;
+    border: none;
+    padding: 0.5rem 1.5rem;
+    font-size: 1rem;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-custom:hover {
+    background-color: #009900;
 }

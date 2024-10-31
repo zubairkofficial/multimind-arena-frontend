@@ -1,27 +1,27 @@
 .aifigure-card {
-    border-radius: 16px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 6px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
     overflow: hidden;
     background-color: #202020;
     transition: transform 0.2s ease-in-out;
     cursor: pointer;
-    width: 240px;
-    height: 400px;
-    /* Adjusted height */
-    margin: 1rem;
+    width: 190px;
+    height: 250px;
+    /* Reduced height for compactness */
+    margin: 0.5rem;
     display: flex;
     flex-direction: column;
 }
 
 .aifigure-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 .aifigure-card-image-wrapper {
     width: 100%;
-    height: 70%;
-    /* Occupies the top portion */
+    height: 65%;
+    /* Larger image section for better focus on image */
     overflow: hidden;
 }
 
@@ -29,51 +29,45 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: 0;
-    /* Edge-to-edge display without borders */
 }
 
 .aifigure-card-content {
-    padding: 1.5rem;
+    padding: 0.5rem;
+    /* Reduced padding */
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    height: 30%;
+    height: 25%;
 }
 
 .aifigure-card-title {
-    font-size: 1.25rem;
+    font-size: 1rem;
+    /* Reduced font size */
     font-weight: bold;
     color: #ffffff;
-    text-transform: uppercase;
-    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    margin-bottom: 0.3rem;
+    /* Reduced spacing */
 }
 
 .aifigure-card-description {
-    font-size: 0.95rem;
+    font-size: 0.8rem;
+    /* Reduced font size */
     color: #aaa;
-    white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis;
-    max-height: 1.2em;
-    /* Truncate after one line */
-}
-
-.aifigure-card-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 0.75rem;
+    /* Keeps description compact */
+    margin-bottom: 1.2rem;
 }
 
 .aifigure-card-status {
-    padding: 0.3rem 0.75rem;
-    border-radius: 12px;
+    padding: 0.2rem 0.5rem;
+    /* Reduced padding for compact look */
+    border-radius: 8px;
     font-weight: 500;
     color: #fff;
-    font-size: 0.875rem;
+    font-size: 0.75rem;
+    /* Reduced font size */
 }
 
 .aifigure-card-status.active {
@@ -115,7 +109,7 @@
 }
 
 .ai-figure-gallery {
-    padding: 20px;
+    padding: 2px;
 }
 
 
@@ -152,18 +146,20 @@
 
 @media (min-width: 1024px) {
     .gallery-grid {
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(5, 1fr);
+        /* Changed from 4 to 5 columns */
     }
 }
 
 
-/* Extra-large screens (4 columns, larger spacing) */
+/* Extra-large screens (5 columns, larger spacing) */
 
 @media (min-width: 1440px) {
     .gallery-grid {
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(5, 1fr);
+        /* Changed from 4 to 5 columns */
         gap: 3rem;
-        /* Adds more spacing for extra-large screens */
+        /* Larger spacing for extra-large screens */
     }
 }
 
@@ -181,4 +177,30 @@
 .category-menu::-webkit-scrollbar {
     display: none;
     /* Hides scrollbar in Chrome, Safari, and other WebKit browsers */
+}
+
+.aifigure-card-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    /* Hidden by default */
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 2rem;
+    z-index: 10;
+    /* Ensure it's on top within the card */
+}
+
+.tick-mark {
+    font-size: 4rem;
+}
+
+.aifigure-card.selected .aifigure-card-overlay {
+    display: flex;
+    /* Show only for selected cards */
 }

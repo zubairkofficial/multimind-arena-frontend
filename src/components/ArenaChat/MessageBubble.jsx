@@ -1,6 +1,7 @@
 import React from 'react';
 
 function MessageBubble({ message }) {
+  console.log("message+++++++",message)
   const isUser = message.userType === "user";
   const isSender = message.sender === "You";
 

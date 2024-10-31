@@ -7,7 +7,6 @@
     overflow: hidden;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease;
-    background: #fff;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -33,6 +32,7 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    background-color: #222222;
 }
 
 .arena-card-title {
@@ -51,10 +51,13 @@
     font-size: 0.95rem;
     color: #666;
     margin-bottom: 4px;
-    max-height: 3rem;
-    /* Limit description height */
+    max-height: 1.2em;
+    /* Limit to one line height */
     overflow: hidden;
-    /* Hide overflow text */
+    white-space: nowrap;
+    /* Prevents text from wrapping to the next line */
+    text-overflow: ellipsis;
+    /* Adds ellipsis (...) at the end if text is too long */
 }
 
 .arena-info {
@@ -83,7 +86,7 @@
 }
 
 .custom-btn {
-    padding: 8px 16px;
+    padding: 0.5rem 1rem;
     font-size: 1rem;
     border: none;
     background-color: #00ff00;
@@ -108,7 +111,7 @@
 
 .arena-card-status {
     font-size: 0.9rem;
-    padding: 4px 8px;
+    padding: 0.25rem 0.5rem;
     border-radius: 4px;
     text-transform: capitalize;
 }
@@ -138,22 +141,75 @@
         max-width: 250px;
     }
     .arena-card-content {
-        padding: 16px;
+        padding: 1rem;
     }
     .arena-info {
         margin: 4px 0;
     }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 450px) {
     .arena-card {
-        max-width: 100%;
+        max-width: 80%;
         margin: 1rem 8px;
     }
     .arena-card-content {
-        padding: 14px;
+        padding: 1rem;
+        font-size: 0.5rem;
+        display: flex;
+        justify-content: center;
     }
     .arena-card-title {
         font-size: 1.1rem;
+    }
+    .arena-card-status {
+        font-size: 0.5rem;
+        padding: 0.2rem 0.4rem;
+        border-radius: 4px;
+        text-transform: capitalize;
+    }
+    .arena-status {
+        display: flex;
+        gap: 0.5rem;
+        font-size: 0.5rem;
+        flex-direction: row;
+        justify-content: center;
+    }
+}
+
+.arena-card-container {
+    display: grid;
+    gap: 1rem;
+    padding: 1rem;
+    grid-template-columns: 1fr;
+    /* Default to 1 column */
+    justify-items: center;
+}
+
+@media (min-width: 576px) {
+    .arena-card-container {
+        grid-template-columns: repeat(2, 1fr);
+        /* 2 columns on small screens */
+    }
+}
+
+@media (min-width: 768px) {
+    .arena-card-container {
+        grid-template-columns: repeat(3, 1fr);
+        /* 3 columns on medium screens */
+    }
+}
+
+@media (min-width: 1024px) {
+    .arena-card-container {
+        grid-template-columns: repeat(4, 1fr);
+        /* 4 columns on large screens */
+    }
+}
+
+@media (min-width: 1440px) {
+    .arena-card-container {
+        grid-template-columns: repeat(5, 1fr);
+        /* 5 columns on extra-large screens */
     }
 }

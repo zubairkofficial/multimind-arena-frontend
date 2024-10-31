@@ -63,7 +63,7 @@ const Header = () => {
                     <div className="inner d-flex align-items-center">
                       <div className="img-box">
                         <img
-                          src="/assets/images/team/team-01sm.jpg"
+                          src={user.image || "assets/images/logo/logo.png"}
                           alt="Admin"
                         />
                       </div>
@@ -81,7 +81,7 @@ const Header = () => {
                     <div className="rbt-admin-profile">
                       <div className="admin-thumbnail">
                         <img
-                          src="/assets/images/team/team-01sm.jpg"
+                          src={user.image  || "assets/images/logo/logo.png"}
                           alt="User Images"
                         />
                       </div>

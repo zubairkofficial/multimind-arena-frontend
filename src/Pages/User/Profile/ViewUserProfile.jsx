@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 
 const ViewUserProfile = () => {
   // Access the global user data from Redux
+  
   const userData = useSelector((state) => state.user.user); // Assuming the user data is stored in the "user" slice
 
   // If user data is still loading or unavailable
@@ -22,7 +23,7 @@ const ViewUserProfile = () => {
 
       <div className="text-center mb-4">
         <img
-          src={userData.image} // Replace with any placeholder image
+          src={userData.image  || "assets/images/logo/logo.png"} // Replace with any placeholder image
           alt="User Profile"
           className="rounded-circle"
           style={{ width: "150px", height: "150px" }}

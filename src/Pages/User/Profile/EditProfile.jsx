@@ -9,14 +9,14 @@ import PersonaForm from "./PersonaForm";
 const EditProfile = () => {
   return (
 
-      <div className="rbt-main-content mb--0">
-        <div className="rbt-daynamic-page-content center-width">
+      <div className=" mb--0">
+        <div className="center-width">
           {/* Dashboard Center Content */}
-          <div className="rbt-dashboard-content">
-            <div className="banner-area">
+          <div className="">
+            <div className="">
               {/* AiWavesmall Slider */}
-              <div className="settings-area">
-                <h3 className="title">Profile Details</h3>
+              <div className="">
+                <h3 className="title d-flex justify-content-center">Profile Details</h3>
               </div>
             </div>
             <div className="content-page pb--50">

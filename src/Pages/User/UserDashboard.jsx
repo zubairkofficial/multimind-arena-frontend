@@ -1,120 +1,160 @@
-import React, { useState } from "react";
-import {
-  useGetAllArenasQuery,
-  useJoinArenaMutation,
-} from "../../features/api/arenaApi";
+import React, { useEffect, useState, useRef } from "react";
+import { useGetAllArenasQuery } from "../../features/api/arenaApi";
 import ArenaCategory from "../../components/Arenas/ArenaCategory";
-import SearchBar from "../../components/Searchbar/Searchbar"; // Import the SearchBar component
-import "./../../components/Arenas/arenas.css";
+import SearchBar from "../../components/Searchbar/Searchbar";
 import { useNavigate } from "react-router";
-import { Modal, Spinner, Alert } from "react-bootstrap";
+import { Spinner, Alert } from "react-bootstrap";
 import Preloader from "../../Pages/Landing/Preloader";
-
+import { useSelector } from "react-redux";
+import { getSocket, initiateSocketConnection } from "../../app/socket";
+import "./../../components/Arenas/arenas.css";
 
 export default function UserDashboard() {
-  const { data: arenas, error, isLoading } = useGetAllArenasQuery();
-  const navigate = useNavigate();
-
-  const [joinArena, { isLoading: isJoining }] = useJoinArenaMutation();
-  const [showModal, setShowModal] = useState(false);
+  const { data: arenas, error, isLoading, refetch } = useGetAllArenasQuery();
+  const [showOverlay, setShowOverlay] = useState(false);
   const [joinError, setJoinError] = useState(null);
+  const [notification, setNotification] = useState(null);
+  const [isJoining, setIsJoining] = useState(false);
+
+  const navigate = useNavigate();
+  const userId = useSelector((state) => state.user.user.id);
+  const isMounted = useRef(true);
+
+  useEffect(() => {
+    isMounted.current = true;
+    refetch();
+    initiateSocketConnection();
+
+    const socket = getSocket();
+
+    if (socket) {
+      handleSocketEvents(socket);
+    } else {
+      console.error("Socket connection not established. Check socket initialization.");
+    }
+
+    return () => {
+      isMounted.current = false;
+      if (socket) {
+        socket.off("userJoined");
+        socket.off("userRejoined");
+        socket.off("userLeft");
+      }
+    };
+  }, []);
+
+  const handleSocketEvents = (socket) => {
+    socket.on("userJoined", (response) => handleArenaNavigation(response.joinArena, "userJoined"));
+    socket.on("userRejoined", (response) => handleArenaNavigation(response.joinArena, "userRejoined"));
+    socket.on("userLeft", (response) => handleUserLeft(response));
+  };
+
+  const handleArenaNavigation = (response, eventType) => {
+    refetch();
+    if (isMounted.current) {
+      setShowOverlay(false);
+      setIsJoining(false);
+    }
+    console.log("Response", response);
+
+    // Introduce a small delay before navigation
+    setTimeout(() => {
+      response && navigate(`/arena-chat/${response.id}`, { state: response });
+    }, 500);
+  };
+
+  const handleUserLeft = (response) => {
+    console.log("userLeft:", response.leftArena);
+    refetch();
+    setNotification(`User ${response.leftArena.userName || response.userId} has left.`);
+    setTimeout(() => setNotification(null), 3000);
+  };
 
   const handleJoinArena = async (arena) => {
-    if (!arena) {
-      console.error("Arena data is missing or undefined!");
-      return;
-    }
+    if (!arena) return console.error("Arena data is missing or undefined!");
 
     try {
       setJoinError(null);
-      setShowModal(true);
-      const response = await joinArena(arena.id).unwrap();
-      setShowModal(false);
-      navigate(`/arena-chat/${arena.id}`, { state: response });
+      setShowOverlay(true);
+      setIsJoining(true);
+      const socket = getSocket();
+
+      if (socket) {
+        socket.emit("joinRoom", { arenaId: arena.id, userId });
+        refetch();
+      } else {
+        setJoinError("Socket connection not established.");
+        setShowOverlay(false);
+        setIsJoining(false);
+      }
     } catch (error) {
       console.error("Error joining arena:", error);
-      setJoinError(error?.data.message || "Failed to join the arena.");
-      setShowModal(true);
+      setJoinError("Failed to join the arena.");
+      setShowOverlay(true);
+      setIsJoining(false);
     }
   };
 
-  if (isLoading) {
-    return <Preloader />;
-  }
-
-  if (error) {
-    return <div>Error loading arenas: {error.message}</div>;
-  }
-
-  // Group arenas by their types
-  const arenasByType = arenas.reduce((acc, arena) => {
+  const arenasByType = arenas?.reduce((acc, arena) => {
     const type = arena.arenaType.name;
     if (!acc[type]) acc[type] = [];
     acc[type].push(arena);
     return acc;
   }, {});
-  const handleAddArena = () => {
-    navigate("/add-arena");
-  };
 
-  // Convert grouped arenas to an array and sort by length in descending order
-  const sortedArenaCategories = Object.entries(arenasByType)
-    .sort((a, b) => b[1].length - a[1].length); // Sort by number of arenas in descending order
+  const sortedArenaCategories = Object.entries(arenasByType || {}).sort((a, b) => b[1].length - a[1].length);
+
+  if (isLoading) return <Preloader />;
+  if (error) return <div>Error loading arenas: {error.message}</div>;
 
   return (
     <div className="container">
       <div className="arena-dashboard">
-        {/* Search Bar Section */}
         <div className="search-bar-section">
-          <h2 className="dashboard-title">Join Arena Now</h2>
-          <SearchBar
-          onClick={handleAddArena}
-          title={"Create Arena"} 
-          placeholder="Search for arenas..." />
+          <h4 className="dashboard-title d-flex justify-content-center">Join Arena Now</h4>
+          <SearchBar onClick={() => navigate("/add-arena")} title="Create Arena" placeholder="Search for arenas..." />
         </div>
 
-        {arenas && arenas.length > 0 ? (
+        {arenas?.length > 0 ? (
           <>
-            {/* All Arenas Carousel */}
-            <ArenaCategory
-              title="All Arenas"
-              arenas={arenas} // Display all arenas together
-              handleJoin={handleJoinArena}
-            />
-
-            {/* Sorted Arena Categories */}
+            <ArenaCategory title="All Arenas" arenas={arenas} handleJoin={handleJoinArena} />
             {sortedArenaCategories.map(([type, arenasList]) => (
-              <ArenaCategory
-                key={type}
-                title={type} // Set the title to the arena type name
-                arenas={arenasList} // Pass arenas of the current type
-                handleJoin={handleJoinArena}
-              />
+              <ArenaCategory key={type} title={type} arenas={arenasList} handleJoin={handleJoinArena} />
             ))}
-
-            {/* Modal for "Joining the arena" or showing error */}
-            <Modal show={isJoining || showModal} onHide={() => setShowModal(false)} centered>
-              <Modal.Body className="text-center bg-dark text-white">
-                {isJoining && (
-                  <>
-                    <Spinner animation="border" role="status" className="mb-3">
-                      <span className="visually-hidden">Loading...</span>
-                    </Spinner>
-                    <div>Joining the arena...</div>
-                  </>
-                )}
-                {joinError && (
-                  <Alert variant="danger" className="mt-3">
-                    {joinError}
-                  </Alert>
-                )}
-              </Modal.Body>
-            </Modal>
           </>
         ) : (
           <div>No arenas available</div>
+        )}
+
+        {(isJoining || showOverlay) && (
+          <OverlayCard isJoining={isJoining} joinError={joinError} />
+        )}
+
+        {notification && (
+          <div className="notification">
+            <Alert variant="info">{notification}</Alert>
+          </div>
         )}
       </div>
     </div>
   );
 }
+
+const OverlayCard = ({ isJoining, joinError }) => (
+  <div className="overlay p-4 rounded">
+    <div className="overlay-card text-center p-4">
+      <div className="bg-dark text-white p-4">
+        {isJoining ? (
+          <>
+            <Spinner animation="border" role="status" className="mb-3">
+              <span className="visually-hidden">Loading...</span>
+            </Spinner>
+            <div>Joining the arena...</div>
+          </>
+        ) : joinError ? (
+          <Alert variant="danger" className="mt-3">{joinError}</Alert>
+        ) : null}
+      </div>
+    </div>
+  </div>
+);

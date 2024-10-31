@@ -16793,6 +16793,7 @@ img {
     margin-bottom: 30px;
     padding: 0;
     list-style: none;
+    background-color: transparent;
 }
 
 @media only screen and (max-width: 767px) {
@@ -16835,15 +16836,16 @@ img {
     position: absolute;
     bottom: -2px;
     left: 0;
-    background-color: var(--color-primary);
+    background-color: transparent;
     transform: scaleX(0);
     transition: transform 0.3s;
 }
 
 .tab-button-style-2 li a.active {
-    border: 0 none;
+    border-bottom: 2px solid #00ff00;
     outline: none;
     color: var(--color-primary);
+    background-color: transparent;
 }
 
 .tab-button-style-2 li a.active::after {

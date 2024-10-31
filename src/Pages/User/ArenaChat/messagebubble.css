@@ -1,0 +1,43 @@
+.message-bubble-container {
+    display: flex;
+    justify-content: flex-end;
+    /* Align messages to the right */
+    margin-bottom: 10px;
+}
+
+.message-bubble {
+    background-color: #333;
+    color: #fff;
+    padding: 15px;
+    border-radius: 10px;
+    max-width: 60%;
+    position: relative;
+}
+
+.message-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.message-header .avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.message-header .sender-name {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.message-header .message-time {
+    font-size: 0.8em;
+    color: #aaa;
+    margin-left: auto;
+}
+
+.message-content {
+    word-wrap: break-word;
+}

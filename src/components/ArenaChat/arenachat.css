@@ -80,6 +80,13 @@
     }
 }
 
+@media (max-width: 450px) {
+    .chat-message-area {
+        min-height: 80vh;
+        /* Increased height on mobile screens */
+    }
+}
+
 
 /* Message bubble styles */
 

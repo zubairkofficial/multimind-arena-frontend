@@ -22,17 +22,20 @@ function ArenaInfoCard({
 
   return (
     <div>
-      <div className="d-flex justify-content-between align-items-center p-3 border-bottom border-color-light">
-        <div className="d-flex gap-3">
+      <div className="d-flex justify-content-between align-items-center p-3 ">
+        <div className="d-flex gap-2 align-items-center">
           {/* Arena Name */}{" "}
           <img
             src={image}
             alt=""
+            className="img-fluid rounded-circle" // Bootstrap classes for responsiveness and circular shape
             style={{
-              borderRadius: "50px",
-              width: "50px",
-              backgroundColor: "white",
-              border: "3px solid #00ff00",
+              width: "40px",
+              height: "40px",
+              borderRadius: "50%",
+              objectFit: "cover",
+              marginRight: "10px",
+              border: "2px solid #00ff00",
             }}
           />
           <h3 className="text-color-primary mb-0">{name}</h3>
@@ -65,46 +68,55 @@ function ArenaInfoCard({
 
       {/* Confirmation Modal */}
       {showModal && (
-        <div
-          className="modal fade show d-block"
-          tabIndex="-1"
-          role="dialog"
-          style={{ backgroundColor: "rgba(0, 0, 0, 0.8)" }}
-        >
-          <div className="modal-dialog modal-dialog-centered" role="document">
-            <div className="modal-content bg-dark text-white">
-              <div className="modal-header">
-                <h5 className="modal-title">Confirm Leave</h5>
-                <button
-                  type="button"
-                  className="btn-close btn-close-white"
-                  onClick={handleCloseModal}
-                  aria-label="Close"
-                ></button>
-              </div>
-              <div className="modal-body">
-                <p>Are you sure you want to leave the arena?</p>
-              </div>
-              <div className="modal-footer">
-                <button
-                  type="button"
-                  className="btn btn-secondary"
-                  onClick={handleCloseModal}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-danger"
-                  onClick={confirmLeave}
-                >
-                  Leave
-                </button>
-              </div>
-            </div>
-          </div>
+  <div
+    className="modal fade show d-block"
+    tabIndex="-1"
+    role="dialog"
+    style={{ backgroundColor: "rgba(0, 0, 0, 0.8)" }}
+  >
+    <div className="modal-dialog modal-dialog-centered" role="document">
+      <div className="modal-content" style={{ backgroundColor: "#101010", color: "white" }}>
+        <div className="modal-header" style={{ border: "none" }}>
+          <h5 className="modal-title">Confirm Leave</h5>
+          <button
+            type="button"
+            className="btn-close btn-close-white"
+            onClick={handleCloseModal}
+            aria-label="Close"
+          ></button>
         </div>
-      )}
+        <div className="modal-body">
+          <p>Are you sure you want to leave the arena?</p>
+        </div>
+        <div className="modal-footer" style={{ border: "none" }}>
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={handleCloseModal}
+            style={{
+              padding: "0.75rem 1.5rem",
+              fontSize: "1.1rem",
+            }}
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            className="btn btn-danger"
+            onClick={confirmLeave}
+            style={{
+              padding: "0.75rem 1.5rem",
+              fontSize: "1.1rem",
+            }}
+          >
+            Leave
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
     </div>
   );
 }

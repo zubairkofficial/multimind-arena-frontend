@@ -7,12 +7,14 @@ import ArenaInfoCard from "./../../../components/ArenaChat/ArenaInfoCard";
 import UserListCard from "./UserListCard";
 import { getSocket, initiateSocketConnection } from "./../../../app/socket";
 import "./../../../components/ArenaChat/arenachat.css";
+import { useGetAllArenasQuery } from "../../../features/api/arenaApi";
 
 export default function ArenaChatPage() {
   const location = useLocation();
   const navigate = useNavigate();
-  const [arena, setArena] = useState(location.state);
+  const [arena, setArena] = useState();
   const userId = useSelector((state) => state.user.user.id);
+  const { data: arenaData, refetch } = useGetAllArenasQuery();
   const [message, setMessage] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [chatMessages, setChatMessages] = useState([]);
@@ -21,8 +23,7 @@ export default function ArenaChatPage() {
   const [showParticipants, setShowParticipants] = useState(false);
   const [showUsers, setShowUsers] = useState(false);
   const chatContainerRef = useRef(null);
-  console.log("Arena:", arena);
-
+console.log("chatMessages",chatMessages)
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
     window.addEventListener("resize", handleResize);
@@ -34,41 +35,53 @@ export default function ArenaChatPage() {
       socket.emit("joinRoom", { arenaId: arena.id, userId });
 
       socket.on("receiveMessage", (data) => {
-        console.log("Socket Event - receiveMessage:", data); // Logging receiveMessage data
-        if (data.senderId !== userId) {
+        console.log("Receive", data);
+        console.log("ReceiveM", data.user);
+        if (data.message.senderId !== userId) {
+          console.log("AGAYA");
           setChatMessages((prevMessages) => [
             ...prevMessages,
             {
-              sender: data.senderName,
-              content: data.content,
-              isUser: false,
-              time: new Date().toLocaleTimeString(),
+              sender: data.user.name,
+              message: data.message,
+              user: data.user,
+              time: new Date().toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+              }),
             },
           ]);
         }
       });
-
       socket.on("userRejoined", (data) => {
-        console.log("Socket Event - userRejoined:", data); // Logging userRejoined data
+        refetch();
         if (data.userId !== userId) {
-          setNotification(`User ${data.userName || data.userId} has rejoined.`);
-          setArena((prevArena) => ({ ...prevArena, ...data }));
+          setNotification(
+            `User ${data.name || data.userId} has rejoined.`
+          );
+          setArena({ ...data.joinArena });
           setTimeout(() => setNotification(null), 3000);
         }
       });
 
       socket.on("userJoined", (data) => {
-        console.log("Socket Event - userJoined:", data); // Logging userJoined data
+        refetch();
+        console.log("Join data", data);
         if (data.userId !== userId) {
-          setNotification(`User ${data.userName || data.userId} has joined.`);
-          setArena((prevArena) => ({ ...prevArena, ...data }));
+          setNotification(
+            `User ${data.name || data.userId} has joined.`
+          );
+          setArena({ ...data.joinArena });
           setTimeout(() => setNotification(null), 3000);
         }
       });
 
       socket.on("userLeft", (data) => {
-        console.log("Socket Event - userLeft:", data); // Logging userLeft data
-        setNotification(`User ${data.userName || data.userId} has left.`);
+        refetch();
+        setNotification(
+          `User ${data.name || data.userId} has left.`
+        );
+        setArena({ ...data.leftArena });
         setTimeout(() => setNotification(null), 3000);
       });
 
@@ -80,7 +93,7 @@ export default function ArenaChatPage() {
         window.removeEventListener("resize", handleResize);
       };
     }
-  }, [arena?.id, userId]);
+  }, [userId]);
 
   useEffect(() => {
     if (chatContainerRef.current) {
@@ -88,13 +101,23 @@ export default function ArenaChatPage() {
         chatContainerRef.current.scrollHeight;
     }
   }, [chatMessages]);
-  const handleModal = () =>{ setIsModalOpen(true)}
+  useEffect(() => {
+    setArena(location?.state); // Update arena state when location changes  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location?.state]);
+  const handleModal = () => {
+    setIsModalOpen(true);
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const socket = getSocket();
     if (message.trim() && arena?.id && socket) {
-      console.log("Sending Message:", { content: message, userId, arenaId: arena.id }); // Log the outgoing message
+      console.log("Sending Message:", {
+        content: message,
+        userId,
+        arenaId: arena.id,
+      }); // Log the outgoing message
+
       socket.emit("sendMessage", {
         content: message,
         userId,
@@ -105,7 +128,6 @@ export default function ArenaChatPage() {
         {
           sender: "You",
           content: message,
-          isUser: true,
           time: new Date().toLocaleTimeString([], {
             hour: "2-digit",
             minute: "2-digit",
@@ -117,8 +139,8 @@ export default function ArenaChatPage() {
   };
 
   const handleLeaveRoom = () => {
-    console.log("Leaving Room:", { arenaId: arena.id, userId }); // Log the leave event
     getSocket().emit("leaveRoom", { arenaId: arena.id, userId });
+    refetch();
     navigate("/dashboard");
   };
 
@@ -160,13 +182,14 @@ export default function ArenaChatPage() {
         }}
       >
         {showParticipants && (
+          
           <ParticipantsCard
             participants={
-              arena?.arenaAIFigures?.map(
-                (userArena) => userArena.aiFigure?.name
-              ) || ["Ahsan"]
+              arena?.arenaAIFigures?.map((userArena) => userArena.aiFigure) || [
+                "Ahsan",
+              ]
             }
-            handleModal = {handleModal}
+            handleModal={handleModal}
             totalParticipants={arena?.userArenas?.length || 0}
             expiryTime={arena?.expiryTime}
             aiStatus="Active"
@@ -177,14 +200,14 @@ export default function ArenaChatPage() {
       <div
         className={`flex-grow-1 d-flex flex-column chat-message-area ${
           showParticipants && !isMobile ? "" : "full-width"
-        }`}
+        } ${showUsers ? "slideIn" : "slideOut"}`}
       >
         <ArenaInfoCard
           name={arena?.name || "Chat Arena"}
           handleLeaveRoom={handleLeaveRoom}
           toggleParticipants={toggleParticipants}
           toggleUsers={toggleUsers}
-          image={arena?.image || "/assets/images/logo/logo.png"}
+          image={arena?.image || "assets/images/logo/logo.png"}
         />
 
         {notification && (
@@ -196,12 +219,17 @@ export default function ArenaChatPage() {
         <div
           ref={chatContainerRef}
           className={`flex-grow-1 pt-4 px-4 overflow-auto chat-message-container ${
-            chatMessages.length ? "slideIn" : "fade-out"
+            showUsers ? "slideOut" : "slideIn"
           }`}
         >
-          {chatMessages.map((msg, index) => (
-            <MessageBubble key={index} message={msg} />
-          ))}
+          {chatMessages && chatMessages.map((msg, index) => {
+            return (
+              <MessageBubble
+                message={msg}
+                // user={msg?.user}
+              />
+            );
+          })}
         </div>
 
         <div className="p-1 border-color-light chat-input-container">
@@ -231,7 +259,7 @@ export default function ArenaChatPage() {
         <div
           className={showUsers ? "slide-in-right" : "slide-out-right"}
           style={{
-            width: "200px",
+            width: "300px",
             backgroundColor: "#101010",
             color: "#fff",
             padding: "1rem",
@@ -239,9 +267,7 @@ export default function ArenaChatPage() {
           }}
         >
           <UserListCard
-            users={
-              arena?.userArenas?.map((userArena) => userArena.user?.name) || []
-            }
+            users={arena?.userArenas?.map((userArena) => userArena.user) || []}
           />
         </div>
       )}

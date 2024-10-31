@@ -1,5 +1,5 @@
 import React from "react";
-import { createBrowserRouter, Outlet } from "react-router-dom";
+import { createBrowserRouter } from "react-router-dom";
 import NotFound from "./Pages/NotFound";
 import Auth from "./components/Auth";
 import Index from "./Pages/Landing/Index";
@@ -20,8 +20,7 @@ import ManageAiFigures from "./Pages/Admin/AiFigures/ManageAiFigures";
 import UserLayout from "./Pages/User/Layout/Index";
 import EditProfile from "./Pages/User/Profile/EditProfile";
 import UserDashboard from "./Pages/User/UserDashboard";
-import ChatPage from "./Pages/User/Chat/AIChatPage";
-import UserAddArena from "./Pages/User/Arena/AddArena";
+import UserAddArena from "./Pages/User/AddArena/AddArena";
 import AddAIFigure from "./Pages/Admin/AiFigures/AddAIFigures";
 import Home from "./Pages/Admin/Home/Home";
 import UserAIFigureGallery from "./Pages/User/AiFigures/UserAiFigureGallery";
@@ -32,7 +31,6 @@ import ResetPassword from "./Pages/Auth/ResetPassword";
 import ManageArenaType from "./Pages/Admin/Arena/ArenaType/ManageArenaType";
 import AddArenaType from "./Pages/Admin/Arena/ArenaType/AddArenaType";
 import AIChatPage from "./Pages/User/Chat/AIChatPage";
-
 
 // Define routes
 export const router = createBrowserRouter([
@@ -61,6 +59,8 @@ export const router = createBrowserRouter([
     path: "/reset-password",
     element: <ResetPassword />,
   },
+
+
 
   // Admin Routes with Admin Layout
   {
