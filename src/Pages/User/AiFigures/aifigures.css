@@ -36,12 +36,12 @@
     /* Reduced padding */
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    height: 25%;
+    justify-content: start;
+    height: 35%;
 }
 
 .aifigure-card-title {
-    font-size: 1rem;
+    font-size: 1.5rem;
     /* Reduced font size */
     font-weight: bold;
     color: #ffffff;
@@ -52,10 +52,12 @@
 }
 
 .aifigure-card-description {
-    font-size: 0.8rem;
+    font-size: 1.2rem;
     /* Reduced font size */
     color: #aaa;
     overflow: hidden;
+    display: flex;
+    align-items: start;
     /* Keeps description compact */
     margin-bottom: 1.2rem;
 }
@@ -198,9 +200,11 @@
 
 .tick-mark {
     font-size: 4rem;
+    color: #28a745;
 }
 
 .aifigure-card.selected .aifigure-card-overlay {
     display: flex;
+    color: #111111;
     /* Show only for selected cards */
 }

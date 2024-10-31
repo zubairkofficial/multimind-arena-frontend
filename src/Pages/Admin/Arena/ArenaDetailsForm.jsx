@@ -1,156 +1,390 @@
-import React, { useState } from "react";
-import { Notyf } from "notyf"; // For notifications
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { Notyf } from "notyf";
+import { useGetAllArenaTypesQuery } from "../../../features/api/arenaApi";
+import { useGetAllAIFiguresQuery } from "../../../features/api/aiFigureApi";
+import Preloader from "../../Landing/Preloader";
+import Helpers from "../../../Config/Helpers";
+import Slider from "react-slick";
+import AIFigureCard from "./AIFigureCard";
+import "./../AiFigures/aifigures.css";
 
 const ArenaDetailsForm = () => {
-  // Local state to handle form input
+  // Arena and AI figure queries
+  const {
+    data: arenaTypesData,
+    isLoading: isLoadingArenaTypes,
+    error: arenaTypesError,
+  } = useGetAllArenaTypesQuery();
+  const {
+    data: aiFiguresData,
+    isLoading: isLoadingAIFigures,
+    error: aiFiguresError,
+  } = useGetAllAIFiguresQuery();
+
+  // Form data state
+  const [roles, setRoles] = useState([]);
+  const [image, setImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
-    arenaName: "",
-    expiryTime: "",
-    arenaType: "", // Arena type field remains
-    aiFigure: "", // AI figure field remains
-    description: "", // Arena description field remains
+    name: "",
+    duration: "60",
+    arenaTypeId: "",
+    aiFigureId: [],
+    aiFigureRoles: {},
+    description: "",
+    maxParticipants: "",
   });
 
-  // Arena types for dropdown
-  const arenaTypes = [
-    "Chill Salons",
-    "Debate Arena",
-    "Game Worlds",
-    "Learn Labs",
-    "Science Labs",
-    "Troll Pit",
-    "Dating Playground",
-    "Creative Writing Workshops",
-    "Time Travel Tours",
-    "Ethical Maze",
-    "Art Critic's Corner",
-  ];
-
-  // AI figures for dropdown
-  const aiFigures = [
-    "AI Figure 1",
-    "AI Figure 2",
-    "AI Figure 3",
-    "AI Figure 4",
-    // Add more AI figures
-  ];
-
+  useEffect(() => {
+    const fetchRoles = async () => {
+      try {
+        const response = await axios.get(`${Helpers.apiUrl}figure-role`);
+        setRoles(response.data);
+      } catch (error) {
+        console.error("Error fetching roles:", error);
+      }
+    };
+    fetchRoles();
+  }, []);
   // Handle form input changes
   const handleChange = (e) => {
+    const { id, value } = e.target;
     setFormData({
       ...formData,
-      [e.target.id]: e.target.value,
+      [id]: value,
     });
   };
 
-  // Handle form submission
-  const handleSubmit = (e) => {
+  // Handle image file change and generate a preview
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    setImage(file);
+    setImagePreview(URL.createObjectURL(file));
+  };
+
+  const handleAIFigureSelect = (figureId) => {
+    const isSelected = formData.aiFigureId.includes(figureId);
+    const updatedAIFigureId = isSelected
+      ? formData.aiFigureId.filter((id) => id !== figureId)
+      : formData.aiFigureId.length < 3
+      ? [...formData.aiFigureId, figureId]
+      : formData.aiFigureId;
+
+    setFormData({
+      ...formData,
+      aiFigureId: updatedAIFigureId,
+      aiFigureRoles: isSelected
+        ? { ...formData.aiFigureRoles, [figureId]: undefined }
+        : formData.aiFigureRoles,
+    });
+  };
+
+  const handleRoleChange = (figureId, roleId) => {
+    setFormData({
+      ...formData,
+      aiFigureRoles: {
+        ...formData.aiFigureRoles,
+        [figureId]: roleId,
+      },
+    });
+  };
+
+  const calculateExpiryTime = (durationInMinutes) => {
+    const now = new Date();
+    const expiryTime = new Date(now.getTime() + durationInMinutes * 60000);
+  
+    // Convert to UTC (GMT+0) and format as ISO string
+    return new Date(expiryTime.toISOString().slice(0, -1) + 'Z');
+  };
+
+  // Form submission
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Log the submitted form data
-    console.log("Form Data Submitted:", formData);
-
-    // Notify success
     const notyf = new Notyf();
-    notyf.success("Arena created successfully.");
+
+    setIsSubmitting(true);
+
+    // Calculate expiry time
+    const expiryTime = calculateExpiryTime(Number(formData.duration));
+
+    // Create FormData object
+    const dataToSend = new FormData();
+    dataToSend.append("name", formData.name);
+    dataToSend.append("duration", formData.duration);
+    dataToSend.append("arenaTypeId", formData.arenaTypeId);
+    formData.aiFigureId.forEach((id) => {
+      dataToSend.append("aiFigureId[]", id);
+      if (formData.aiFigureRoles[id]) {
+        dataToSend.append(`aiFigureRoles[${id}]`, formData.aiFigureRoles[id]);
+      }
+    });
+    dataToSend.append("description", formData.description);
+    dataToSend.append("maxParticipants", formData.maxParticipants);
+    dataToSend.append("expiryTime", expiryTime);
+
+    // Append the image file if it exists
+    if (image) {
+      dataToSend.append("file", image);
+    }
+
+    try {
+      await axios.post(`${Helpers.apiUrl}arenas`, dataToSend, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      notyf.success("Arena created successfully.");
+
+      // Navigate to dashboard if necessary
+      // navigate("/dashboard");
+      setIsSubmitting(false);
+
+      // Clear form data after successful submission
+      setFormData({
+        name: "",
+        duration: "",
+        arenaTypeId: "",
+        aiFigureId: [],
+        aiFigureRoles: {},
+        description: "",
+        maxParticipants: "",
+      });
+      setImage(null);
+      setImagePreview(null);
+    } catch (err) {
+      notyf.error("Failed to create arena. Please try again.");
+      setIsSubmitting(false); // End loading
+    }
+  };
+
+  if (isLoadingArenaTypes || isLoadingAIFigures) return <Preloader />;
+  if (arenaTypesError)
+    return <div>Error loading arena types: {arenaTypesError.message}</div>;
+  if (aiFiguresError)
+    return <div>Error loading AI figures: {aiFiguresError.message}</div>;
+
+  const sliderSettings = {
+    dots: false,
+    infinite: false,
+    speed: 500,
+    slidesToShow: 3, // Default for large screens
+    slidesToScroll: 1,
+    responsive: [
+      {
+        breakpoint: 1200, // Larger tablets and small laptops
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 1,
+        },
+      },
+      {
+        breakpoint: 768, // Small screens (like mobile devices)
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+        },
+      },
+    ],
   };
 
   return (
     <div
-      className="tab-pane fade active show"
-      id="arena"
-      role="tabpanel"
-      aria-labelledby="arena-tab"
+      className="arena-details-form-container"
+      style={{ padding: "2rem", margin: "0 auto", maxWidth: "800px" }}
     >
-      <form
-        onSubmit={handleSubmit}
-        className="rbt-profile-row rbt-default-form row row--15"
-      >
-        <div className="col-lg-12 col-md-12 col-sm-12 col-12">
-          <div className="form-group">
-            <label htmlFor="arenaName">Arena Name</label>
-            <input
-              id="arenaName"
-              type="text"
-              value={formData.arenaName}
-              onChange={handleChange}
-              placeholder="Enter Arena Name"
-              required
-            />
-          </div>
+      <form onSubmit={handleSubmit} className="arena-form grid-container">
+        {/* Arena Topic */}
+        <div
+          className="form-group grid-item"
+          style={{ display: "inline-block", width: "48%", marginRight: "2%" }}
+        >
+          <label htmlFor="name">Topic</label>
+          <input
+            id="name"
+            type="text"
+            value={formData.name}
+            onChange={handleChange}
+            placeholder="Enter Topic"
+            required
+          />
         </div>
 
-        <div className="col-lg-6 col-md-6 col-sm-6 col-12">
-          <div className="form-group">
-            <label htmlFor="expiryTime">Expiry Time</label>
-            <input
-              id="expiryTime"
-              type="datetime-local"
-              value={formData.expiryTime}
-              onChange={handleChange}
-              required
-            />
-          </div>
+        {/* Arena Type */}
+        <div
+          className="form-group grid-item"
+          style={{ display: "inline-block", width: "48%" }}
+        >
+          <label htmlFor="arenaTypeId">Arena Type</label>
+          <select
+            id="arenaTypeId"
+            value={formData.arenaTypeId}
+            onChange={handleChange}
+            required
+          >
+            <option value="">Select Arena Type</option>
+            {arenaTypesData.map((type) => (
+              <option key={type.id} value={type.id}>
+                {type.name}
+              </option>
+            ))}
+          </select>
         </div>
 
-        <div className="col-lg-6 col-md-6 col-sm-6 col-12">
-          <div className="form-group">
-            <label htmlFor="arenaType">Arena Type</label>
-            <select
-              id="arenaType"
-              value={formData.arenaType}
-              onChange={handleChange}
-              required
-            >
-              <option value="">Select Arena Type</option>
-              {arenaTypes.map((type) => (
-                <option key={type} value={type}>
-                  {type}
-                </option>
+        {/* AI Figure Selection */}
+        <div
+          style={{
+            // width: "100%",
+            marginBottom: "2rem",
+            // display: "grid",
+            // gridTemplateColumns: "1fr",
+            // gridGap: "1rem",
+          }}
+        >
+          <label htmlFor="aiFigureId" >
+            Select AI Figures (max 3)
+          </label>
+          <div>
+            {/* AI Figure Selection */}
+
+            <Slider {...sliderSettings}>
+              {aiFiguresData.map((figure) => (
+                <div key={figure.id} className="slider-item">
+                  <AIFigureCard
+                    figure={figure}
+                    onSelect={() => handleAIFigureSelect(figure.id)}
+                    isSelected={formData.aiFigureId.includes(figure.id)}
+                  />
+                </div>
               ))}
-            </select>
+            </Slider>
           </div>
-        </div>
-
-        <div className="col-lg-6 col-md-6 col-sm-6 col-12">
-          <div className="form-group">
-            <label htmlFor="aiFigure">Select AI Figure</label>
-            <select
-              id="aiFigure"
-              value={formData.aiFigure}
-              onChange={handleChange}
-              required
+          {formData.aiFigureId.map((figureId) => (
+            <div
+              key={figureId}
+              style={{
+                marginTop: "0.5rem",
+                display: "grid",
+                gridTemplateColumns: "1fr",
+                gridGap: "0.5rem",
+              }}
             >
-              <option value="">Select AI Figure</option>
-              {aiFigures.map((figure) => (
-                <option key={figure} value={figure}>
-                  {figure}
-                </option>
-              ))}
-            </select>
+              <label>
+                Assign Role for{" "}
+                {aiFiguresData.find((f) => f.id === figureId)?.name}
+              </label>
+              <select
+                value={formData.aiFigureRoles[figureId] || ""}
+                onChange={(e) => handleRoleChange(figureId, e.target.value)}
+                required
+                style={{
+                  width: "100%",
+                  padding: "0.5rem",
+                  fontSize: "1rem",
+                }}
+              >
+                <option value="">Select Role</option>
+                {roles.map((role) => (
+                  <option key={role.id} value={role.id}>
+                    {role.roleName}
+                  </option>
+                ))}
+              </select>
+            </div>
+          ))}
+        </div>
+
+        {/* Image Upload Section */}
+        <div
+          className="form-group grid-item"
+          style={{ width: "48%", display: "inline-block", marginRight: "2%" }}
+        >
+          <label htmlFor="image">Upload Image</label>
+          <div className="custom-file-upload">
+            {imagePreview && (
+              <div className="image-preview">
+                <img
+                  src={imagePreview}
+                  alt="Arena Preview"
+                  style={{ width: "100px", height: "100px" }}
+                />
+              </div>
+            )}
+            <div className="upload-section">
+              <input
+                id="image"
+                type="file"
+                onChange={handleImageChange}
+                accept="image/*"
+                style={{ display: "none" }} // Hide default file input styling
+              />
+              <label htmlFor="image" className="upload-button">
+                Choose Image
+              </label>
+            </div>
           </div>
         </div>
 
-        <div className="col-lg-12 col-md-12 col-sm-12 col-12">
-          <div className="form-group">
-            <label htmlFor="description">Arena Description</label>
-            <textarea
-              id="description"
-              value={formData.description}
-              onChange={handleChange}
-              placeholder="Enter a description of the arena"
-              rows="4"
-              required
-            ></textarea>
-          </div>
+        {/* Max Participants */}
+        <div
+          className="form-group grid-item"
+          style={{ width: "48%", display: "inline-block" }}
+        >
+          <label htmlFor="maxParticipants">Max Participants</label>
+          <input
+            id="maxParticipants"
+            type="number"
+            min="1"
+            value={formData.maxParticipants}
+            onChange={handleChange}
+            placeholder="Enter Max Number"
+            required
+          />
         </div>
 
-        <div className="col-12 mt--20">
-          <div className="form-group mb--0">
-            <button type="submit" className="btn-default">
-              Add Arena
-            </button>
-          </div>
+        {/* Duration */}
+        <div
+          className="form-group grid-item"
+          style={{ width: "48%", display: "inline-block", marginTop: "1rem" }}
+        >
+          <label htmlFor="duration">Duration (minutes)</label>
+          <input
+            id="duration"
+            type="number"
+            min="1"
+            value={formData.duration}
+            onChange={handleChange}
+            placeholder="Enter Duration"
+            required
+          />
+        </div>
+
+        {/* Description */}
+        <div
+          className="form-group grid-item grid-span-2"
+          style={{ width: "100%", marginTop: "1rem" }}
+        >
+          <label htmlFor="description">Description</label>
+          <textarea
+            id="description"
+            value={formData.description}
+            onChange={handleChange}
+            placeholder="Enter a description of the arena"
+            rows="4"
+            required
+          ></textarea>
+        </div>
+
+        {/* Submit Button */}
+        <div
+          className="form-group grid-item grid-span-2 submit-section"
+          style={{ width: "100%", textAlign: "center", marginTop: "1rem" }}
+        >
+          <button type="submit" className="btn-default" disabled={isSubmitting}>
+            {isSubmitting ? "Creating Arena..." : "Add Arena"}
+          </button>
         </div>
       </form>
     </div>

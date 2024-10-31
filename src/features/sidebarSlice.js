@@ -2,11 +2,11 @@ import { createSlice } from "@reduxjs/toolkit";
 
 // Initial state for both sidebars
 const initialSidebarState = {
-    sidebarOpen: true,
+    sidebarOpen: false,
 };
 
 const initialRightSidebarState = {
-    rightSidebarOpen: false,
+    rightSidebarOpen: true,
 };
 
 // Slice for left sidebar

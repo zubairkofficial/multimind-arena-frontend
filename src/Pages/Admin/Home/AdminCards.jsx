@@ -1,33 +1,36 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-const cardsData = [
-  {
-    title: 'Total Users',
-    count: '15,234',
-    className: 'total-users-card',
-    path: '/admin/users'
-  },
-  {
-    title: 'Active Arenas',
-    count: '42',
-    className: 'active-arenas-card',
-      path: '/admin/manage-arenas'
-  },
-  {
-    title: 'AI Figures',
-    count: '100',
-    className: 'ai-figures-card',
-      path: '/admin/manage-ai-figures'
-  },
-  {
-    title: 'Daily Active Users',
-    count: '1,337',
-    className: 'daily-active-users-card',
-      path: '/admin/users'
-  },
-];
 
-const AdminCards = () => {
+const AdminCards = ({ userCount,
+  arenaTypesCount,arenaCount,
+  aiFiguresCount}) => {
+
+    const cardsData = [
+      {
+        title: 'Total Users',
+        count: userCount,
+        className: 'total-users-card',
+        path: '/admin/users'
+      },
+      {
+        title: 'Active Arenas',
+        count: arenaCount,
+        className: 'active-arenas-card',
+          path: '/admin/manage-arenas'
+      },
+      {
+        title: 'AI Figures',
+        count: aiFiguresCount,
+        className: 'ai-figures-card',
+          path: '/admin/manage-ai-figures'
+      },
+      {
+        title: 'Total Arena Types',
+        count: arenaTypesCount,
+        className: 'daily-active-users-card',
+          path: '/admin/users'
+      },
+    ];
   return (
     <div className="row mb-4">
       {cardsData.map((card, index) => (

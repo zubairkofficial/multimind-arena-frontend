@@ -30,7 +30,9 @@ export default function UserDashboard() {
     if (socket) {
       handleSocketEvents(socket);
     } else {
-      console.error("Socket connection not established. Check socket initialization.");
+      console.error(
+        "Socket connection not established. Check socket initialization."
+      );
     }
 
     return () => {
@@ -44,8 +46,12 @@ export default function UserDashboard() {
   }, []);
 
   const handleSocketEvents = (socket) => {
-    socket.on("userJoined", (response) => handleArenaNavigation(response.joinArena, "userJoined"));
-    socket.on("userRejoined", (response) => handleArenaNavigation(response.joinArena, "userRejoined"));
+    socket.on("userJoined", (response) =>
+      handleArenaNavigation(response.joinArena, "userJoined")
+    );
+    socket.on("userRejoined", (response) =>
+      handleArenaNavigation(response.joinArena, "userRejoined")
+    );
     socket.on("userLeft", (response) => handleUserLeft(response));
   };
 
@@ -66,7 +72,9 @@ export default function UserDashboard() {
   const handleUserLeft = (response) => {
     console.log("userLeft:", response.leftArena);
     refetch();
-    setNotification(`User ${response.leftArena.userName || response.userId} has left.`);
+    setNotification(
+      `User ${response.leftArena.userName || response.userId} has left.`
+    );
     setTimeout(() => setNotification(null), 3000);
   };
 
@@ -102,7 +110,9 @@ export default function UserDashboard() {
     return acc;
   }, {});
 
-  const sortedArenaCategories = Object.entries(arenasByType || {}).sort((a, b) => b[1].length - a[1].length);
+  const sortedArenaCategories = Object.entries(arenasByType || {}).sort(
+    (a, b) => b[1].length - a[1].length
+  );
 
   if (isLoading) return <Preloader />;
   if (error) return <div>Error loading arenas: {error.message}</div>;
@@ -111,15 +121,28 @@ export default function UserDashboard() {
     <div className="container">
       <div className="arena-dashboard">
         <div className="search-bar-section">
-          <h4 className="dashboard-title d-flex justify-content-center">Join Arena Now</h4>
-          <SearchBar onClick={() => navigate("/add-arena")} title="Create Arena" placeholder="Search for arenas..." />
+          <SearchBar
+            onClick={() => navigate("/add-arena")}
+            heading="Join Arena Now"
+            title="Create Arena"
+            placeholder="Search for arenas..."
+          />
         </div>
 
         {arenas?.length > 0 ? (
           <>
-            <ArenaCategory title="All Arenas" arenas={arenas} handleJoin={handleJoinArena} />
+            <ArenaCategory
+              title="All Arenas"
+              arenas={arenas}
+              handleJoin={handleJoinArena}
+            />
             {sortedArenaCategories.map(([type, arenasList]) => (
-              <ArenaCategory key={type} title={type} arenas={arenasList} handleJoin={handleJoinArena} />
+              <ArenaCategory
+                key={type}
+                title={type}
+                arenas={arenasList}
+                handleJoin={handleJoinArena}
+              />
             ))}
           </>
         ) : (
@@ -152,7 +175,9 @@ const OverlayCard = ({ isJoining, joinError }) => (
             <div>Joining the arena...</div>
           </>
         ) : joinError ? (
-          <Alert variant="danger" className="mt-3">{joinError}</Alert>
+          <Alert variant="danger" className="mt-3">
+            {joinError}
+          </Alert>
         ) : null}
       </div>
     </div>

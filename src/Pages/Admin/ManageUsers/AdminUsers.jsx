@@ -5,7 +5,7 @@ import Preloader from "../../Landing/Preloader";
 import CustomTable from './../../../components/Table/CustomTable'; // Reuse the CustomTable component
 import Pagination from './../../../components/Table/Pagination'; // Reuse the Pagination component
 import { useGetAllUsersQuery } from "./../../../features/api/userApi"; // Import the hook for getting all users
-
+import Searchbar from "../../../components/Searchbar/Searchbar";
 const AdminUsers = () => {
   const [usersData, setUsersData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -88,17 +88,7 @@ const AdminUsers = () => {
         <Preloader />
       ) : (
         <div>
-          <h2>User List</h2>
-          {/* Search input for filtering users */}
-          <div className="search-bar d-flex mb-3">
-            <input
-              type="text"
-              placeholder="Search by name or email"
-              value={searchText}
-              onChange={handleSearchChange}
-              className="form-control"
-            />
-          </div>
+         <Searchbar heading="Manage Users" placeholder="Search user..."/>
           <CustomTable
             headers={tableHeaders}
             data={tableData}

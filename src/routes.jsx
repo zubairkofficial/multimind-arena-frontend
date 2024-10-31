@@ -31,6 +31,7 @@ import ResetPassword from "./Pages/Auth/ResetPassword";
 import ManageArenaType from "./Pages/Admin/Arena/ArenaType/ManageArenaType";
 import AddArenaType from "./Pages/Admin/Arena/ArenaType/AddArenaType";
 import AIChatPage from "./Pages/User/Chat/AIChatPage";
+import ErrorLogs from "./Pages/Admin/SystemStatus/ErrorLogs";
 
 // Define routes
 export const router = createBrowserRouter([
@@ -98,6 +99,10 @@ export const router = createBrowserRouter([
       {
         path: "recent-activity",
         element: <RecentActivity />,
+      },
+      {
+        path: "system-status",
+        element: <ErrorLogs/>,
       },
       {
         path: "manage-ai-figures",

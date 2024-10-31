@@ -5,7 +5,7 @@ let socket;
 
 export const initiateSocketConnection = () => {
     if (!socket) {
-        socket = io("http://192.168.18.123:8080"); // Update with your socket server URL
+        socket = io("http://192.168.18.57:8080"); // Update with your socket server URL
         console.log("Socket connected");
     }
 };

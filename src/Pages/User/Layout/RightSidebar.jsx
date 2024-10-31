@@ -12,7 +12,7 @@ const RightSidebar = () => {
   useEffect(() => {
     const fetchHistoryData = async () => {
       try {
-        const response = await axios.get('http://192.168.18.123:8080/history', {
+        const response = await axios.get('http://192.168.18.57:8080/api/v1/user/history/all', {
         
           headers: {
             'Content-Type': 'application/json',
@@ -39,14 +39,7 @@ const RightSidebar = () => {
 
   return (
     <div className={`rbt-right-side-panel popup-dashboardright-section ${rightSidebarOpen ? "" : "collapsed "}`}>
-      <div className="right-side-top">
-        <a className="btn-default bg-solid-primary" data-bs-toggle="modal" data-bs-target="#newchatModal">
-          <span className="icon">
-            <i className="fa-sharp fa-regular fa-circle-plus" />
-          </span>
-          <span>New Chat</span>
-        </a>
-      </div>
+
       <div className="right-side-bottom">
         <div className="small-search search-section mb--20">
           <input type="search" placeholder="Search Here..." />

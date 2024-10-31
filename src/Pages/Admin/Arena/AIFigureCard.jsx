@@ -20,8 +20,8 @@ export default function AIFigureCard({ figure, onSelect, isSelected }) {
         <p className="aifigure-card-description">{figure.description}</p>
       </div>
       {isSelected && (
-        <div className="aifigure-card selected aifigure-card-overlay">
-          <span className="tick-mark"></span>
+        <div className="aifigure-card-overlay">
+          <span className="tick-mark">&#10003;</span>
         </div>
       )}
     </div>

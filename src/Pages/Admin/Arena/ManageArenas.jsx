@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useGetAllArenasQuery } from "./../../../features/api/arenaApi";
 import CustomTable from "../../../components/Table/CustomTable"; // Import the reusable table component
 import Pagination from "../../../components/Table/Pagination"; // Import the pagination component
-
+import Searchbar from "../../../components/Searchbar/Searchbar";
 export default function ManageArenas() {
   const navigate = useNavigate();
   const { data: arenasData, error, isLoading } = useGetAllArenasQuery();
@@ -32,7 +32,9 @@ export default function ManageArenas() {
     title: arena.name,
     type: arena.arenaType?.name || "Unknown",
     aiFigure: arena.aiFigures?.name || "None",
-    expirySession: arena.expiryTime ? new Date(arena.expiryTime).toLocaleDateString() : "N/A",
+    expirySession: arena.expiryTime
+      ? new Date(arena.expiryTime).toLocaleDateString()
+      : "N/A",
     status: arena.status.charAt(0).toUpperCase() + arena.status.slice(1),
   }));
 
@@ -52,7 +54,10 @@ export default function ManageArenas() {
 
   const indexOfLastArena = currentPage * entriesPerPage;
   const indexOfFirstArena = indexOfLastArena - entriesPerPage;
-  const currentArenas = filteredData?.slice(indexOfFirstArena, indexOfLastArena);
+  const currentArenas = filteredData?.slice(
+    indexOfFirstArena,
+    indexOfLastArena
+  );
   const totalPages = Math.ceil(filteredData?.length / entriesPerPage);
 
   const handlePageChange = (pageNumber) => {
@@ -108,22 +113,12 @@ export default function ManageArenas() {
 
   return (
     <div>
-      <div className="d-flex justify-content-between mb-4">
-        <h2>Manage Arenas</h2>
-        <button className="btn-default" onClick={handleCreateArena}>
-          Create Arena
-        </button>
-      </div>
-      {/* Search Bar */}
-      <div className="search-bar-container mb-3">
-        <input
-          type="text"
-          placeholder="Search by arena name, type, AI figure, or status"
-          value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
-          className="search-bar"
-        />
-      </div>
+      <Searchbar
+        heading="Manage Arenas"
+        title="Create Arena"
+        placeholder="Search Arenas..."
+        onClick={handleCreateArena}
+      />
 
       <div className="manage-arenas text-light">
         <CustomTable headers={tableHeaders} data={tableData} />

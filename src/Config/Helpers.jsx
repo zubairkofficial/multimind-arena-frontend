@@ -1,7 +1,7 @@
 import { Notyf } from "notyf";
 
 class Helpers {
-  static localhost = "http://192.168.18.123:8080";
+  static localhost = "http://192.168.18.57:8080";
   static server = "https://chat-arena-backend-4ba91b3feb6b.herokuapp.com";
 
   static basePath = `${this.localhost}`;

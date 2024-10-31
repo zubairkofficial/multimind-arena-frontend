@@ -94,71 +94,72 @@ const ArenaDetailsForm = () => {
   const calculateExpiryTime = (durationInMinutes) => {
     const now = new Date();
     const expiryTime = new Date(now.getTime() + durationInMinutes * 60000);
-  
+
     // Convert to UTC (GMT+0) and format as ISO string
-    return new Date(expiryTime.toISOString().slice(0, -1) + 'Z');
+    return new Date(expiryTime.toISOString().slice(0, -1) + "Z");
   };
 
   // Form submission
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const notyf = new Notyf();
+ // Form submission
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  const notyf = new Notyf();
 
-    setIsSubmitting(true);
+  setIsSubmitting(true);
 
-    // Calculate expiry time
-    const expiryTime = calculateExpiryTime(Number(formData.duration));
+  // Calculate expiry time or set to empty string if duration is "Unlimited"
+  const expiryTime =
+    formData.duration === " " ? "" : calculateExpiryTime(Number(formData.duration));
 
-    // Create FormData object
-    const dataToSend = new FormData();
-    dataToSend.append("name", formData.name);
-    dataToSend.append("duration", formData.duration);
-    dataToSend.append("arenaTypeId", formData.arenaTypeId);
-    formData.aiFigureId.forEach((id) => {
-      dataToSend.append("aiFigureId[]", id);
-      if (formData.aiFigureRoles[id]) {
-        dataToSend.append(`aiFigureRoles[${id}]`, formData.aiFigureRoles[id]);
-      }
+  // Create FormData object
+  const dataToSend = new FormData();
+  dataToSend.append("name", formData.name);
+  dataToSend.append("duration", formData.duration);
+  dataToSend.append("arenaTypeId", formData.arenaTypeId);
+  formData.aiFigureId.forEach((id) => {
+    dataToSend.append("aiFigureId[]", id);
+    if (formData.aiFigureRoles[id]) {
+      dataToSend.append(`aiFigureRoles[${id}]`, formData.aiFigureRoles[id]);
+    }
+  });
+  dataToSend.append("description", formData.description);
+  dataToSend.append("maxParticipants", formData.maxParticipants);
+  dataToSend.append("expiryTime", expiryTime);
+
+  // Append the image file if it exists
+  if (image) {
+    dataToSend.append("file", image);
+  }
+
+  try {
+    await axios.post(`${Helpers.apiUrl}arenas`, dataToSend, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
     });
-    dataToSend.append("description", formData.description);
-    dataToSend.append("maxParticipants", formData.maxParticipants);
-    dataToSend.append("expiryTime", expiryTime);
+    notyf.success("Arena created successfully.");
 
-    // Append the image file if it exists
-    if (image) {
-      dataToSend.append("file", image);
-    }
+    setIsSubmitting(false);
 
-    try {
-      await axios.post(`${Helpers.apiUrl}arenas`, dataToSend, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-      notyf.success("Arena created successfully.");
+    // Clear form data after successful submission
+    setFormData({
+      name: "",
+      duration: "",
+      arenaTypeId: "",
+      aiFigureId: [],
+      aiFigureRoles: {},
+      description: "",
+      maxParticipants: "",
+    });
+    setImage(null);
+    setImagePreview(null);
+  } catch (err) {
+    notyf.error("Failed to create arena. Please try again.");
+    setIsSubmitting(false); // End loading
+  }
+};
 
-      // Navigate to dashboard if necessary
-      // navigate("/dashboard");
-      setIsSubmitting(false);
-
-      // Clear form data after successful submission
-      setFormData({
-        name: "",
-        duration: "",
-        arenaTypeId: "",
-        aiFigureId: [],
-        aiFigureRoles: {},
-        description: "",
-        maxParticipants: "",
-      });
-      setImage(null);
-      setImagePreview(null);
-    } catch (err) {
-      notyf.error("Failed to create arena. Please try again.");
-      setIsSubmitting(false); // End loading
-    }
-  };
 
   if (isLoadingArenaTypes || isLoadingAIFigures) return <Preloader />;
   if (arenaTypesError)
@@ -243,9 +244,7 @@ const ArenaDetailsForm = () => {
             // gridGap: "1rem",
           }}
         >
-          <label htmlFor="aiFigureId" >
-            Select AI Figures (max 3)
-          </label>
+          <label htmlFor="aiFigureId">Select AI Figures (max 3)</label>
           <div>
             {/* AI Figure Selection */}
 
@@ -333,32 +332,38 @@ const ArenaDetailsForm = () => {
           style={{ width: "48%", display: "inline-block" }}
         >
           <label htmlFor="maxParticipants">Max Participants</label>
-          <input
+          <select
             id="maxParticipants"
-            type="number"
-            min="1"
             value={formData.maxParticipants}
             onChange={handleChange}
-            placeholder="Enter Max Number"
             required
-          />
+          >
+            <option value="">Select Max Participants</option>
+            <option value={2}>2</option>
+            <option value={100}>100</option>
+            <option value={0}>Unlimited</option>
+          </select>
         </div>
 
-        {/* Duration */}
+        {/* Max Duration */}
         <div
           className="form-group grid-item"
           style={{ width: "48%", display: "inline-block", marginTop: "1rem" }}
         >
           <label htmlFor="duration">Duration (minutes)</label>
-          <input
+          <select
             id="duration"
-            type="number"
-            min="1"
             value={formData.duration}
             onChange={handleChange}
-            placeholder="Enter Duration"
             required
-          />
+          >
+            <option value="">Select Duration</option>
+            <option value="15">15 minutes</option>
+            <option value="30">30 minutes</option>
+            <option value="60">60 minutes</option>
+            <option value="90">90 minutes</option>
+            <option value=" ">Unlimited</option>
+          </select>
         </div>
 
         {/* Description */}

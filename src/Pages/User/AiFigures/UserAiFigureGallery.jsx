@@ -55,14 +55,13 @@ const AIFigureGallery = () => {
   return (
     <div className="ai-figure-gallery" aria-label="AI Figure Gallery" role="region">
       <div className="search-bar-section">
-        <h4 className="dashboard d-flex justify-content-center" id="gallery-heading">
-          AI Figure Gallery
-        </h4>
+    
         <SearchBar
           title="+ AI Figure"
           onClick={handleCreateFigure}
           placeholder="Search AI Figures..."
           aria-labelledby="gallery-heading"
+          heading="AI Figure Gallery"
         />
       </div>
 
