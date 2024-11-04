@@ -1,5 +1,5 @@
 import React from "react";
-import "./../AiFigures/aifigures.css";
+import "./aifigure.css";
 
 export default function AIFigureCard({ figure, onSelect, isSelected }) {
   return (
@@ -14,16 +14,16 @@ export default function AIFigureCard({ figure, onSelect, isSelected }) {
           src={figure.image}
         />
         <span className="aifigure-card-creator">By: @{figure.creator}</span>
+        {isSelected && (
+          <div className="aifigure-card-overlay">
+            <span className="tick-mark">✔</span>
+          </div>
+        )}
       </div>
       <div className="aifigure-card-content">
         <h3 className="aifigure-card-title">{figure.name}</h3>
         <p className="aifigure-card-description">{figure.description}</p>
       </div>
-      {isSelected && (
-        <div className="aifigure-card selected aifigure-card-overlay">
-          <span className="tick-mark"></span>
-        </div>
-      )}
     </div>
   );
 }

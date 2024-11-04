@@ -29,13 +29,16 @@ const ArenaDetailsForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
-    duration: "60",
+    duration: null,
     arenaTypeId: "",
     aiFigureId: [],
     aiFigureRoles: {},
     description: "",
     maxParticipants: "",
   });
+
+  // Filter state
+  const [filter, setFilter] = useState("All");
 
   useEffect(() => {
     const fetchRoles = async () => {
@@ -48,15 +51,17 @@ const ArenaDetailsForm = () => {
     };
     fetchRoles();
   }, []);
+
   // Handle form input changes
   const handleChange = (e) => {
     const { id, value } = e.target;
     setFormData({
       ...formData,
-      [id]: value,
+      [id]: value === "Unlimited" ? null : value,
     });
+    console.log(value);
   };
-
+  console.log("form--------", formData.duration);
   // Handle image file change and generate a preview
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -94,78 +99,93 @@ const ArenaDetailsForm = () => {
   const calculateExpiryTime = (durationInMinutes) => {
     const now = new Date();
     const expiryTime = new Date(now.getTime() + durationInMinutes * 60000);
-
-    // Convert to UTC (GMT+0) and format as ISO string
-    return new Date(expiryTime.toISOString().slice(0, -1) + "Z");
+  
+    // Format expiryTime in UTC
+    return expiryTime;
   };
-
+  
   // Form submission
- // Form submission
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  const notyf = new Notyf();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const notyf = new Notyf();
 
-  setIsSubmitting(true);
+    setIsSubmitting(true);
+    console.log("formData.duration", formData.duration);
+    // Calculate expiry time or set to empty string if duration is "Unlimited"
+    const expiryTime =
+      formData.duration === null
+        ? null
+        : calculateExpiryTime(Number(formData.duration));
 
-  // Calculate expiry time or set to empty string if duration is "Unlimited"
-  const expiryTime =
-    formData.duration === " " ? "" : calculateExpiryTime(Number(formData.duration));
+    // Create FormData object
+    const dataToSend = new FormData();
+    dataToSend.append("name", formData.name);
 
-  // Create FormData object
-  const dataToSend = new FormData();
-  dataToSend.append("name", formData.name);
-  dataToSend.append("duration", formData.duration);
-  dataToSend.append("arenaTypeId", formData.arenaTypeId);
-  formData.aiFigureId.forEach((id) => {
-    dataToSend.append("aiFigureId[]", id);
-    if (formData.aiFigureRoles[id]) {
-      dataToSend.append(`aiFigureRoles[${id}]`, formData.aiFigureRoles[id]);
+    dataToSend.append("arenaTypeId", formData.arenaTypeId);
+    formData.aiFigureId.forEach((id) => {
+      dataToSend.append("aiFigureId[]", id);
+      if (formData.aiFigureRoles[id]) {
+        dataToSend.append(`aiFigureRoles[${id}]`, formData.aiFigureRoles[id]);
+      }
+    });
+    dataToSend.append("description", formData.description);
+    dataToSend.append("maxParticipants", formData.maxParticipants);
+    dataToSend.append("expiryTime", expiryTime);
+
+    // Append the image file if it exists
+    if (image) {
+      dataToSend.append("file", image);
     }
-  });
-  dataToSend.append("description", formData.description);
-  dataToSend.append("maxParticipants", formData.maxParticipants);
-  dataToSend.append("expiryTime", expiryTime);
+    console.log("dataToSend", dataToSend);
+    try {
+      await axios.post(`${Helpers.apiUrl}arenas`, dataToSend, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      notyf.success("Arena created successfully.");
 
-  // Append the image file if it exists
-  if (image) {
-    dataToSend.append("file", image);
-  }
+      setIsSubmitting(false);
 
-  try {
-    await axios.post(`${Helpers.apiUrl}arenas`, dataToSend, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    });
-    notyf.success("Arena created successfully.");
-
-    setIsSubmitting(false);
-
-    // Clear form data after successful submission
-    setFormData({
-      name: "",
-      duration: "",
-      arenaTypeId: "",
-      aiFigureId: [],
-      aiFigureRoles: {},
-      description: "",
-      maxParticipants: "",
-    });
-    setImage(null);
-    setImagePreview(null);
-  } catch (err) {
-    notyf.error("Failed to create arena. Please try again.");
-    setIsSubmitting(false); // End loading
-  }
-};
-
+      // Clear form data after successful submission
+      // setFormData({
+      //   name: "",
+      //   duration: "",
+      //   arenaTypeId: "",
+      //   aiFigureId: [],
+      //   aiFigureRoles: {},
+      //   description: "",
+      //   maxParticipants: "",
+      // });
+      setImage(null);
+      setImagePreview(null);
+    } catch (err) {
+      notyf.error("Failed to create arena. Please try again.");
+      setIsSubmitting(false); // End loading
+    }
+  };
 
   if (isLoadingArenaTypes || isLoadingAIFigures) return <Preloader />;
   if (arenaTypesError)
     return <div>Error loading arena types: {arenaTypesError.message}</div>;
   if (aiFiguresError)
     return <div>Error loading AI figures: {aiFiguresError.message}</div>;
+
+  // Dynamically generate categories for filtering
+  const dynamicCategories = [
+    "All",
+    ...new Set(aiFiguresData?.map((figure) => figure.type)),
+  ];
+
+  const filteredFigures =
+    filter === "All"
+      ? aiFiguresData
+      : aiFiguresData.filter(
+          (figure) =>
+            figure.type === filter ||
+            (figure.tags && figure.tags.includes(filter))
+        );
 
   const sliderSettings = {
     dots: false,
@@ -196,10 +216,10 @@ const handleSubmit = async (e) => {
       className="arena-details-form-container"
       style={{ padding: "2rem", margin: "0 auto", maxWidth: "800px" }}
     >
-      <form onSubmit={handleSubmit} className="arena-form grid-container">
+      <form onSubmit={handleSubmit} className="arena-form grid-container mb-5">
         {/* Arena Topic */}
         <div
-          className="form-group grid-item"
+          className="form-group grid-item "
           style={{ display: "inline-block", width: "48%", marginRight: "2%" }}
         >
           <label htmlFor="name">Topic</label>
@@ -235,21 +255,30 @@ const handleSubmit = async (e) => {
         </div>
 
         {/* AI Figure Selection */}
+        <label htmlFor="aiFigureId">Select AI Figures (max 3)</label>
         <div
-          style={{
-            // width: "100%",
-            marginBottom: "2rem",
-            // display: "grid",
-            // gridTemplateColumns: "1fr",
-            // gridGap: "1rem",
-          }}
+          className="category-menu  mb-3"
+          role="navigation"
+          aria-label="Category Filter"
         >
-          <label htmlFor="aiFigureId">Select AI Figures (max 3)</label>
-          <div>
-            {/* AI Figure Selection */}
+          {dynamicCategories.map((category) => (
+            <button
+              key={category}
+              className={`category-btn ${filter === category ? "active" : ""}`}
+              onClick={() => setFilter(category)}
+              aria-pressed={filter === category}
+              aria-label={`Filter by ${category}`}
+            >
+              {category}
+            </button>
+          ))}
+        </div>
 
+        {/* AI Figure Selection */}
+        <div style={{ marginBottom: "2rem" }}>
+          <div>
             <Slider {...sliderSettings}>
-              {aiFiguresData.map((figure) => (
+              {filteredFigures.map((figure) => (
                 <div key={figure.id} className="slider-item">
                   <AIFigureCard
                     figure={figure}
@@ -278,11 +307,7 @@ const handleSubmit = async (e) => {
                 value={formData.aiFigureRoles[figureId] || ""}
                 onChange={(e) => handleRoleChange(figureId, e.target.value)}
                 required
-                style={{
-                  width: "100%",
-                  padding: "0.5rem",
-                  fontSize: "1rem",
-                }}
+                style={{ width: "100%", padding: "0.5rem", fontSize: "1rem" }}
               >
                 <option value="">Select Role</option>
                 {roles.map((role) => (
@@ -362,7 +387,7 @@ const handleSubmit = async (e) => {
             <option value="30">30 minutes</option>
             <option value="60">60 minutes</option>
             <option value="90">90 minutes</option>
-            <option value=" ">Unlimited</option>
+            <option value="Unlimited">Unlimited</option>
           </select>
         </div>
 

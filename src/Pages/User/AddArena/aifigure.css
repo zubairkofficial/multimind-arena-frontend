@@ -4,8 +4,8 @@
 }
 
 .aifigure-card.selected {
-    transform: scale(0.95);
-    filter: grayscale(80%);
+    transform: scale(0.90);
+    filter: grayscale(30%);
 }
 
 .aifigure-card-image-wrapper {
@@ -24,14 +24,23 @@
     justify-content: center;
     color: white;
     font-size: 2rem;
-}
-
-.tick-mark {
-    font-size: 10rem;
+    z-index: 10;
 }
 
 .aifigure-card.selected .aifigure-card-overlay {
     display: flex;
+}
+
+.tick-mark {
+    display: flex;
+    justify-content: center;
+    font-size: 4rem;
+    width: 6rem;
+    content: '✔';
+    color: white;
+    background-color: #00ff00;
+    border-radius: 100%;
+    /* Display tick mark */
 }
 
 .aifigure-card-image {

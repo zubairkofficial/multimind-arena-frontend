@@ -7,6 +7,7 @@ export default function ArenaCard({ arena, onJoin }) {
   const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
 
   const formatTime = (expiryTime) => {
+    if (!expiryTime) return "No Expiry"; // Return "No Expiry" if expiryTime is null
     const date = new Date(expiryTime);
     return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   };
@@ -34,8 +35,9 @@ export default function ArenaCard({ arena, onJoin }) {
         <div className="arena-info">
           <div className="arena-info-item">
             <Users className="icon mx-2"  size={14} />
-            <span>{arena.userArenas.length}/{arena.maxParticipants}</span>
-          </div>
+          
+            <span>{arena.userArenas.length}/{arena.maxParticipants === 0 ? "Unlimited" : arena.maxParticipants}</span>
+            </div>
           <div className="arena-info-item ">
             <Clock className="icon mx-2"  size={14}  />
             <span>{formatTime(arena.expiryTime)}</span>
@@ -51,10 +53,10 @@ export default function ArenaCard({ arena, onJoin }) {
         <div className="arena-card-footer">
           <button className="btn custom-btn" onClick={onJoin}>Join Arena</button>
           <div className="arena-status">
-            <span className={`arena-card-status ${arena.status === "open" ? "active" : "inactive"}`}>
+            <span className={`arena-card-status ${arena.status === "open" ? "active-badge" : "inactive"}`}>
               {arena.arenaType.name}
             </span>
-            <span className={`arena-card-status ${arena.status === "open" ? "active" : "inactive"}`}>
+            <span className={`arena-card-status ${arena.status === "open" ? "active-badge" : "inactive"}`}>
               {arena.status}
             </span>
           </div>

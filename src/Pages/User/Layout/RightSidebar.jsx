@@ -1,32 +1,30 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
+import { useNavigate, Link } from 'react-router-dom';
+import Helpers from '../../../Config/Helpers';
 
 const RightSidebar = () => {
   const rightSidebarOpen = useSelector((state) => state.rightSidebar.rightSidebarOpen);
-  const [historyData, setHistoryData] = useState([]);
+  const [aiFigures, setAiFigures] = useState({ thisWeek: [], lastWeek: [], earlier: [] });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const token = localStorage.getItem('token'); // Replace with your actual token logic
+  const token = localStorage.getItem('token');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchHistoryData = async () => {
       try {
-        const response = await axios.get('http://192.168.18.57:8080/api/v1/user/history/all', {
-        
+        const response = await axios.get(`${Helpers.apiUrl}user/history/all`, {
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}` // Include your token here
+            'Authorization': `Bearer ${token}`
           }
         });
 
-        if (!response.ok) {
-          throw new Error(`Error: ${response.statusText}`);
-        }
-
-        const data = await response.json();
-        setHistoryData(data); 
-        console.log(data);// Assuming the API returns an array of history items
+        const data = await response.data;
+        const categorizedFigures = categorizeUniqueFigures(data);
+        setAiFigures(categorizedFigures);
       } catch (error) {
         setError(error.message);
       } finally {
@@ -34,69 +32,101 @@ const RightSidebar = () => {
       }
     };
 
+    const categorizeUniqueFigures = (data) => {
+      const figuresByTime = { thisWeek: [], lastWeek: [], earlier: [] };
+      const currentDate = new Date();
+      const weekInMs = 7 * 24 * 60 * 60 * 1000;
+
+      const uniqueFiguresMap = new Map();
+
+      data.forEach((item) => {
+        item.userAifigureMessage.forEach((msg) => {
+          const figureId = msg.aiFigure.id;
+          const msgDate = new Date(msg.createdAt);
+
+          if (!uniqueFiguresMap.has(figureId)) {
+            uniqueFiguresMap.set(figureId, { ...msg.aiFigure, date: msgDate });
+          }
+        });
+      });
+
+      uniqueFiguresMap.forEach((figure) => {
+        const timeDiff = currentDate - figure.date;
+        if (timeDiff < weekInMs) {
+          figuresByTime.thisWeek.push(figure);
+        } else if (timeDiff < 2 * weekInMs) {
+          figuresByTime.lastWeek.push(figure);
+        } else {
+          figuresByTime.earlier.push(figure);
+        }
+      });
+
+      return figuresByTime;
+    };
+
     fetchHistoryData();
   }, [token]);
 
+  const handleFigureClick = (id) => {
+    navigate(`/history/${id}`);
+  };
+
+  const renderFigureList = (figures) => (
+    <ul className="chat-history-list">
+      {figures.length === 0 ? (
+        <li>No AI figures found.</li>
+      ) : (
+        figures.map((figure) => (
+          <li key={figure.id} style={{ backgroundColor: '#101010' }}>
+            <Link
+              to={`history/${figure.id}`}
+              style={{
+                backgroundColor: '#101010',
+                textDecoration: 'none',
+                color: '#00FF00',
+                padding: '12px',
+                display: 'block',
+                fontWeight: 'bold',
+                transition: 'background-color 0.3s ease, color 0.3s ease',
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.backgroundColor = '#00FF00';
+                e.target.style.borderRadius = '10px'
+                e.target.style.color = '#000';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.backgroundColor = '#101010';
+                e.target.style.color = '#00FF00';
+              }}
+            >
+              {figure.name}
+            </Link>
+          </li>
+        ))
+      )}
+    </ul>
+  );
+
   return (
     <div className={`rbt-right-side-panel popup-dashboardright-section ${rightSidebarOpen ? "" : "collapsed "}`}>
-
       <div className="right-side-bottom">
         <div className="small-search search-section mb--20">
           <input type="search" placeholder="Search Here..." />
           <i className="fa-sharp fa-regular fa-search" />
         </div>
         <div className="chat-history-section">
-          <h6 className="title">Chat History</h6>
+          <h6 className="title">AI Figures Interacted</h6>
           {loading && <p>Loading...</p>}
           {error && <p className="text-danger">{error}</p>}
-          <ul className="chat-history-list">
-            {historyData.length === 0 ? (
-              <li>No chat history found.</li>
-            ) : (
-              historyData.map((item, index) => (
-                <li key={index} className="history-box">
-                  {item.message || "No message"} {/* Adjust according to the structure of your data */}
-                  <div className="dropdown history-box-dropdown">
-                    <button
-                      type="button"
-                      className="more-info-icon dropdown-toggle"
-                      data-bs-toggle="dropdown"
-                      aria-expanded="false"
-                    >
-                      <i className="fa-regular fa-ellipsis" />
-                    </button>
-                    <ul className="dropdown-menu style-one">
-                      <li>
-                        <a className="dropdown-item" href="#">
-                          <i className="fa-sharp fa-solid fa-arrows-rotate" /> Regenerate
-                        </a>
-                      </li>
-                      <li>
-                        <a className="dropdown-item" href="#">
-                          <i className="fa-sharp fa-solid fa-tag" /> Pin Chat
-                        </a>
-                      </li>
-                      <li>
-                        <a className="dropdown-item" href="#">
-                          <i className="fa-solid fa-file-lines" /> Rename
-                        </a>
-                      </li>
-                      <li>
-                        <a className="dropdown-item" href="#">
-                          <i className="fa-solid fa-share-nodes" /> Share
-                        </a>
-                      </li>
-                      <li>
-                        <a className="dropdown-item delete-item" href="#">
-                          <i className="fa-solid fa-trash-can" /> Delete Chat
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
-                </li>
-              ))
-            )}
-          </ul>
+
+          <h6 style={{ color: 'white', marginTop: '20px' }}>This Week</h6>
+          {renderFigureList(aiFigures.thisWeek)}
+
+          <h6 style={{ color: 'white', marginTop: '20px' }}>Last Week</h6>
+          {renderFigureList(aiFigures.lastWeek)}
+
+          <h6 style={{ color: 'white', marginTop: '20px' }}>Earlier</h6>
+          {renderFigureList(aiFigures.earlier)}
         </div>
       </div>
     </div>

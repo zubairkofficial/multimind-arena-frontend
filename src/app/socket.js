@@ -5,7 +5,7 @@ let socket;
 
 export const initiateSocketConnection = () => {
     if (!socket) {
-        socket = io("http://192.168.18.57:8080"); // Update with your socket server URL
+        socket = io("https://chat-arena-backend-4ba91b3feb6b.herokuapp.com"); // Update with your socket server URL
         console.log("Socket connected");
     }
 };

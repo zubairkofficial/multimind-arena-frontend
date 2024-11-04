@@ -16,12 +16,12 @@ function MessageBubble({ message }) {
   return (
     <div
       style={{
-        maxWidth: "400px",
+        maxWidth: "800px",
         padding: "1rem",
         margin: "1rem",
-        boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
+        boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.4)",
         borderRadius: isSender ? "20px 20px 0 20px" : "20px 20px 20px 0",
-        backgroundColor: isSender ? "#222" : "#002200",
+        backgroundColor: isSender ? "#101010" : "#002200",
         color: "#fff",
         alignSelf: isSender ? "flex-end" : "flex-start",
       }}

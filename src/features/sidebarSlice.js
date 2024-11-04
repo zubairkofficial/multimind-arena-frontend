@@ -6,7 +6,7 @@ const initialSidebarState = {
 };
 
 const initialRightSidebarState = {
-    rightSidebarOpen: true,
+    rightSidebarOpen: false,
 };
 
 // Slice for left sidebar

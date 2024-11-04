@@ -12,7 +12,7 @@ import "./../../components/Arenas/arenas.css";
 export default function UserDashboard() {
   const { data: arenas, error, isLoading, refetch } = useGetAllArenasQuery();
   const [showOverlay, setShowOverlay] = useState(false);
-  const [joinError, setJoinError] = useState(null);
+  const [joinError, setJoinError] = useState("");
   const [notification, setNotification] = useState(null);
   const [isJoining, setIsJoining] = useState(false);
 
@@ -23,20 +23,26 @@ export default function UserDashboard() {
   useEffect(() => {
     isMounted.current = true;
     refetch();
-    initiateSocketConnection();
+    try {
+      initiateSocketConnection();
+      const socket = getSocket();
 
-    const socket = getSocket();
-
-    if (socket) {
-      handleSocketEvents(socket);
-    } else {
-      console.error(
-        "Socket connection not established. Check socket initialization."
-      );
+      if (socket) {
+        handleSocketEvents(socket);
+      } else {
+        console.error(
+          "Socket connection not established. Check socket initialization."
+        );
+        setJoinError("Socket connection not established.");
+      }
+    } catch (error) {
+      console.error("Error initializing socket connection:", error);
+      setJoinError("Failed to initialize socket connection.");
     }
 
     return () => {
       isMounted.current = false;
+      const socket = getSocket();
       if (socket) {
         socket.off("userJoined");
         socket.off("userRejoined");
@@ -49,10 +55,18 @@ export default function UserDashboard() {
     socket.on("userJoined", (response) =>
       handleArenaNavigation(response.joinArena, "userJoined")
     );
+    socket.on("error", (response) => {
+      console.log("Error", response);
+      console.log(typeof response);
+      setJoinError(response.errorLogService.response.message);
+    });
     socket.on("userRejoined", (response) =>
       handleArenaNavigation(response.joinArena, "userRejoined")
     );
     socket.on("userLeft", (response) => handleUserLeft(response));
+    socket.on("error", (error) => {
+      console.error("Socket error event:", error);
+    });
   };
 
   const handleArenaNavigation = (response, eventType) => {
@@ -79,7 +93,11 @@ export default function UserDashboard() {
   };
 
   const handleJoinArena = async (arena) => {
-    if (!arena) return console.error("Arena data is missing or undefined!");
+    if (!arena) {
+      console.error("Arena data is missing or undefined!");
+
+      return;
+    }
 
     try {
       setJoinError(null);
@@ -88,8 +106,21 @@ export default function UserDashboard() {
       const socket = getSocket();
 
       if (socket) {
-        socket.emit("joinRoom", { arenaId: arena.id, userId });
-        refetch();
+        socket.emit(
+          "joinRoom",
+          { arenaId: arena.id, userId },
+          (error, success) => {
+            if (error) {
+              console.error("Socket error:", error);
+
+              setIsJoining(false);
+            } else if (success) {
+              refetch();
+              setShowOverlay(false);
+              setIsJoining(false);
+            }
+          }
+        );
       } else {
         setJoinError("Socket connection not established.");
         setShowOverlay(false);
@@ -97,12 +128,12 @@ export default function UserDashboard() {
       }
     } catch (error) {
       console.error("Error joining arena:", error);
-      setJoinError("Failed to join the arena.");
+
       setShowOverlay(true);
       setIsJoining(false);
     }
   };
-
+  console.log("No join", joinError);
   const arenasByType = arenas?.reduce((acc, arena) => {
     const type = arena.arenaType.name;
     if (!acc[type]) acc[type] = [];
@@ -146,7 +177,9 @@ export default function UserDashboard() {
             ))}
           </>
         ) : (
-          <div>No arenas available</div>
+          <h3 className="d-flex align-items-center justify-content-center">
+            No arenas available
+          </h3>
         )}
 
         {(isJoining || showOverlay) && (
@@ -167,18 +200,22 @@ const OverlayCard = ({ isJoining, joinError }) => (
   <div className="overlay p-4 rounded">
     <div className="overlay-card text-center p-4">
       <div className="bg-dark text-white p-4">
-        {isJoining ? (
+        {/* Show joining state only if isJoining is true and no joinError */}
+        {isJoining && !joinError && (
           <>
             <Spinner animation="border" role="status" className="mb-3">
               <span className="visually-hidden">Loading...</span>
             </Spinner>
             <div>Joining the arena...</div>
           </>
-        ) : joinError ? (
+        )}
+
+        {/* Show error state only if joinError exists */}
+        {joinError && (
           <Alert variant="danger" className="mt-3">
             {joinError}
           </Alert>
-        ) : null}
+        )}
       </div>
     </div>
   </div>

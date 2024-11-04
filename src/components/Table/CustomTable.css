@@ -18,13 +18,10 @@ table {
     /* Smooth transition effect */
 }
 
-.table-bordered {
-    border: 1px solid var(--color-dark-border);
-}
+.table-bordered {}
 
 .table-bordered th,
 .table-bordered td {
-    border: 1px solid var(--color-dark-border);
     padding: 15px 10px;
     /* Increased padding on y-axis */
 }
@@ -49,3 +46,25 @@ table {
     opacity: 0.5;
     cursor: not-allowed;
 }
+
+.custom-table-container {
+    width: 100%;
+}
+
+.table-responsive {
+    overflow-x: auto;
+    /* Enables horizontal scrolling */
+}
+
+.table-hover {
+    width: 100%;
+    /* Ensure the table takes full width */
+}
+
+
+/* Optional: style the table for better appearance */
+
+.table-bordered {}
+
+.table-bordered th,
+.table-bordered td {}

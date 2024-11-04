@@ -15,14 +15,18 @@
 
 .arena-card-image-wrapper {
     width: 100%;
-    height: 50%;
-    /* Adjust height to reserve space for content */
+    height: 30vh;
+    /* Ensures the container takes up 50% of the viewport height */
+    overflow: hidden;
+    /* Hides any overflow from different aspect ratios */
+    position: relative;
 }
 
 .arena-card-image {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
+    /* Ensures the image scales to cover the entire container */
 }
 
 .arena-card-content {
@@ -116,7 +120,7 @@
     text-transform: capitalize;
 }
 
-.active {
+.active-badge {
     background-color: #00aa00;
     color: #fff;
 }

@@ -1,287 +1,279 @@
-import React, { useState, useEffect, useRef } from "react";
-import { useSelector } from "react-redux";
-import { useLocation, useNavigate } from "react-router-dom";
-import MessageBubble from "./../../../components/ArenaChat/MessageBubble";
-import ParticipantsCard from "./../../../components/ArenaChat/ParticipantsCard";
-import ArenaInfoCard from "./../../../components/ArenaChat/ArenaInfoCard";
-import UserListCard from "./UserListCard";
-import { getSocket, initiateSocketConnection } from "./../../../app/socket";
-import "./../../../components/ArenaChat/arenachat.css";
-import { useGetAllArenasQuery } from "../../../features/api/arenaApi";
-
-export default function ArenaChatPage() {
-  const location = useLocation();
-  const userObj = useSelector((state)=> state.user.user);
-  const navigate = useNavigate();
-  const [arena, setArena] = useState();
-  const userId = useSelector((state) => state.user.user.id);
-  const { data: arenaData, refetch } = useGetAllArenasQuery();
-  const [message, setMessage] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [chatMessages, setChatMessages] = useState([]);
-  const [notification, setNotification] = useState(null);
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
-  const [showParticipants, setShowParticipants] = useState(false);
-  const [showUsers, setShowUsers] = useState(false);
-  const chatContainerRef = useRef(null);
-  console.log("chatMessages", chatMessages);
-  useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 768);
-    window.addEventListener("resize", handleResize);
-
-    initiateSocketConnection();
-    const socket = getSocket();
-
-    if (arena?.id && socket) {
-      socket.emit("joinRoom", { arenaId: arena.id, userId });
-
-      socket.on("receiveMessage", (data) => {  
-        console.log("Received.........",data);
-        if (data.message.senderId !== userId) {
-          console.log("AGAYA");
-          setChatMessages((prevMessages) => [
-            ...prevMessages,
-            {
-              sender: data.user.name,
-              message: data.message,
-              user: data.user,
-              time: new Date().toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-              }),
-            },
-          ]);
-        }
-      });
-      socket.on("userRejoined", (data) => {
-        refetch();
-        if (data.userId !== userId) {
-          setNotification(`User ${data.name || data.userId} has rejoined.`);
-          setArena({ ...data.joinArena });
-          setTimeout(() => setNotification(null), 3000);
-        }
-      });
-
-      socket.on("userJoined", (data) => {
-        refetch();
-        console.log("Join data", data);
-        if (data.userId !== userId) {
-          setNotification(`User ${data.name || data.userId} has joined.`);
-          setArena({ ...data.joinArena });
-          setTimeout(() => setNotification(null), 3000);
-        }
-      });
-
-      socket.on("userLeft", (data) => {
-        refetch();
-        setNotification(`User ${data.name || data.userId} has left.`);
-        setArena({ ...data.leftArena });
-        setTimeout(() => setNotification(null), 3000);
-      });
-
-      return () => {
-        socket.off("receiveMessage");
-        socket.off("userJoined");
-        socket.off("userLeft");
-        socket.emit("leaveRoom", { arenaId: arena.id, userId });
-        window.removeEventListener("resize", handleResize);
-      };
-    }
-  }, [userId]);
-
-  useEffect(() => {
-    if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop =
-        chatContainerRef.current.scrollHeight;
-    }
-  }, [chatMessages]);
-  useEffect(() => {
-    setArena(location?.state); // Update arena state when location changes  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location?.state]);
-  const handleModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const socket = getSocket();
-    if (message.trim() && arena?.id && socket) {
-      console.log("Sending Message:", {
-        content: message,
-        userId,
-        arenaId: arena.id,
-      }); // Log the outgoing message
-
-      socket.emit("sendMessage", {
-        content: message,
-        userId,
-        arenaId: arena.id,
-      });
-      setChatMessages([
-        ...chatMessages,
-        {
-          sender: "You",
-          content: message,
-          time: new Date().toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-          }),
-        },
-      ]);
-      setMessage("");
-    }
-  };
-
-  const handleLeaveRoom = () => {
-    getSocket().emit("leaveRoom", { arenaId: arena.id, userId });
-    refetch();
-    navigate("/dashboard");
-  };
-
-  const toggleParticipants = () => setShowParticipants(!showParticipants);
-  const toggleUsers = () => setShowUsers(!showUsers);
-
-  return (
-    <div className="d-flex h-100 bg-transparent text-color-light">
-      <button
-        className="btn-default btn-small"
-        onClick={toggleParticipants}
-        style={{
-          position: "absolute",
-          top: "10px",
-          left: "10px",
-          backgroundColor: showParticipants ? "#45db34" : "#1c1c1c",
-          color: "#f8f9fa",
-          border: "none",
-          padding: "0.5rem",
-          borderRadius: "50%",
-          cursor: "pointer",
-          fontSize: "1.2rem",
-          transition: "transform 0.3s ease, background-color 0.3s ease",
-          transform: showParticipants ? "scale(1)" : "scale(1.1)",
-        }}
-      >
-        <i className={`fas ${showParticipants ? "fa-users" : "fa-times"}`} />
-      </button>
-
-      <div
-        className={showParticipants ? "slide-in-left" : "slide-out-left"}
-        style={{
-          width: showParticipants ? (isMobile ? "50%" : "250px") : "0",
-          opacity: showParticipants ? 1 : 0,
-          overflow: "hidden",
-          position: isMobile ? "absolute" : "static",
-          top: isMobile ? "100px" : "0",
-          zIndex: isMobile ? 10 : "auto",
-        }}
-      >
-        {showParticipants && (
-          <ParticipantsCard
-            participants={
-              arena?.arenaAIFigures?.map((userArena) => userArena.aiFigure) || [
-                "Ahsan",
-              ]
-            }
-            handleModal={handleModal}
-            totalParticipants={arena?.userArenas?.length || 0}
-            expiryTime={arena?.expiryTime}
-            aiStatus="Active"
-          />
-        )}
-      </div>
-
-      <div
-        className={`flex-grow-1 d-flex flex-column chat-message-area ${
-          showParticipants && !isMobile ? "" : "full-width"
-        } ${showUsers ? "slideIn" : "slideOut"}`}
-      >
-        <ArenaInfoCard
-          name={arena?.name || "Chat Arena"}
-          handleLeaveRoom={handleLeaveRoom}
-          toggleParticipants={toggleParticipants}
-          toggleUsers={toggleUsers}
-          image={arena?.image || "assets/images/logo/logo.png"}
-        />
-
-        {notification && (
-          <div className="notification-area text-center mt-3 p-4 bg-success text-dark">
-            <span className="notification-text">{notification}</span>
-          </div>
-        )}
-
+  <label htmlFor="aiFigureId">Select AI Figures (max 3)</label>
+      <form onSubmit={handleSubmit} className="arena-form grid-container">
+        {/* Filter Section */}
         <div
-          ref={chatContainerRef}
-          className={`flex-grow-1 pt-4 px-4 overflow-auto chat-message-container ${
-            showUsers ? "slideOut" : "slideIn"
-          }`}
+          className="category-menu d-flex mb-3"
+          role="navigation"
+          aria-label="Category Filter"
         >
-          {chatMessages &&
-            chatMessages.map((msg, index) => {
-              console.log("............................", msg?.user?.image);
-              console.log("USER OBJ", userObj.image);
-              return (
-                <>
-                  <div style={{ width: "50px", margin: "0 10px" , float:userObj.image?"right":"left"}}>
-                    <img
-                      src={ msg?.user?.image??userObj.image}
-                      alt={`${msg.isUser ? "User" : "AI"} profile`}
-                      style={{
-                        width: "40px",
-                        height: "40px",
-                        borderRadius: "50%",
-                        objectFit: "cover",
-                       
-                      }}
-                    />
-                  </div>
-                  <MessageBubble
-                    message={msg}
-                    // user={msg?.user}
-                  />
-                </>
-              );
-            })}
-        </div>
-
-        <div className="p-1 border-color-light chat-input-container">
-          <form
-            onSubmit={handleSubmit}
-            className="mt-5 d-flex align-items-center w-100 position-relative bg-transparent"
-          >
-            <input
-              type="text"
-              className="form-control p-3 bg-color-black text-light pr-5"
-              style={{ borderRadius: "50px" }}
-              placeholder="Message..."
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-            />
+          {dynamicCategories.map((category) => (
             <button
-              type="submit"
-              className="btn btn-large rounded-circle position-absolute end-0 top-50 translate-middle-y me-5 btn-success text-white shadow"
+              key={category}
+              className={`category-btn ${filter === category ? "active" : ""}`}
+              onClick={() => setFilter(category)}
+              aria-pressed={filter === category}
+              aria-label={`Filter by ${category}`}
             >
-              <i className="fas fa-send"></i>
+              {category}
             </button>
-          </form>
+          ))}
         </div>
-      </div>
 
-      {showUsers && (
-        <div
-          className={showUsers ? "slide-in-right" : "slide-out-right"}
-          style={{
-            width: "300px",
-            backgroundColor: "#101010",
-            color: "#fff",
-            padding: "1rem",
-            overflow: "auto",
-          }}
-        >
-          <UserListCard
-            users={arena?.userArenas?.map((userArena) => userArena.user) || []}
-          />
+        {/* AI Figure Selection */}
+        <div style={{ marginBottom: "2rem" }}>
+          <div>
+            <Slider {...sliderSettings}>
+              {filteredFigures.map((figure) => (
+                <div key={figure.id} className="slider-item">
+                  <AIFigureCard
+                    figure={figure}
+                    onSelect={() => handleAIFigureSelect(figure.id)}
+                    isSelected={formData.aiFigureId.includes(figure.id)}
+                  />
+                </div>
+              ))}
+            </Slider>
+          </div>
+          {formData.aiFigureId.map((figureId) => (
+            <div
+              key={figureId}
+              style={{
+                marginTop: "0.5rem",
+                display: "grid",
+                gridTemplateColumns: "1fr",
+                gridGap: "0.5rem",
+              }}
+            >
+              <label>
+                Assign Role for{" "}
+                {aiFiguresData.find((f) => f.id === figureId)?.name}
+              </label>
+              <select
+                value={formData.aiFigureRoles[figureId] || ""}
+                onChange={(e) => handleRoleChange(figureId, e.target.value)}
+                required
+                style={{ width: "100%", padding: "0.5rem", fontSize: "1rem" }}
+              >
+                <option value="">Select Role</option>
+                {roles.map((role) => (
+                  <option key={role.id} value={role.id}>
+                    {role.roleName}
+                  </option>
+                ))}
+              </select>
+            </div>
+          ))}
         </div>
-      )}
-    </div>
-  );
-}
+
+
+        import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { Notyf } from "notyf";
+import { useGetAllArenaTypesQuery } from "../../../features/api/arenaApi";
+import { useGetAllAIFiguresQuery } from "../../../features/api/aiFigureApi";
+import Preloader from "../../Landing/Preloader";
+import Helpers from "../../../Config/Helpers";
+import Slider from "react-slick";
+import AIFigureCard from "./AIFigureCard";
+import "./../AiFigures/aifigures.css";
+
+const ArenaDetailsForm = () => {
+  // Arena and AI figure queries
+  const {
+    data: arenaTypesData,
+    isLoading: isLoadingArenaTypes,
+    error: arenaTypesError,
+  } = useGetAllArenaTypesQuery();
+  const {
+    data: aiFiguresData,
+    isLoading: isLoadingAIFigures,
+    error: aiFiguresError,
+  } = useGetAllAIFiguresQuery();
+
+  // Form data state
+  const [roles, setRoles] = useState([]);
+  const [image, setImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    duration: "60",
+    arenaTypeId: "",
+    aiFigureId: [],
+    aiFigureRoles: {},
+    description: "",
+    maxParticipants: "",
+  });
+
+  // Filter state
+  const [filter, setFilter] = useState("All");
+
+  useEffect(() => {
+    const fetchRoles = async () => {
+      try {
+        const response = await axios.get(`${Helpers.apiUrl}figure-role`);
+        setRoles(response.data);
+      } catch (error) {
+        console.error("Error fetching roles:", error);
+      }
+    };
+    fetchRoles();
+  }, []);
+
+  // Handle form input changes
+  const handleChange = (e) => {
+    const { id, value } = e.target;
+    setFormData({
+      ...formData,
+      [id]: value,
+    });
+  };
+
+  // Handle image file change and generate a preview
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    setImage(file);
+    setImagePreview(URL.createObjectURL(file));
+  };
+
+  const handleAIFigureSelect = (figureId) => {
+    const isSelected = formData.aiFigureId.includes(figureId);
+    const updatedAIFigureId = isSelected
+      ? formData.aiFigureId.filter((id) => id !== figureId)
+      : formData.aiFigureId.length < 3
+      ? [...formData.aiFigureId, figureId]
+      : formData.aiFigureId;
+
+    setFormData({
+      ...formData,
+      aiFigureId: updatedAIFigureId,
+      aiFigureRoles: isSelected
+        ? { ...formData.aiFigureRoles, [figureId]: undefined }
+        : formData.aiFigureRoles,
+    });
+  };
+
+  const handleRoleChange = (figureId, roleId) => {
+    setFormData({
+      ...formData,
+      aiFigureRoles: {
+        ...formData.aiFigureRoles,
+        [figureId]: roleId,
+      },
+    });
+  };
+
+  const calculateExpiryTime = (durationInMinutes) => {
+    const now = new Date();
+    const expiryTime = new Date(now.getTime() + durationInMinutes * 60000);
+
+    // Convert to UTC (GMT+0) and format as ISO string
+    return new Date(expiryTime.toISOString().slice(0, -1) + "Z");
+  };
+
+  // Form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const notyf = new Notyf();
+
+    setIsSubmitting(true);
+
+    // Calculate expiry time or set to empty string if duration is "Unlimited"
+    const expiryTime =
+      formData.duration === " "
+        ? ""
+        : calculateExpiryTime(Number(formData.duration));
+
+    // Create FormData object
+    const dataToSend = new FormData();
+    dataToSend.append("name", formData.name);
+    dataToSend.append("duration", formData.duration);
+    dataToSend.append("arenaTypeId", formData.arenaTypeId);
+    formData.aiFigureId.forEach((id) => {
+      dataToSend.append("aiFigureId[]", id);
+      if (formData.aiFigureRoles[id]) {
+        dataToSend.append(`aiFigureRoles[${id}]`, formData.aiFigureRoles[id]);
+      }
+    });
+    dataToSend.append("description", formData.description);
+    dataToSend.append("maxParticipants", formData.maxParticipants);
+    dataToSend.append("expiryTime", expiryTime);
+
+    // Append the image file if it exists
+    if (image) {
+      dataToSend.append("file", image);
+    }
+
+    try {
+      await axios.post(`${Helpers.apiUrl}arenas`, dataToSend, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      notyf.success("Arena created successfully.");
+
+      setIsSubmitting(false);
+
+      // Clear form data after successful submission
+      setFormData({
+        name: "",
+        duration: "",
+        arenaTypeId: "",
+        aiFigureId: [],
+        aiFigureRoles: {},
+        description: "",
+        maxParticipants: "",
+      });
+      setImage(null);
+      setImagePreview(null);
+    } catch (err) {
+      notyf.error("Failed to create arena. Please try again.");
+      setIsSubmitting(false); // End loading
+    }
+  };
+
+  if (isLoadingArenaTypes || isLoadingAIFigures) return <Preloader />;
+  if (arenaTypesError)
+    return <div>Error loading arena types: {arenaTypesError.message}</div>;
+  if (aiFiguresError)
+    return <div>Error loading AI figures: {aiFiguresError.message}</div>;
+
+  // Dynamically generate categories for filtering
+  const dynamicCategories = [
+    "All",
+    ...new Set(aiFiguresData?.map((figure) => figure.type)),
+  ];
+
+  const filteredFigures =
+    filter === "All"
+      ? aiFiguresData
+      : aiFiguresData.filter(
+          (figure) =>
+            figure.type === filter ||
+            (figure.tags && figure.tags.includes(filter))
+        );
+
+  const sliderSettings = {
+    dots: false,
+    infinite: false,
+    speed: 500,
+    slidesToShow: 3, // Default for large screens
+    slidesToScroll: 1,
+    responsive: [
+      {
+        breakpoint: 1200, // Larger tablets and small laptops
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 1,
+        },
+      },
+      {
+        breakpoint: 768, // Small screens (like mobile devices)
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+        },
+      },
+    ],
+  };

@@ -55,14 +55,7 @@ function ArenaInfoCard({
           </button>
 
           {/* Three Dot Menu */}
-          <div className="dropdown">
-            <button
-              className="btn text-white dropdown-toggle p-2"
-              onClick={toggleParticipants}
-            >
-              <i className="fas fa-ellipsis-v fa-2xl"></i>
-            </button>
-          </div>
+       
         </div>
       </div>
 

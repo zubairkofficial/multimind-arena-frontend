@@ -64,33 +64,35 @@ const CustomTable = ({
         </div>
       )}
 
-      {/* Render the table */}
-      <table className="table-hover table-bordered">
-        <thead> 
-          <tr>
-            {headers.map((header, index) => (
-              <th key={index}>{header}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {data.length > 0 ? (
-            data.map((row, index) => (
-              <tr key={index}>
-                {Object.keys(row).map((key, i) => (
-                  <td key={i}>{row[key]}</td>
-                ))}
-              </tr>
-            ))
-          ) : (
+      {/* Render the table wrapped in a scrollable container */}
+      <div className="table-responsive">
+        <table className="table-hover table-bordered">
+          <thead>
             <tr>
-              <td colSpan={headers.length} className="text-center">
-                No data available
-              </td>
+              {headers.map((header, index) => (
+                <th key={index}>{header}</th>
+              ))}
             </tr>
-          )}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {data.length > 0 ? (
+              data.map((row, index) => (
+                <tr key={index}>
+                  {Object.keys(row).map((key, i) => (
+                    <td key={i}>{row[key]}</td>
+                  ))}
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={headers.length} className="text-center">
+                  No data available
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

@@ -23,7 +23,7 @@ const CustomModal = ({ show, onClose, figure, onChatNow }) => {
           </div>
           <p className="description-text">{figure?.description}</p>
           <p className="figure-info">Type: {figure?.type}</p>
-          <p className="figure-info">Prompt: {figure?.prompt}</p>
+
         </div>
         <div className="modal-footer">
           <button className="btn-custom" onClick={onChatNow}>Chat Now</button>

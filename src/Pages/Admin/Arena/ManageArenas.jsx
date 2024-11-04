@@ -1,17 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useGetAllArenasQuery } from "./../../../features/api/arenaApi";
-import CustomTable from "../../../components/Table/CustomTable"; // Import the reusable table component
-import Pagination from "../../../components/Table/Pagination"; // Import the pagination component
+import {
+  useGetAllArenasQuery,
+  useDeleteArenaMutation,
+} from "./../../../features/api/arenaApi";
+import CustomTable from "../../../components/Table/CustomTable";
+import Pagination from "../../../components/Table/Pagination";
 import Searchbar from "../../../components/Searchbar/Searchbar";
+
 export default function ManageArenas() {
   const navigate = useNavigate();
   const { data: arenasData, error, isLoading } = useGetAllArenasQuery();
+  const [deleteArena] = useDeleteArenaMutation(); // Initialize the delete mutation
   const [searchText, setSearchText] = useState("");
   const [filterType, setFilterType] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [entriesPerPage, setEntriesPerPage] = useState(5); // New state for entries per page
+  const [entriesPerPage, setEntriesPerPage] = useState(5);
 
   const arenaTypes = ["Debate", "Game", "Casual Chat"];
   const statuses = ["Open", "In Progress", "Full"];
@@ -29,13 +34,15 @@ export default function ManageArenas() {
   // Format data for the table
   const formattedData = arenasData?.map((arena) => ({
     id: arena.id,
+    image: arena.image,
     title: arena.name,
     type: arena.arenaType?.name || "Unknown",
-    aiFigure: arena.aiFigures?.name || "None",
+    aiFigure: arena.arenaAIFigures?.map((fig) => fig.id).join(", ") || "None",
     expirySession: arena.expiryTime
       ? new Date(arena.expiryTime).toLocaleDateString()
       : "N/A",
     status: arena.status.charAt(0).toUpperCase() + arena.status.slice(1),
+    creator: arena.createdBy.name,
   }));
 
   // Modify the filtering logic to search across multiple fields
@@ -66,26 +73,52 @@ export default function ManageArenas() {
 
   const handleEntriesChange = (newEntries) => {
     setEntriesPerPage(newEntries);
-    setCurrentPage(1); // Reset to the first page when changing entries per page
+    setCurrentPage(1);
   };
 
   const handleCreateArena = () => {
     navigate("/admin/add-arena");
   };
 
+  const handleDeleteArena = async (arenaId) => {
+    if (window.confirm("Are you sure you want to delete this arena?")) {
+      try {
+        await deleteArena(arenaId).unwrap();
+        alert("Arena deleted successfully.");
+      } catch (error) {
+        console.error("Failed to delete arena:", error);
+        alert("Failed to delete arena.");
+      }
+    }
+  };
+
   const tableHeaders = [
+    "Image",
     "Arena Name",
     "Type",
     "AI Figure",
     "Expiry Session",
     "Status",
+    "Creator",
     "Actions",
   ];
   const tableData = currentArenas?.map((arena) => ({
+    image: (
+      <img
+        src={arena.image}
+        alt={arena.title}
+        style={{
+          width: "40px",
+          height: "40px",
+          borderRadius: "50%",
+          objectFit: "cover",
+        }}
+      />
+    ),
     title: arena.title,
     type: arena.type,
     aiFigure: arena.aiFigure,
-    expirySession: arena.expirySession,
+    expirySession: arena.expiryTime ? arena.expiryTime : "No Expiry Time",
     status: (
       <span
         className={`badge ${
@@ -99,12 +132,19 @@ export default function ManageArenas() {
         {arena.status}
       </span>
     ),
+    creator: arena.creator,
     actions: (
       <>
-        <button className="btn btn-sm btn-outline-success me-2">
+        <button
+          className="btn btn-sm btn-outline-success me-2"
+          onClick={() => navigate(`/admin/edit-arena/${arena.id}`)}
+        >
           <i className="fas fa-edit"></i>
         </button>
-        <button className="btn btn-sm btn-outline-danger">
+        <button
+          className="btn btn-sm btn-outline-danger"
+          onClick={() => handleDeleteArena(arena.id)}
+        >
           <i className="fas fa-trash"></i>
         </button>
       </>

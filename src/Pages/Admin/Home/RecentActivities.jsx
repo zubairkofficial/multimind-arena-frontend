@@ -1,6 +1,6 @@
 import React from 'react';
 import CustomTable from './../../../components/Table/CustomTable'; // Import the reusable CustomTable component
-
+import { Link } from 'react-router-dom';
 const activitiesData = [
   {
     time: '2024-09-29 14:23',
@@ -8,6 +8,7 @@ const activitiesData = [
     details: 'Username: PhiloSophia22',
     actionText: 'View Profile',
     btnClass: 'view-profile-btn',
+    path: '/admin/users'
   },
   {
     time: '2024-09-29 14:15',
@@ -15,6 +16,7 @@ const activitiesData = [
     details: 'Name: The Great Scientific Debate',
     actionText: 'Manage Arena',
     btnClass: 'manage-arena-btn',
+     path: '/admin/manage-arenas'
   },
   {
     time: '2024-09-29 14:02',
@@ -22,6 +24,7 @@ const activitiesData = [
     details: 'Arena: Philosophy 101',
     actionText: 'Review',
     btnClass: 'review-btn',
+     path: '/admin-review'
   },
   {
     time: '2024-09-29 13:55',
@@ -29,6 +32,7 @@ const activitiesData = [
     details: 'Name: Marie Curie',
     actionText: 'Edit AI',
     btnClass: 'edit-ai-btn',
+     path: '/admin/manage-ai-figures'
   },
 ];
 
@@ -41,10 +45,11 @@ const RecentActivities = () => {
     Time: activity.time,
     Event: activity.event,
     Details: activity.details,
+    Path: activity.path,
     Action: (
-      <button className={`btn btn-sm ${activity.btnClass}`}>
+      <Link to={activity.path} className={`btn btn-sm ${activity.btnClass}`}>
         {activity.actionText}
-      </button>
+      </Link>
     ),
   }));
 

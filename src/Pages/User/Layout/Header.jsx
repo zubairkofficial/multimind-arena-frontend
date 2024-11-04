@@ -61,10 +61,18 @@ const Header = () => {
                 <div className="rbt-admin-card grid-style">
                   <Link className="d-flex align-items-center" to="#">
                     <div className="inner d-flex align-items-center">
-                      <div className="img-box">
+                      <div className="">
                         <img
                           src={user.image || "assets/images/logo/logo.png"}
-                          alt="Admin"
+                          className="img-fluid rounded-circle" // Bootstrap classes for responsiveness and circular shape
+                          style={{
+                            width: "40px",
+                            height: "40px",
+                            borderRadius: "50%",
+                            objectFit: "cover",
+                            marginRight: "10px",
+                            border: "2px solid #00ff00",
+                          }}
                         />
                       </div>
                       <div className="content">
@@ -79,10 +87,18 @@ const Header = () => {
                 <div className="rbt-user-menu-list-wrapper">
                   <div className="inner">
                     <div className="rbt-admin-profile">
-                      <div className="admin-thumbnail">
+                      <div className="">
                         <img
                           src={user.image  || "assets/images/logo/logo.png"}
-                          alt="User Images"
+                          className="img-fluid rounded-circle" // Bootstrap classes for responsiveness and circular shape
+                          style={{
+                            width: "40px",
+                            height: "40px",
+                            borderRadius: "50%",
+                            objectFit: "cover",
+                            marginRight: "10px",
+                            border: "2px solid #00ff00",
+                          }}
                         />
                       </div>
                       <div className="admin-info">
@@ -103,7 +119,7 @@ const Header = () => {
                         </Link>
                       </li>
                       <li>
-                        <Link to="/billing">
+                        <Link to="/shop">
                           <i className="fa-sharp fa-regular fa-briefcase" />
                           <span>Plans and Billing</span>
                         </Link>

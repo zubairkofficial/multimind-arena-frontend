@@ -26,7 +26,7 @@ const Sidebar = () => {
   const menuItems = [
     { path: "/admin/dashboard", icon: "fa-home", label: "Dashboard" },
     { path: "/admin/users", icon: "fa-user", label: "Manage Users" },
-    { path: "/admin/recent-activity", icon: "fa-history", label: "Recent Activity" },
+    { path: "/admin/system-status", icon: "fa-warning", label: "Error Logs" },
     { path: "/admin/manage-arenas", icon: "fa-cog", label: "Manage Arenas" },
     { path: "/admin/manage-ai-figures", icon: "fa-images", label: "Manage AI Figures" }, // New option added
     { path: "/admin/arena-types", icon: "fa-info", label: "Manage Arena Types" }, 
@@ -95,11 +95,7 @@ const Sidebar = () => {
                   <h6>{userDetails.name}</h6>
                 </div>
               </Link>
-              <div className="btn-part">
-                <Link to="/billing" className="btn-default btn-border">
-                  Upgrade 
-                </Link>
-              </div>
+             
             </div>
           </div>
           <p className="subscription-copyright copyright-text text-center b3 small-text">

@@ -25,16 +25,16 @@ const Sidebar = () => {
 
   // Sidebar menu items
   const mainMenuItems = [
-    { path: "/dashboard", icon: "fa-home", label: "Dashboard" },
+    { path: "/dashboard", icon: "fa-home", label: "Playground" },
    
     { path: "/add-arena", icon: "fa-plus-circle", label: "Add Arena" },
     { path: "/ai-figure-gallery", icon: "fa-images", label: "AI Figure Gallery" }, // Added Add Arena option
   ];
 
   const settingMenuItems = [
-    { path: "/profile", icon: "fa-user", label: "Profile Details" },
-    { path: "/billing", icon: "fa-briefcase", label: "Subscriptions" },
-    { path: "/history", icon: "fa-users", label: "History" },
+    { path: "/view-profile", icon: "fa-user", label: "Profile Details" },
+    { path: "/shop", icon: "fa-shop", label: "Buy Arena Coins" },
+   
   ];
 
   return (
@@ -120,9 +120,17 @@ const Sidebar = () => {
                 to="/edit-profile"
                 className="autor-info d-flex justify-content-center align-items-center"
               >
-                <div className="author-img active">
+                <div className=" ">
                   <img
-                    className="w-100"
+                     className="img-fluid rounded-circle" // Bootstrap classes for responsiveness and circular shape
+                     style={{
+                       width: "40px",
+                       height: "40px",
+                       borderRadius: "50%",
+                       objectFit: "cover",
+                       marginRight: "10px",
+                       border: "2px solid #00ff00",
+                     }}
                     src={user.image  || "assets/images/logo/logo.png"}
                     alt="Author"
                   />
@@ -132,7 +140,7 @@ const Sidebar = () => {
                 </div>
               </Link>
               <div className="btn-part">
-                <Link to="/billing" className="btn-default btn-border">
+                <Link to="/shop" className="btn-default btn-border">
                   Upgrade
                 </Link>
               </div>

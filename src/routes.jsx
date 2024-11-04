@@ -32,6 +32,9 @@ import ManageArenaType from "./Pages/Admin/Arena/ArenaType/ManageArenaType";
 import AddArenaType from "./Pages/Admin/Arena/ArenaType/AddArenaType";
 import AIChatPage from "./Pages/User/Chat/AIChatPage";
 import ErrorLogs from "./Pages/Admin/SystemStatus/ErrorLogs";
+import HistoryPage from "./Pages/User/History/HistoryPage";
+import Shop from "./Pages/User/Payments/Shop";
+import ViewAdminProfile from "./Pages/Admin/Profile/ViewAdminProfile";
 
 // Define routes
 export const router = createBrowserRouter([
@@ -112,6 +115,10 @@ export const router = createBrowserRouter([
         path: "add-ai-figure",
         element: <AddAIFigure />,
       },
+      {
+        path: "view-profile",
+        element: <ViewAdminProfile />,
+      },
     ],
   },
 
@@ -155,6 +162,15 @@ export const router = createBrowserRouter([
         path: "/add-ai-figure",
         element: <UserAddAiFigure />,
       },
+      {
+        path: "history/:id",
+        element: <HistoryPage />,
+      },
+      {
+        path: "/shop",
+        element: <Shop/>,
+      },
+      
     ],
   },
 

@@ -18,14 +18,17 @@ export default function ArenaChatPage() {
   const { data: arenaData, refetch } = useGetAllArenasQuery();
   const [message, setMessage] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [messages, setMessages] = useState([]);
   const [sentMessages, setSentMessages] = useState([]);
   const [receivedMessages, setReceivedMessages] = useState([]);
   const [notification, setNotification] = useState(null);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [showParticipants, setShowParticipants] = useState(false);
   const [showUsers, setShowUsers] = useState(false);
-  const chatContainerRef = useRef(null);
+  const [isCollapsed, setIsCollapsed] = useState(false); // State to control collapse
 
+  const chatContainerRef = useRef(null);
+  const toggleCollapse = () => setIsCollapsed(!isCollapsed); // Toggle function
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
     window.addEventListener("resize", handleResize);
@@ -38,7 +41,7 @@ export default function ArenaChatPage() {
 
       socket.on("receiveMessage", (data) => {
         if (data.message.senderId !== userId) {
-          setReceivedMessages((prevMessages) => [
+          setMessages((prevMessages) => [
             ...prevMessages,
             {
               sender: data.user.name,
@@ -53,29 +56,53 @@ export default function ArenaChatPage() {
         }
       });
 
+      // Event listener for when a user rejoins
       socket.on("userRejoined", (data) => {
+        console.log("rejoined", data);
         refetch();
-        if (data.userId !== userId) {
-          setNotification(`User ${data.name || data.userId} has rejoined.`);
+
+        // Get the latest user who rejoined
+        const latestUser = data.joinArena?.userArenas?.at(-1)?.user;
+
+        if (latestUser && latestUser.id !== userId) {
+          setNotification(
+            `User ${latestUser.name || latestUser.id} has rejoined.`
+          );
           setArena({ ...data.joinArena });
           setTimeout(() => setNotification(null), 3000);
         }
       });
 
+      // Event listener for when a user joins
       socket.on("userJoined", (data) => {
+        console.log("joined", data);
         refetch();
-        if (data.userId !== userId) {
-          setNotification(`User ${data.name || data.userId} has joined.`);
+
+        // Get the latest user who joined
+        const latestUser = data.joinArena?.userArenas?.at(-1)?.user;
+
+        if (latestUser && latestUser.id !== userId) {
+          setNotification(
+            `User ${latestUser.name || latestUser.id} has joined.`
+          );
           setArena({ ...data.joinArena });
           setTimeout(() => setNotification(null), 3000);
         }
       });
 
+      // Event listener for when a user leaves
       socket.on("userLeft", (data) => {
+        console.log("left", data);
         refetch();
-        setNotification(`User ${data.name || data.userId} has left.`);
-        setArena({ ...data.leftArena });
-        setTimeout(() => setNotification(null), 3000);
+
+        // Get the latest user who left
+        const latestUser = data.leftArena?.userArenas?.at(-1)?.user;
+
+        if (latestUser && latestUser.id !== userId) {
+          setNotification(`User ${latestUser.name || latestUser.id} has left.`);
+          setArena({ ...data.leftArena });
+          setTimeout(() => setNotification(null), 3000);
+        }
       });
 
       return () => {
@@ -90,10 +117,9 @@ export default function ArenaChatPage() {
 
   useEffect(() => {
     if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop =
-        chatContainerRef.current.scrollHeight;
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
     }
-  }, [sentMessages, receivedMessages]);
+  }, [messages]);
 
   useEffect(() => {
     setArena(location?.state);
@@ -112,7 +138,7 @@ export default function ArenaChatPage() {
         userId,
         arenaId: arena.id,
       });
-      setSentMessages((prevMessages) => [
+      setMessages((prevMessages) => [
         ...prevMessages,
         {
           sender: "You",
@@ -135,17 +161,17 @@ export default function ArenaChatPage() {
 
   const toggleParticipants = () => setShowParticipants(!showParticipants);
   const toggleUsers = () => setShowUsers(!showUsers);
-  const sortedMessages = [...receivedMessages, ...sentMessages]
-  .sort((a, b) => new Date(a.time) - new Date(b.time))
-  .map(message => ({
-    ...message,
-    formattedTime: new Date(message.time).toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    }),
-  }));
-  
-  console.log("time>>>>>>>>>>>>>>>",sortedMessages)
+  // const sortedMessages = [...receivedMessages, ...sentMessages]
+  const sortedMessages = messages
+    .sort((a, b) => new Date(a.time) - new Date(b.time))
+    .map((message) => ({
+      ...message,
+      formattedTime: new Date(message.time).toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+    }));
+
   return (
     <div className="d-flex h-100 bg-transparent text-color-light">
       <button
@@ -179,27 +205,69 @@ export default function ArenaChatPage() {
           top: isMobile ? "100px" : "0",
           zIndex: isMobile ? 10 : "auto",
         }}
-      >
-        {showParticipants && (
-          <ParticipantsCard
-            participants={
-              arena?.arenaAIFigures?.map((userArena) => userArena.aiFigure) || [
-                "Ahsan",
-              ]
-            }
-            handleModal={handleModal}
-            totalParticipants={arena?.userArenas?.length || 0}
-            expiryTime={arena?.expiryTime}
-            aiStatus="Active"
-          />
-        )}
-      </div>
+      ></div>
 
       <div
         className={`flex-grow-1 d-flex flex-column chat-message-area ${
           showParticipants && !isMobile ? "" : "full-width"
         } ${showUsers ? "slideIn" : "slideOut"}`}
       >
+        <div
+          className={`bg-green d-flex flex-column align-items-center justify-content-center px-4 mx-3 mb-3 text-success font-bold ${
+            isCollapsed ? "collapsed" : ""
+          }`}
+          style={{
+            borderRadius: "16px",
+            boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
+            fontSize: "2rem",
+            backgroundColor: "transparent",
+            overflow: "hidden",
+            transition: "max-height 0.3s ease",
+            maxHeight: "100px",
+          }}
+        >
+          <div className="">
+            <button
+              onClick={toggleCollapse}
+              style={{
+                border: "none",
+                background: "transparent",
+                cursor: "pointer",
+              }}
+            >
+              <i
+                className={`fas ${
+                  isCollapsed ? "fa-chevron-down" : "fa-chevron-up"
+                }`}
+                style={{ color: "#ffffff" }}
+              />
+            </button>
+          </div>
+          {isCollapsed && (
+            <div className="d-flex justify-content-between gap-5">
+              <span>
+                <i
+                  className="fas fa-users"
+                  style={{ marginRight: "8px", color: "#ffffff" }}
+                ></i>
+                Total Participants: {arena?.userArenas?.length || 0}
+              </span>
+              <span>
+                <i
+                  className="fas fa-clock"
+                  style={{ marginRight: "8px", color: "#ffffff" }}
+                ></i>
+                Expiry Time:{" "}
+                {arena?.expiryTime
+                  ? new Date(arena.expiryTime).toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })
+                  : "Not Set"}
+              </span>
+            </div>
+          )}
+        </div>
         <ArenaInfoCard
           name={arena?.name || "Chat Arena"}
           handleLeaveRoom={handleLeaveRoom}
@@ -209,7 +277,7 @@ export default function ArenaChatPage() {
         />
 
         {notification && (
-          <div className="notification-area text-center mt-3 p-4 bg-success text-dark">
+          <div className="notification-area text-center mt-3 p-4 bg-success text-light">
             <span className="notification-text">{notification}</span>
           </div>
         )}
@@ -299,6 +367,11 @@ export default function ArenaChatPage() {
         >
           <UserListCard
             users={arena?.userArenas?.map((userArena) => userArena.user) || []}
+            ai={
+              arena?.arenaAIFigures?.map((userArena) => userArena.aiFigure) || [
+                "Ahsan",
+              ]
+            }
           />
         </div>
       )}
