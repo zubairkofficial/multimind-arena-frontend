@@ -18,7 +18,9 @@ export default function ArenaChatPage() {
   const { data: arenaData, refetch } = useGetAllArenasQuery();
   const [message, setMessage] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState(
+    JSON.parse(localStorage.getItem("arenaMessages")) || [] // Load from localStorage
+  );
   const [sentMessages, setSentMessages] = useState([]);
   const [receivedMessages, setReceivedMessages] = useState([]);
   const [notification, setNotification] = useState(null);
@@ -29,6 +31,7 @@ export default function ArenaChatPage() {
 
   const chatContainerRef = useRef(null);
   const toggleCollapse = () => setIsCollapsed(!isCollapsed); // Toggle function
+
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
     window.addEventListener("resize", handleResize);
@@ -41,18 +44,21 @@ export default function ArenaChatPage() {
 
       socket.on("receiveMessage", (data) => {
         if (data.message.senderId !== userId) {
-          setMessages((prevMessages) => [
-            ...prevMessages,
-            {
-              sender: data.user.name,
-              message: data.message,
-              user: data.user,
-              time: new Date().toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-              }),
-            },
-          ]);
+          const newMessage = {
+            sender: data.user.name,
+            message: data.message,
+            user: data.user,
+            time: new Date().toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            }),
+          };
+
+          setMessages((prevMessages) => {
+            const updatedMessages = [...prevMessages, newMessage];
+            localStorage.setItem("arenaMessages", JSON.stringify(updatedMessages));
+            return updatedMessages;
+          });
         }
       });
 
@@ -60,14 +66,10 @@ export default function ArenaChatPage() {
       socket.on("userRejoined", (data) => {
         console.log("rejoined", data);
         refetch();
-
-        // Get the latest user who rejoined
         const latestUser = data.joinArena?.userArenas?.at(-1)?.user;
 
         if (latestUser && latestUser.id !== userId) {
-          setNotification(
-            `User ${latestUser.name || latestUser.id} has rejoined.`
-          );
+          setNotification(`User ${latestUser.name || latestUser.id} has rejoined.`);
           setArena({ ...data.joinArena });
           setTimeout(() => setNotification(null), 3000);
         }
@@ -77,14 +79,10 @@ export default function ArenaChatPage() {
       socket.on("userJoined", (data) => {
         console.log("joined", data);
         refetch();
-
-        // Get the latest user who joined
         const latestUser = data.joinArena?.userArenas?.at(-1)?.user;
 
         if (latestUser && latestUser.id !== userId) {
-          setNotification(
-            `User ${latestUser.name || latestUser.id} has joined.`
-          );
+          setNotification(`User ${latestUser.name || latestUser.id} has joined.`);
           setArena({ ...data.joinArena });
           setTimeout(() => setNotification(null), 3000);
         }
@@ -94,8 +92,6 @@ export default function ArenaChatPage() {
       socket.on("userLeft", (data) => {
         console.log("left", data);
         refetch();
-
-        // Get the latest user who left
         const latestUser = data.leftArena?.userArenas?.at(-1)?.user;
 
         if (latestUser && latestUser.id !== userId) {
@@ -133,22 +129,27 @@ export default function ArenaChatPage() {
     e.preventDefault();
     const socket = getSocket();
     if (message.trim() && arena?.id && socket) {
+      const newMessage = {
+        sender: "You",
+        content: message,
+        time: new Date().toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+      };
+
       socket.emit("sendMessage", {
         content: message,
         userId,
         arenaId: arena.id,
       });
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        {
-          sender: "You",
-          content: message,
-          time: new Date().toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-          }),
-        },
-      ]);
+
+      setMessages((prevMessages) => {
+        const updatedMessages = [...prevMessages, newMessage];
+        localStorage.setItem("arenaMessages", JSON.stringify(updatedMessages));
+        return updatedMessages;
+      });
+
       setMessage("");
     }
   };
@@ -161,7 +162,7 @@ export default function ArenaChatPage() {
 
   const toggleParticipants = () => setShowParticipants(!showParticipants);
   const toggleUsers = () => setShowUsers(!showUsers);
-  // const sortedMessages = [...receivedMessages, ...sentMessages]
+
   const sortedMessages = messages
     .sort((a, b) => new Date(a.time) - new Date(b.time))
     .map((message) => ({
@@ -171,6 +172,7 @@ export default function ArenaChatPage() {
         minute: "2-digit",
       }),
     }));
+
 
   return (
     <div className="d-flex h-100 bg-transparent text-color-light">
@@ -237,7 +239,7 @@ export default function ArenaChatPage() {
             >
               <i
                 className={`fas ${
-                  isCollapsed ? "fa-chevron-down" : "fa-chevron-up"
+                  isCollapsed ? "fa-chevron-up" : "fa-chevron-down"
                 }`}
                 style={{ color: "#ffffff" }}
               />
