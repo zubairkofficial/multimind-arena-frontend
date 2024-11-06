@@ -30,6 +30,7 @@ const Sidebar = () => {
     { path: "/admin/manage-arenas", icon: "fa-cog", label: "Manage Arenas" },
     { path: "/admin/manage-ai-figures", icon: "fa-images", label: "Manage AI Figures" }, // New option added
     { path: "/admin/arena-types", icon: "fa-info", label: "Manage Arena Types" }, 
+    { path: "/admin/bundles", icon: "fa-coin", label: "Manage Price Token" }, 
   ];
 
   return (

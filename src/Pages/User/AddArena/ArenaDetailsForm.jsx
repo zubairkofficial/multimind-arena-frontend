@@ -100,10 +100,25 @@ const ArenaDetailsForm = () => {
     const now = new Date();
     const expiryTime = new Date(now.getTime() + durationInMinutes * 60000);
   
-    // Format expiryTime in UTC
-    return expiryTime;
-  };
-  
+    // Format expiryTime in UK time (Europe/London)
+    const ukFormatter = new Intl.DateTimeFormat('en-GB', {
+        timeZone: 'Europe/London',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+    });
+
+    return ukFormatter.format(expiryTime);
+};
+
+// Example usage:
+console.log(calculateExpiryTime(60)); // Returns expiry time in UK time format
+
+
+
   // Form submission
   const handleSubmit = async (e) => {
     e.preventDefault();

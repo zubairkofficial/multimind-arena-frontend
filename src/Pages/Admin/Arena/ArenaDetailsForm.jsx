@@ -95,9 +95,21 @@ const ArenaDetailsForm = () => {
     const now = new Date();
     const expiryTime = new Date(now.getTime() + durationInMinutes * 60000);
   
-    // Convert to UTC (GMT+0) and format as ISO string
-    return new Date(expiryTime.toISOString().slice(0, -1) + 'Z');
-  };
+    // Format expiryTime in UK time (Europe/London)
+    const ukFormatter = new Intl.DateTimeFormat('en-GB', {
+        timeZone: 'Europe/London',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+    });
+
+    return ukFormatter.format(expiryTime);
+};
+
+
 
   // Form submission
   const handleSubmit = async (e) => {

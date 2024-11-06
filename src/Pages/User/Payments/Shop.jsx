@@ -1,31 +1,26 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { loadStripe } from '@stripe/stripe-js';
+import { useGetAllBundlesQuery } from '../../../features/api/bundleApi'; // Import the query hook
 
 const stripePromise = loadStripe('your-stripe-public-key');
 
 const Shop = () => {
   const navigate = useNavigate();
-
-  const items = [
-    { id: 1, label: 'Small Bundle - 100 Coins', cost: '$1.99', amount: 199 },
-    { id: 2, label: 'Medium Bundle - 500 Coins', cost: '$7.99', amount: 799 },
-    { id: 3, label: 'Large Bundle - 1000 Coins', cost: '$14.99', amount: 1499 },
-    { id: 4, label: 'Mega Bundle - 5000 Coins', cost: '$59.99', amount: 5999 },
-  ];
+  const { data: bundlesData, error, isLoading } = useGetAllBundlesQuery(); // Use the API to fetch bundles
 
   const handlePurchase = async (item) => {
     const stripe = await stripePromise;
-    const response = await axios.post('/create-checkout-session', {
-    
+    const response = await fetch('/create-checkout-session', {
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authentication: `Bearer ${localStorage.getItem('token')}`
+        Authentication: `Bearer ${localStorage.getItem('token')}`,
       },
-      body: JSON.stringify({ item }),
+      body: JSON.stringify({ item }), // Send the item to the server
     });
 
-    const { url } = await response.json();
+    const { url } = await response.json(); // Assuming the server returns a URL
     window.location.href = url; // Redirect to Stripe Checkout
   };
 
@@ -36,15 +31,25 @@ const Shop = () => {
     </svg>
   );
 
+  if (isLoading) {
+    return <div>Loading bundles...</div>; // Show loading state
+  }
+
+  if (error) {
+    return <div>Error loading bundles: {error.message}</div>; // Handle error state
+  }
+
   return (
     <div style={styles.shopContainer}>
       <h1 style={styles.title}>Shop</h1>
       <div style={styles.itemList}>
-        {items.map(item => (
+        {bundlesData.map((item) => ( // Use bundlesData instead of items
           <div key={item.id} style={styles.itemCard}>
             <CoinIcon />
-            <h2 style={styles.itemLabel}>{item.label}</h2>
-            <p style={styles.itemCost}>{item.cost}</p>
+            <h2 style={styles.itemLabel}>{item.name}</h2> {/* Display bundle name */}
+            <p style={styles.itemCost}>
+              ${parseFloat(item.price).toFixed(2)} {/* Ensure price is formatted correctly */}
+            </p>
             <button style={styles.purchaseButton} onClick={() => handlePurchase(item)}>
               Buy Now
             </button>
@@ -57,7 +62,6 @@ const Shop = () => {
 
 const styles = {
   shopContainer: {
-    
     color: '#00FF00',
     padding: '20px',
     minHeight: '100vh',

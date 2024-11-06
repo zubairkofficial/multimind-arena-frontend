@@ -35,7 +35,8 @@ import ErrorLogs from "./Pages/Admin/SystemStatus/ErrorLogs";
 import HistoryPage from "./Pages/User/History/HistoryPage";
 import Shop from "./Pages/User/Payments/Shop";
 import ViewAdminProfile from "./Pages/Admin/Profile/ViewAdminProfile";
-
+import ManageBundle from './Pages/Admin/Payments/index'
+import ManageBundlePlan from './Pages/Admin/Payments/AdminTokenPlan'
 // Define routes
 export const router = createBrowserRouter([
   // Default Routes
@@ -90,6 +91,18 @@ export const router = createBrowserRouter([
       {
         path: "arena-types",
         element: <ManageArenaType />,
+      },
+      {
+        path: "bundles",
+        element: <ManageBundle />,
+      },
+      {
+        path: "add-bundle-plan",
+        element: <ManageBundlePlan />,
+      },
+      {
+        path: "update-bundle-plan",
+        element: <ManageBundlePlan />,
       },
       {
         path: "add-arena-type",
