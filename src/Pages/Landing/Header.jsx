@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import Logo from '../../../public/assets/images/logo/logo.png';
 
 const Header = () => {
   const [sidebarOpen, setSideBarOpen] = useState(false);
@@ -43,6 +44,8 @@ const Header = () => {
                     src="/assets/images/logo/logo.png"
                     alt="ChatBot Logo"
                     style={{height: '80px', width: 'auto'}}
+                    onError={(e) => e.target.src = Logo} // Fallback to Logo if the image fails to load
+
                   
                   />
                 </Link>

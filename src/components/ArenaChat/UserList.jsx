@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import CustomModal from "../Modal/CustomModal";
+import Logo from '../../../public/assets/images/logo/logo.png';
 
 function UserList({ participants, handleModal }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -70,7 +71,7 @@ function UserList({ participants, handleModal }) {
             }}
           >
             <img
-              src={participant.image || 'assets/images/logo/logo.png'}
+              src={participant.image || Logo}
               alt={participant.name}
               style={{
                 width: '40px',
@@ -80,6 +81,8 @@ function UserList({ participants, handleModal }) {
                 marginRight: '10px',
                 border: '2px solid #00ff00',
               }}
+              onError={(e) => e.target.src = Logo} // Fallback to Logo if the image fails to load
+
             />
             <span>{participant.name}</span>
           </li>

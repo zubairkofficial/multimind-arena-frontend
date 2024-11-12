@@ -103,7 +103,7 @@ const handleEditBundle=(bundle)=>{
   }));
 
   return (
-    <div>
+    <div className="container mx-5">
       <Searchbar
         heading="Manage Bundles"
         title="Add Bundle"

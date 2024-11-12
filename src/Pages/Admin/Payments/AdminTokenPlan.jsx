@@ -61,7 +61,7 @@ const ManageBundlePlan = () => {
 
       // Refetch the bundles after adding or updating
       refetch(); // This will trigger the refetch of the bundle list
-      navigate("/admin/bundles"); // Navigate back to the bundle list
+      navigate("/admin/manage-transactions"); // Navigate back to the bundle list
     } catch (err) {
       notyf.error("Failed to add or update bundle.");
       console.error("Error:", err); // Log the error for debugging

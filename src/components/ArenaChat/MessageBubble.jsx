@@ -13,7 +13,7 @@ function MessageBubble({ message }) {
       })
     : "Invalid Time";
 
-  console.log("msg", message);
+  console.log("msg+++++++++++++++++", message?.message?.arenas);
 
   return (
     <div
@@ -41,7 +41,9 @@ function MessageBubble({ message }) {
           }}
         >
           {!isSender && (
-         <>  <strong className="sender-name">{message.sender ?? "Default"}</strong>           <strong className="sender-name bg-light text-dark  rounded p-2">{message.user.role ?? "Default"}</strong></> 
+         <>  <strong className="sender-name ">{message.sender ?? "Default"}</strong> 
+                   {/* <strong className="sender-name  bg-success text-light  rounded p-2">{message?.message?.arenas?.userArenas[0]?.role ?? "Default"}</strong> */}
+                   </> 
           )}
         </div>
         <p className="mb-1" style={{ marginBottom: "0.5rem" }}>

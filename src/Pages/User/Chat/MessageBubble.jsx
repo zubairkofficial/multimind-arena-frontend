@@ -28,15 +28,10 @@ function MessageBubble({ message }) {
     >
       {/* Sender Name (for AI messages only) */}
       {!isSender && (
-        <div
-          style={{
-            fontWeight: "bold",
-            color: "#fff",
-            marginBottom: "0.25rem",
-          }}
-        >
-          {message.sender}
-        </div>
+        <>  <strong className="sender-name ">{message.sender ?? "Default"}</strong>        
+           {/* <strong className="sender-name  bg-success text-light  rounded p-2">{message?.message?.arenas?.userArenas[0]?.role ?? "Default"}</strong> */}
+           </> 
+        
       )}
       <p style={{ marginBottom: "0.5rem" }}>{message.content}</p>
       <div

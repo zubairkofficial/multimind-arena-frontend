@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./arenachat.css"; // Import the CSS file for custom styles
-
+import Logo from '../../../public/assets/images/logo/logo.png';
 function ArenaInfoCard({
   image,
   name,
@@ -26,8 +26,8 @@ function ArenaInfoCard({
         <div className="d-flex gap-2 align-items-center">
           {/* Arena Name */}{" "}
           <img
-            src={image}
-            alt=""
+            src={image ||Logo}
+            alt={Logo}
             className="img-fluid rounded-circle" // Bootstrap classes for responsiveness and circular shape
             style={{
               width: "40px",
@@ -37,6 +37,8 @@ function ArenaInfoCard({
               marginRight: "10px",
               border: "2px solid #00ff00",
             }}
+            onError={(e) => e.target.src = Logo} // Fallback to Logo if the image fails to load
+
           />
           <h3 className="text-color-primary mb-0">{name}</h3>
         </div>

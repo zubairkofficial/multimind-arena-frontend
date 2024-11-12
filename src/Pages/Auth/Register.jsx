@@ -5,6 +5,7 @@ import { Notyf } from "notyf";
 import "notyf/notyf.min.css";
 import Helpers from "../../Config/Helpers";
 import { useRegisterUserMutation } from "../../features/api/authApi"; // Import the registerUser mutation
+import Logo from '../../../public/assets/images/logo/logo.png'
 
 const Register = () => {
   const navigate = useNavigate();
@@ -65,8 +66,8 @@ const Register = () => {
       const notyf = new Notyf();
       // Display a success notification
       notyf.success("User Registered Successfully. Please verify your email to continue", 3000);
-      navigate("/login"); // Redirect to the login page after successful registration
-    } catch (err) {
+      navigate("/user-verification"); 
+        } catch (err) {
       // Extract the error message from the API response
       const errorMessage = err?.data?.message || "Registration failed. Please try again.";
       console.error("Failed to register:", errorMessage);
@@ -107,9 +108,11 @@ const Register = () => {
                 <div className="sign-up-box">
                   <div className="signup-box-top">
                     <img
-                      src="assets/images/logo/logo.png"
+                      src={Logo}
                       alt="sign-up logo"
                       style={{ height: "80px", width: "auto" }}
+                      onError={(e) => e.target.src = Logo} // Fallback to Logo if the image fails to load
+
                     />
                   </div>
                   <div className="signup-box-bottom">

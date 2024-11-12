@@ -3,6 +3,7 @@ import { useResetPasswordMutation } from "../../features/api/authApi"; // Import
 import { useNavigate, useLocation,Link } from "react-router-dom";
 import { Notyf } from "notyf";
 import "notyf/notyf.min.css";
+import Logo from '../../../public/assets/images/logo/logo.png'
 
 const ResetPassword = () => {
   const [newPassword, setNewPassword] = useState("");
@@ -59,7 +60,8 @@ const ResetPassword = () => {
               <div className="col-lg-6 bg-color-blackest left-wrapper">
                 <div className="sign-up-box">
                   <div className="signup-box-top">
-                    <img src="assets/images/logo/logo.png" alt="reset-password logo" />
+                    <img src={Logo} alt="reset-password logo"   onError={(e) => e.target.src = Logo} // Fallback to Logo if the image fails to load
+ />
                   </div>
                   <div className="signup-box-bottom">
                     <div className="signup-box-content">

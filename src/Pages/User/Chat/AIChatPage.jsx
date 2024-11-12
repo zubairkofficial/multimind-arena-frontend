@@ -14,7 +14,7 @@ export default function AIChatPage() {
   const [message, setMessage] = useState("");
   const [chatMessages, setChatMessages] = useState([]);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
-  const [isLoading, setIsLoading] = useState(false); // Added loading state
+  const [isLoading, setIsLoading] = useState(false);
   const chatContainerRef = useRef(null);
 
   const userImage =
@@ -22,13 +22,51 @@ export default function AIChatPage() {
     "/assets/images/logo/logo.png";
   const aiImage = aiFigure?.image || "/assets/images/logo/logo.png";
 
+  // Fetch previous chat messages on component load
   useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 768);
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
+    const fetchPreviousMessages = async () => {
+      try {
+        const response = await axios.get(
+          `${Helpers.apiUrl}ai-figures/previous-chat/${figureId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+
+        // Map response data to the chatMessages structure
+        const previousMessages = response.data.flatMap((msg) => [
+          {
+            sender: "You",
+            content: msg.sendMessage,
+            isUser: true,
+            time: new Date(msg.createdAt).toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+              hour12: true,
+            }),
+          },
+          {
+            sender: aiFigure.name,
+            content: msg.receiveMessage,
+            isUser: false,
+            time: new Date(msg.createdAt).toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+              hour12: true,
+            }),
+          },
+        ]);
+
+        setChatMessages(previousMessages);
+      } catch (error) {
+        console.error("Failed to load previous messages", error);
+      }
     };
-  }, []);
+
+    fetchPreviousMessages();
+  }, [figureId, aiFigure]);
 
   useEffect(() => {
     if (chatContainerRef.current) {
@@ -57,7 +95,7 @@ export default function AIChatPage() {
 
       setChatMessages((prevMessages) => [...prevMessages, userMessage]);
       setMessage("");
-      setIsLoading(true); // Start loading
+      setIsLoading(true);
 
       try {
         const response = await axios.post(
@@ -97,7 +135,7 @@ export default function AIChatPage() {
         setChatMessages((prevMessages) => [...prevMessages, errorMessage]);
       }
 
-      setIsLoading(false); // End loading
+      setIsLoading(false);
     }
   };
 
@@ -146,7 +184,6 @@ export default function AIChatPage() {
             </div>
           ))}
 
-          {/* Loading indicator */}
           {isLoading && (
             <div className="d-flex">
               <div style={{ width: "50px", margin: "0 10px" }}>
@@ -200,12 +237,12 @@ export default function AIChatPage() {
               placeholder="Message..."
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              disabled={isLoading} // Disable input while loading
+              disabled={isLoading}
             />
             <button
               type="submit"
               className="btn btn-large rounded-circle position-absolute end-0 top-50 translate-middle-y me-5 btn-success text-white shadow"
-              disabled={isLoading} // Disable button while loading
+              disabled={isLoading}
             >
               <i className="fas fa-send"></i>
             </button>

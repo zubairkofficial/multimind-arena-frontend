@@ -10,18 +10,19 @@ const Shop = () => {
   const { data: bundlesData, error, isLoading } = useGetAllBundlesQuery(); // Use the API to fetch bundles
 
   const handlePurchase = async (item) => {
-    const stripe = await stripePromise;
-    const response = await fetch('/create-checkout-session', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authentication: `Bearer ${localStorage.getItem('token')}`,
-      },
-      body: JSON.stringify({ item }), // Send the item to the server
-    });
+    navigate("/create-card")
+    // const stripe = await stripePromise;
+    // const response = await fetch('/create-checkout-session', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     Authentication: `Bearer ${localStorage.getItem('token')}`,
+    //   },
+    //   body: JSON.stringify({ item }), // Send the item to the server
+    // });
 
-    const { url } = await response.json(); // Assuming the server returns a URL
-    window.location.href = url; // Redirect to Stripe Checkout
+    // const { url } = await response.json(); // Assuming the server returns a URL
+    // window.location.href = url; // Redirect to Stripe Checkout
   };
 
   const CoinIcon = () => (
@@ -46,7 +47,7 @@ const Shop = () => {
         {bundlesData.map((item) => ( // Use bundlesData instead of items
           <div key={item.id} style={styles.itemCard}>
             <CoinIcon />
-            <h2 style={styles.itemLabel}>{item.name}</h2> {/* Display bundle name */}
+            <h2 style={styles.itemLabel}>{item.name} - {item.coins} Coins</h2> {/* Display bundle name */}
             <p style={styles.itemCost}>
               ${parseFloat(item.price).toFixed(2)} {/* Ensure price is formatted correctly */}
             </p>

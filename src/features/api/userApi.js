@@ -1,4 +1,3 @@
-// src/features/api/userApi.js
 import Helpers from "../../Config/Helpers";
 import apiSlice from "./apiSlice";
 
@@ -43,6 +42,19 @@ export const userApi = apiSlice.injectEndpoints({
             }),
             providesTags: ["User"], // Provide the "User" tag for caching all users
         }),
+
+        // Get user transaction history
+        getUserTransactionHistory: builder.query({
+            query: () => ({
+                url: "user/transaction/history", // Endpoint to get the transaction history
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${Helpers.getItem("token")}`,
+                },
+            }),
+            providesTags: ["UserTransactions"], // Tag for caching transaction data
+        }),
     }),
 });
 
@@ -51,4 +63,5 @@ export const {
     useGetUserByIdQuery,
     useUpdateUserMutation,
     useGetAllUsersQuery,
+    useGetUserTransactionHistoryQuery, // Export the hook for user transaction history
 } = userApi;

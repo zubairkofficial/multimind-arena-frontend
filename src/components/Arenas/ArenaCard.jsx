@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Clock, Info, Users } from "lucide-react";
 import "./ArenaCard.css";
+import Logo from '../../../public/assets/images/logo/logo.png';
 
 export default function ArenaCard({ arena, onJoin }) {
   const [isInfoHovered, setIsInfoHovered] = useState(false);
@@ -27,7 +28,8 @@ export default function ArenaCard({ arena, onJoin }) {
   return (
     <div className="arena-card m-3 h-20">
       <div className="arena-card-image-wrapper">
-        <img alt={arena.name} className="arena-card-image" src={arena.image || 'assets/images/logo/logo.png'} />
+        <img src={arena?.image ?? Logo}  alt="Arena Image" className="arena-card-image"   onError={(e) => e.target.src = Logo} // Fallback to Logo if the image fails to load
+  />
       </div>
       <div className="arena-card-content">
         <h3 className="arena-card-title">{arena.name}</h3>

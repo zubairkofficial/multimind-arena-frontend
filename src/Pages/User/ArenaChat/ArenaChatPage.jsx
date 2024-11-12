@@ -8,6 +8,8 @@ import UserListCard from "./UserListCard";
 import { getSocket, initiateSocketConnection } from "./../../../app/socket";
 import "./../../../components/ArenaChat/arenachat.css";
 import { useGetAllArenasQuery } from "../../../features/api/arenaApi";
+import { useGetUserByIdQuery } from "../../../features/api/userApi";
+import Logo from '../../../../public/assets/images/logo/logo.png';
 
 export default function ArenaChatPage() {
   const location = useLocation();
@@ -18,19 +20,18 @@ export default function ArenaChatPage() {
   const { data: arenaData, refetch } = useGetAllArenasQuery();
   const [message, setMessage] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [messages, setMessages] = useState(
-    JSON.parse(localStorage.getItem("arenaMessages")) || [] // Load from localStorage
-  );
-  const [sentMessages, setSentMessages] = useState([]);
-  const [receivedMessages, setReceivedMessages] = useState([]);
+  const [messages, setMessages] = useState([]);
   const [notification, setNotification] = useState(null);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [showParticipants, setShowParticipants] = useState(false);
   const [showUsers, setShowUsers] = useState(false);
-  const [isCollapsed, setIsCollapsed] = useState(false); // State to control collapse
-
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const chatContainerRef = useRef(null);
-  const toggleCollapse = () => setIsCollapsed(!isCollapsed); // Toggle function
+  const { refetch:userRefetch } = useGetUserByIdQuery(userId);
+  const toggleCollapse = () => setIsCollapsed(!isCollapsed);
+
+  // Helper function to generate a unique localStorage key for each arena
+  const getArenaMessageKey = (arenaId) => `arenaMessages_${arenaId}`;
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
@@ -40,6 +41,10 @@ export default function ArenaChatPage() {
     const socket = getSocket();
 
     if (arena?.id && socket) {
+      // Load saved messages for the current arena from localStorage
+      const savedMessages = JSON.parse(localStorage.getItem(getArenaMessageKey(arena.id))) || [];
+      setMessages(savedMessages);
+
       socket.emit("joinRoom", { arenaId: arena.id, userId });
 
       socket.on("receiveMessage", (data) => {
@@ -56,13 +61,12 @@ export default function ArenaChatPage() {
 
           setMessages((prevMessages) => {
             const updatedMessages = [...prevMessages, newMessage];
-            localStorage.setItem("arenaMessages", JSON.stringify(updatedMessages));
+            localStorage.setItem(getArenaMessageKey(arena.id), JSON.stringify(updatedMessages));
             return updatedMessages;
           });
         }
       });
 
-      // Event listener for when a user rejoins
       socket.on("userRejoined", (data) => {
         console.log("rejoined", data);
         refetch();
@@ -75,7 +79,6 @@ export default function ArenaChatPage() {
         }
       });
 
-      // Event listener for when a user joins
       socket.on("userJoined", (data) => {
         console.log("joined", data);
         refetch();
@@ -88,7 +91,6 @@ export default function ArenaChatPage() {
         }
       });
 
-      // Event listener for when a user leaves
       socket.on("userLeft", (data) => {
         console.log("left", data);
         refetch();
@@ -121,9 +123,7 @@ export default function ArenaChatPage() {
     setArena(location?.state);
   }, [location?.state]);
 
-  const handleModal = () => {
-    setIsModalOpen(true);
-  };
+  const handleModal = () => setIsModalOpen(true);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -138,17 +138,13 @@ export default function ArenaChatPage() {
         }),
       };
 
-      socket.emit("sendMessage", {
-        content: message,
-        userId,
-        arenaId: arena.id,
-      });
-
+      socket.emit("sendMessage", { content: message, userId, arenaId: arena.id });
       setMessages((prevMessages) => {
         const updatedMessages = [...prevMessages, newMessage];
-        localStorage.setItem("arenaMessages", JSON.stringify(updatedMessages));
+        localStorage.setItem(getArenaMessageKey(arena.id), JSON.stringify(updatedMessages));
         return updatedMessages;
       });
+      userRefetch()
 
       setMessage("");
     }
@@ -172,7 +168,6 @@ export default function ArenaChatPage() {
         minute: "2-digit",
       }),
     }));
-
 
   return (
     <div className="d-flex h-100 bg-transparent text-color-light">
@@ -275,7 +270,7 @@ export default function ArenaChatPage() {
           handleLeaveRoom={handleLeaveRoom}
           toggleParticipants={toggleParticipants}
           toggleUsers={toggleUsers}
-          image={arena?.image || "assets/images/logo/logo.png"}
+          image={arena?.image }
         />
 
         {notification && (
@@ -310,6 +305,7 @@ export default function ArenaChatPage() {
                     borderRadius: "50%",
                     marginRight: "0.5rem",
                   }}
+                  onError={(e) => e.target.src = Logo}
                 />
               )}
 
@@ -327,6 +323,7 @@ export default function ArenaChatPage() {
                     borderRadius: "50%",
                     marginLeft: "0.5rem",
                   }}
+                  onError={(e) => e.target.src = Logo}
                 />
               )}
             </div>

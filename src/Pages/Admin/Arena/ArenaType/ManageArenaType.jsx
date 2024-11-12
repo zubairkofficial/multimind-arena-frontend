@@ -41,7 +41,7 @@ export default function ManageArenaType() {
   };
 
   const handleEditArenaType = (arenaTypeId) => {
-    navigate(`/admin/edit-arena-type/${arenaTypeId}`);
+    // navigate(`/admin/edit-arena-type/${arenaTypeId}`);
   };
 
   const handleDeleteArenaType = async (arenaTypeId) => {
@@ -81,7 +81,7 @@ export default function ManageArenaType() {
   if (error) return <div>Error loading arena types...</div>;
 
   return (
-    <div>
+    <div className="container mx-5">
       <div className="d-flex justify-content-between mb-4">
         <h2>Manage Arena Types</h2>
         <button className="btn-default" onClick={handleCreateArenaType}>

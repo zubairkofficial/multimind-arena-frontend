@@ -29,6 +29,7 @@ import ViewUserProfile from "./Pages/User/Profile/ViewUserProfile";
 import ArenaChatPage from "./Pages/User/ArenaChat/ArenaChatPage";
 import ResetPassword from "./Pages/Auth/ResetPassword";
 import ManageArenaType from "./Pages/Admin/Arena/ArenaType/ManageArenaType";
+import ManageTransaction from "./Pages/Admin/Transaction/ManageTransaction";
 import AddArenaType from "./Pages/Admin/Arena/ArenaType/AddArenaType";
 import AIChatPage from "./Pages/User/Chat/AIChatPage";
 import ErrorLogs from "./Pages/Admin/SystemStatus/ErrorLogs";
@@ -36,7 +37,11 @@ import HistoryPage from "./Pages/User/History/HistoryPage";
 import Shop from "./Pages/User/Payments/Shop";
 import ViewAdminProfile from "./Pages/Admin/Profile/ViewAdminProfile";
 import ManageBundle from './Pages/Admin/Payments/index'
+import UserVerification from "./Pages/Auth/UserVerification";
 import ManageBundlePlan from './Pages/Admin/Payments/AdminTokenPlan'
+import CreateCard from './Pages/User/Payments/CreateCard'
+import Purchase from './Pages/User/Payments/Purchase'
+import ExistingCards from './Pages/User/Payments/ExistingCards'
 // Define routes
 export const router = createBrowserRouter([
   // Default Routes
@@ -47,6 +52,10 @@ export const router = createBrowserRouter([
   {
     path: "/register",
     element: <Register />,
+  },
+  {
+    path: "/user-verification",
+    element: <UserVerification />,
   },
   {
     path: "/login",
@@ -93,13 +102,17 @@ export const router = createBrowserRouter([
         element: <ManageArenaType />,
       },
       {
-        path: "bundles",
-        element: <ManageBundle />,
-      },
-      {
-        path: "add-bundle-plan",
-        element: <ManageBundlePlan />,
-      },
+          path: "manage-transactions",
+          element: <ManageTransaction />,
+        },
+      // {
+      //   path: "bundles",
+      //   element: <ManageBundle />,
+      // },
+      // {
+      //   path: "add-bundle-plan",
+      //   element: <ManageBundlePlan />,
+      // },
       {
         path: "update-bundle-plan",
         element: <ManageBundlePlan />,
@@ -179,9 +192,21 @@ export const router = createBrowserRouter([
         path: "history/:id",
         element: <HistoryPage />,
       },
+      // {
+      //   path: "/shop",
+      //   element: <Shop/>,
+      // },
       {
-        path: "/shop",
-        element: <Shop/>,
+        path: "/purchase",
+        element: <Purchase/>,
+      },
+      {
+        path: "/create-card",
+        element: <CreateCard/>,
+      },
+      {
+        path: "/existing-card",
+        element: <ExistingCards/>,
       },
       
     ],

@@ -1,4 +1,5 @@
 import React from 'react'
+import Logo from '../../../public/assets/images/logo/logo.png'
 
 const Footer = () => {
   return (
@@ -13,8 +14,10 @@ const Footer = () => {
                         <a href="index.html">
                           <img
                             className="logo-light"
-                            src="assets/images/logo/logo.png"
+                            src={Logo}
                             alt="ChatBot Logo"
+                            onError={(e) => e.target.src = Logo} // Fallback to Logo if the image fails to load
+
                           />
                         </a>
                       </div>

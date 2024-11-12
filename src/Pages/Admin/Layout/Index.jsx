@@ -20,7 +20,7 @@ const Index = () => {
         <div className="rbt-panel-wrapper">
           <Header sidebarOpen={sidebarOpen} setSidebarOpen={handleSidebar} />
           <Sidebar sidebarOpen={sidebarOpen} />
-          <div className = {`table-container content-wrapper ${sidebarOpen ? "hide-on-mobile": ""}`}>
+          <div className = {` table-container content-wrapper ${sidebarOpen ? "hide-on-mobile": ""}`}>
             <Outlet />
           </div>
         </div>

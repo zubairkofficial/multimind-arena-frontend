@@ -94,19 +94,11 @@ const ArenaDetailsForm = () => {
   const calculateExpiryTime = (durationInMinutes) => {
     const now = new Date();
     const expiryTime = new Date(now.getTime() + durationInMinutes * 60000);
-  
-    // Format expiryTime in UK time (Europe/London)
-    const ukFormatter = new Intl.DateTimeFormat('en-GB', {
-        timeZone: 'Europe/London',
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-    });
 
-    return ukFormatter.format(expiryTime);
+    // Convert expiryTime to UTC (Z) and format as ISO string
+    const utcTimeString = expiryTime.toISOString(); // This will give you the ISO string in UTC
+
+    return utcTimeString; // Returns the expiration time in UTC (Z) format
 };
 
 

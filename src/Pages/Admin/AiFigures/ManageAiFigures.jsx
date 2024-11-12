@@ -103,7 +103,7 @@ const ManageAiFigures = () => {
       <>
         <button
           className="btn btn-sm btn-outline-success me-2"
-          onClick={() => handleEditFigure(figure)}
+          // onClick={() => handleEditFigure(figure)}
         >
           <i className="fas fa-edit"></i>
         </button>
@@ -118,7 +118,7 @@ const ManageAiFigures = () => {
   }));
 
   return (
-    <div>
+    <div className="container mx-5">
       <Searchbar
         heading="Manage AI Figures"
         title="Add AI Figure"
