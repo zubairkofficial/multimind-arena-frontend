@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
+import Logo from '../../../../public/assets/images/logo/logo.png'
 
 const Sidebar = () => {
   const sidebarOpen = useSelector((state) => state.sidebar.sidebarOpen);
@@ -33,7 +34,7 @@ const Sidebar = () => {
 
   const settingMenuItems = [
     { path: "/view-profile", icon: "fa-user", label: "Profile Details" },
-    { path: "/shop", icon: "fa-shop", label: "Buy Arena Coins" },
+    { path: "/purchase", icon: "fa-shop", label: "Buy Arena Coins" },
    
   ];
 
@@ -131,8 +132,10 @@ const Sidebar = () => {
                        marginRight: "10px",
                        border: "2px solid #00ff00",
                      }}
-                    src={user.image  || "assets/images/logo/logo.png"}
+                    src={user.image  || Logo}
                     alt="Author"
+                    onError={(e) => e.target.src = Logo} // Fallback to Logo if the image fails to load
+
                   />
                 </div>
                 <div className="author-desc ">

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./../ArenaChat/arenachat.css"; // Import the CSS file for custom styles
+import Logo from '../../../public/assets/images/logo/logo.png';
 
 function AIFigureInfoCard({
   image,
@@ -25,7 +26,7 @@ function AIFigureInfoCard({
         <div className="d-flex gap-3">
           {/* Arena Name */}{" "}
           <img
-            src={image}
+            src={image||Logo}
             alt=""
             style={{
               borderRadius: "50px",
@@ -33,6 +34,8 @@ function AIFigureInfoCard({
               backgroundColor: "white",
               border: "3px solid #00ff00",
             }}
+            onError={(e) => e.target.src = Logo} // Fallback to Logo if the image fails to load
+
           />
           <h3 className="text-color-primary mb-0">{name}</h3>
         </div>

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
+import Logo from '../../../../public/assets/images/logo/logo.png';
 
 const Sidebar = () => {
   const sidebarOpen = useSelector((state) => state.sidebar.sidebarOpen);
@@ -30,6 +31,7 @@ const Sidebar = () => {
     { path: "/admin/manage-arenas", icon: "fa-cog", label: "Manage Arenas" },
     { path: "/admin/manage-ai-figures", icon: "fa-images", label: "Manage AI Figures" }, // New option added
     { path: "/admin/arena-types", icon: "fa-info", label: "Manage Arena Types" }, 
+    { path: "/admin/manage-transactions", icon: "fa-coin", label: "Manage Transactions" }, 
   ];
 
   return (
@@ -43,6 +45,8 @@ const Sidebar = () => {
                   className="logo-light"
                   src="/assets/images/logo/logo.png"
                   alt="ChatBot Logo"
+                  onError={(e) => e.target.src = Logo} // Fallback to Logo if the image fails to load
+
                 />
               </Link>
             </div>

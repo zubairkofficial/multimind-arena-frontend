@@ -7,6 +7,7 @@ import Helpers from "../../Config/Helpers";
 import { useDispatch } from "react-redux";
 import { setUser } from "../../features/userSlice";
 import { useLoginMutation } from "../../features/api/authApi"; // Import the login mutation
+import Logo from '../../../public/assets/images/logo/logo.png'
 
 const Login = () => {
   const navigate = useNavigate();
@@ -105,9 +106,11 @@ const Login = () => {
                 <div className="sign-up-box">
                   <div className="signup-box-top">
                     <img
-                      src="assets/images/logo/logo.png"
+                      src={Logo}
                       alt="sign-up logo"
                       style={{ height: "80px", width: "auto" }}
+                      onError={(e) => e.target.src = Logo} // Fallback to Logo if the image fails to load
+
                     />
                   </div>
                   <div className="signup-box-bottom">

@@ -99,11 +99,14 @@ const ArenaDetailsForm = () => {
   const calculateExpiryTime = (durationInMinutes) => {
     const now = new Date();
     const expiryTime = new Date(now.getTime() + durationInMinutes * 60000);
-  
-    // Format expiryTime in UTC
-    return expiryTime;
-  };
-  
+
+    // Convert expiryTime to UTC (Z) and format as ISO string
+    const utcTimeString = expiryTime.toISOString(); // This will give you the ISO string in UTC
+
+    return utcTimeString; // Returns the expiration time in UTC (Z) format
+};
+
+
   // Form submission
   const handleSubmit = async (e) => {
     e.preventDefault();

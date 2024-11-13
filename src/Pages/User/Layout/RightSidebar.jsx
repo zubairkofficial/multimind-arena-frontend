@@ -67,8 +67,9 @@ const RightSidebar = () => {
     fetchHistoryData();
   }, [token]);
 
+  // Handle figure click to navigate to the chat page
   const handleFigureClick = (id) => {
-    navigate(`/history/${id}`);
+    navigate(`/chat/${id}`);
   };
 
   const renderFigureList = (figures) => (
@@ -79,7 +80,7 @@ const RightSidebar = () => {
         figures.map((figure) => (
           <li key={figure.id} style={{ backgroundColor: '#101010' }}>
             <Link
-              to={`history/${figure.id}`}
+              to={`#`}
               style={{
                 backgroundColor: '#101010',
                 textDecoration: 'none',
@@ -89,9 +90,10 @@ const RightSidebar = () => {
                 fontWeight: 'bold',
                 transition: 'background-color 0.3s ease, color 0.3s ease',
               }}
+              onClick={() => handleFigureClick(figure.id)} // Navigate to chat page on click
               onMouseEnter={(e) => {
                 e.target.style.backgroundColor = '#00FF00';
-                e.target.style.borderRadius = '10px'
+                e.target.style.borderRadius = '10px';
                 e.target.style.color = '#000';
               }}
               onMouseLeave={(e) => {

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Logo from '../../../../public/assets/images/logo/logo.png'
 
 export default function UserListCard({ users, ai }) {
   console.log("Users", users);
@@ -53,7 +54,7 @@ export default function UserListCard({ users, ai }) {
               }}
             >
               <img
-                src={user.image || "assets/images/logo/logo.png"}
+                src={user.image || Logo}
                 alt={user.name}
                 style={{
                   width: "40px",
@@ -63,6 +64,8 @@ export default function UserListCard({ users, ai }) {
                   marginRight: "10px",
                   border: "2px solid #00ff00",
                 }}
+                onError={(e) => e.target.src = Logo} // Fallback to Logo if the image fails to load
+
               />
               <span style={{ fontSize: "1.5rem" }}>{user.name}</span>
             </li>
@@ -85,7 +88,7 @@ export default function UserListCard({ users, ai }) {
               }}
             >
               <img
-                src={user.image || "assets/images/logo/logo.png"}
+                src={user.image || Logo}
                 alt={user.name}
                 style={{
                   width: "40px",
@@ -95,6 +98,8 @@ export default function UserListCard({ users, ai }) {
                   marginRight: "10px",
                   border: "2px solid #00ff00",
                 }}
+                onError={(e) => e.target.src = Logo} // Fallback to Logo if the image fails to load
+
               />
               <span style={{ fontSize: "1.5rem" }}>{user.name}</span>
             </li>
@@ -149,7 +154,7 @@ export default function UserListCard({ users, ai }) {
               &times;
             </button>
             <img
-              src={selectedUser.image || "assets/images/logo/logo.png"}
+              src={selectedUser.image || Logo}
               alt={selectedUser.name}
               style={{
                 width: "80px",
@@ -159,6 +164,8 @@ export default function UserListCard({ users, ai }) {
                 marginBottom: "1rem",
                 border: "2px solid #00ff00",
               }}
+              onError={(e) => e.target.src = Logo} // Fallback to Logo if the image fails to load
+
             />
             <h3>{selectedUser.name}</h3>
             {isAi ? (

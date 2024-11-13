@@ -87,7 +87,7 @@ export default function ErrorLogs() {
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div>
+    <div className="container mx-5">
       {/* Search Bar */}
       <Searchbar
     

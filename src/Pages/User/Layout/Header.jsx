@@ -1,30 +1,34 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { toggleSidebar, toggleRightSidebar } from "./../../../features/sidebarSlice"; // Import actions
-import {clearUser} from "../../../features/userSlice";
-
+import { toggleSidebar, toggleRightSidebar } from "./../../../features/sidebarSlice";
+import { clearUser } from "../../../features/userSlice";
+import { useGetUserByIdQuery } from "../../../features/api/userApi"; // Import the query hook
+import Logo from '../../../../public/assets/images/logo/logo.png';
 
 const Header = () => {
   const dispatch = useDispatch();
   const sidebarOpen = useSelector((state) => state.sidebar.sidebarOpen);
   const rightSidebarOpen = useSelector((state) => state.rightSidebar.rightSidebarOpen);
-  const user = useSelector((state) => state.user.user); // Access user data directly from Redux store
+  const userId = useSelector((state) => state.user.user?.id); // Assuming user ID is stored in Redux
+
+  // Fetch user details by ID
+  const { data: user, isLoading, isError } = useGetUserByIdQuery(userId);
 
   const handleSidebar = () => {
-    dispatch(toggleSidebar()); // Dispatch action to toggle sidebar state
+    dispatch(toggleSidebar());
   };
 
   const handleRightSidebar = () => {
-    dispatch(toggleRightSidebar()); // Dispatch action to toggle right sidebar state
+    dispatch(toggleRightSidebar());
   };
 
   const handleLogout = () => {
-    dispatch(clearUser());  // Assuming you want to clear localStorage on logout (you could also dispatch an action to clear the Redux store)
+    dispatch(clearUser());
   };
 
   return (
-    <header className="rbt-dashboard-header rainbow-header header-default header-left-align rbt-fluid-header" >
+    <header className="rbt-dashboard-header rainbow-header header-default header-left-align rbt-fluid-header">
       <div className="container-fluid position-relative">
         <div className="row align-items-center justify-content-between">
           <div className="col-lg-3 col-md-6 col-6">
@@ -51,20 +55,18 @@ const Header = () => {
           <div className="col-lg-6 d-none d-lg-block text-center"></div>
           <div className="col-lg-3 col-md-6 col-6">
             <div className="header-right">
-              {/* Start Mobile-Menu-Bar */}
               <div className="mobile-menu-bar ml--10 d-block d-lg-none">
                 <div className="hamberger"></div>
               </div>
-              {/* Start Mobile-Menu-Bar */}
-              {/* Start Admin meta Group */}
               <div className="rbt-admin-panel account-access rbt-user-wrapper right-align-dropdown">
                 <div className="rbt-admin-card grid-style">
                   <Link className="d-flex align-items-center" to="#">
                     <div className="inner d-flex align-items-center">
                       <div className="">
                         <img
-                          src={user.image || "assets/images/logo/logo.png"}
-                          className="img-fluid rounded-circle" // Bootstrap classes for responsiveness and circular shape
+                          src={user?.image || Logo}
+                          alt="not found"
+                          className="img-fluid rounded-circle"
                           style={{
                             width: "40px",
                             height: "40px",
@@ -73,10 +75,14 @@ const Header = () => {
                             marginRight: "10px",
                             border: "2px solid #00ff00",
                           }}
+                          onError={(e) => (e.target.src = Logo)}
                         />
                       </div>
                       <div className="content">
-                        <span className="title">{user?.name || "Test User"}</span>
+                        <span className="title">{user?.name || "Loading..." }</span>
+                        <span className="available-coins">
+                          {user?.availableCoins ? ` ${user.availableCoins} coins` : "No Coins"}
+                        </span>
                       </div>
                     </div>
                     <div className="icon">
@@ -89,8 +95,8 @@ const Header = () => {
                     <div className="rbt-admin-profile">
                       <div className="">
                         <img
-                          src={user.image  || "assets/images/logo/logo.png"}
-                          className="img-fluid rounded-circle" // Bootstrap classes for responsiveness and circular shape
+                          src={user?.image || Logo}
+                          className="img-fluid rounded-circle"
                           style={{
                             width: "40px",
                             height: "40px",
@@ -99,14 +105,12 @@ const Header = () => {
                             marginRight: "10px",
                             border: "2px solid #00ff00",
                           }}
+                          onError={(e) => (e.target.src = Logo)}
                         />
                       </div>
                       <div className="admin-info">
-                        <span className="name">{user?.name || "Test User"}</span>
-                        <Link
-                          className="rbt-btn-link color-primary"
-                          to="/view-profile"
-                        >
+                        <span className="name">{user?.name || "Loading..."}</span>
+                        <Link className="rbt-btn-link color-primary" to="/view-profile">
                           View Profile
                         </Link>
                       </div>
@@ -144,7 +148,6 @@ const Header = () => {
                   </div>
                 </div>
               </div>
-              {/* End Admin meta Group */}
               <div className="expand-btn-grp d-none">
                 <button className="bg-solid-primary popup-dashboardright-btn">
                   <i className="fa-sharp fa-regular fa-sidebar-flip" />

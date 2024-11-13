@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { useForgotPasswordMutation } from "../../features/api/authApi"; // Import the forgotPassword hook
 import { Notyf } from "notyf";
 import "notyf/notyf.min.css";
+import Logo from '../../../public/assets/images/logo/logo.png'
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
@@ -40,7 +41,8 @@ const ForgotPassword = () => {
               <div className="col-lg-6 bg-color-blackest left-wrapper">
                 <div className="sign-up-box">
                   <div className="signup-box-top">
-                    <img src="assets/images/logo/logo.png" alt="sign-up logo" />
+                    <img src={Logo} alt="sign-up logo"   onError={(e) => e.target.src = Logo} // Fallback to Logo if the image fails to load
+                    />
                   </div>
                   <div className="signup-box-bottom">
                     <div className="signup-box-content">

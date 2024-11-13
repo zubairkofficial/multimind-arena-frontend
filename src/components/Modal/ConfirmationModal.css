@@ -1,0 +1,80 @@
+/* ConfirmationModal.css */
+
+/* Modal Overlay */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7); /* Dark overlay with transparency */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Ensure the modal is above other elements */
+}
+
+/* Modal Container */
+.modal-container {
+    background-color: #121212; /* Dark background for the modal */
+    color: #00ff00; /* Green text color */
+    width: 90%;
+    max-width: 500px;
+    padding: 2rem;
+    border-radius: 15px;
+    position: relative;
+}
+
+/* Modal Header */
+.modal-header-small {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 0.5rem; /* Adjust padding */
+}
+
+.modal-header-small h4 {
+    margin: 0;
+    font-size: 1.2rem; /* Smaller header text */
+}
+
+.close-button {
+    background: none;
+    border: none;
+    color: #00ff00; /* Green close button */
+    font-size: 1.5rem; /* Larger font for close button */
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.close-button:hover {
+    color: #ff0000; /* Red color on hover */
+}
+
+/* Modal Body */
+.modal-body {
+    padding: 1rem 0;
+    text-align: center; /* Center the content */
+}
+
+/* Modal Footer */
+.modal-footer {
+    display: flex;
+    justify-content: center; /* Center footer items */
+    padding-top: 1rem;
+}
+
+.btn-custom {
+    background-color: #00ff00; /* Green button background */
+    color: #121212; /* Dark text color */
+    border: none;
+    padding: 0.5rem 1.5rem;
+    font-size: 1rem;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-custom:hover {
+    background-color: #009900; /* Darker green on hover */
+}

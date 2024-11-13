@@ -7,12 +7,15 @@ import "./aifigures.css";
 import { useLocation } from "react-router-dom";
 import Preloader from "../../Landing/Preloader";
 import SearchBar from "../../../components/Searchbar/Searchbar";
+import { useSelector } from "react-redux";
 
 const AIFigureGallery = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
   const { data: aiFigures, isLoading, isError, error } = useGetAllAIFiguresQuery();
+  const sidebarOpen = useSelector((state) => state.sidebar.sidebarOpen);
+  const rightSidebarOpen = useSelector((state) => state.rightSidebar.rightSidebarOpen);
 
   const [filter, setFilter] = useState("All");
 
@@ -79,16 +82,27 @@ const AIFigureGallery = () => {
         ))}
       </div>
 
-      <div className="gallery-grid" aria-labelledby="gallery-heading" role="grid">
+      {/* <div className="gallery-grid" aria-labelledby="gallery-heading" role="grid"> */}
+        <div className="container">
+        <div className="row ">
         {filteredFigures.map((figure) => (
+          <>
+          <div className= {sidebarOpen && rightSidebarOpen?'col-12 col-md-6 col-lg-6 ':sidebarOpen | rightSidebarOpen?'col-12 col-md-4 col-lg-4': "col-12 col-md-3 col-lg-3"}>
+          <div className="m-4">
           <AIFigureCard
             key={figure.id}
             figure={figure}
             role="gridcell"
             onSelect={() => handleFigureClick(figure)}
           />
+          </div>
+          </div>
+          
+          </>
         ))}
-      </div>
+        </div>
+        </div>
+      {/* </div> */}
 
       {/* CustomModal for AI Figure Details */}
       <CustomModal

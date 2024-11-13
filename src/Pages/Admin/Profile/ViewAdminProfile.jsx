@@ -1,6 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux"; // Import useSelector to get data from the global Redux state
 import { Link } from "react-router-dom";
+import Logo from '../../../../public/assets/images/logo/logo.png'
 
 const ViewAdminProfile = () => {
   // Access the global user data from Redux
@@ -20,10 +21,12 @@ const ViewAdminProfile = () => {
 
       <div className="text-center mb-4">
         <img
-          src={userData.image || "assets/images/logo/logo.png"} // Replace with any placeholder image
+          src={userData.image || Logo} // Replace with any placeholder image
           alt="User Profile"
           className="rounded-circle"
           style={{ width: "150px", height: "150px" }}
+          onError={(e) => e.target.src = Logo} // Fallback to Logo if the image fails to load
+
         />
       </div>
 

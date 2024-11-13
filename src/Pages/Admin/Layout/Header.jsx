@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleSidebar } from "./../../../features/sidebarSlice"; // Import the action
+import Logo from '../../../../public/assets/images/logo/logo.png';
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -53,6 +54,8 @@ const Header = () => {
                     className="logo-light"
                     src="/assets/images/logo/logo.png"
                     alt="ChatBot Logo"
+                    onError={(e) => e.target.src = Logo} // Fallback to Logo if the image fails to load
+
                   />
                 </Link>
               </div>

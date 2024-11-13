@@ -17,7 +17,9 @@ const Searchbar = ({ heading, onClick, title, placeholder, onSearch }) => {
       <div className="d-flex justify-content-center">
         <h4>{heading}</h4>
       </div>
-      <div className="d-flex justify-content-between">
+      {/* <div className="d-flex justify-content-between"> */}
+        <div className="row">
+        <div className="col-md-4 col-12">
         <div className="search-bar-container">
           <input
             type="text"
@@ -30,15 +32,21 @@ const Searchbar = ({ heading, onClick, title, placeholder, onSearch }) => {
             <i className="fa fa-search"></i>
           </button>
         </div>
+        </div>
+        <div className="col-md-4"></div>
         {/* Render the additional button if title prop is provided */}
-        {title && (
-          <div className="d-flex align-items-center">
-            <button className="btn btn-default" onClick={onClick}>
-              {title}
-            </button>
-          </div>
-        )}
-      </div>
+        <div className="col-md-4 col-12 mt-2 text-center">
+  {title && (
+    <div className="align-items-end">
+      <button className="btn btn-default" onClick={onClick}>
+        {title}
+      </button>
+    </div>
+  )}
+</div>
+
+        </div>
+      {/* </div> */}
     </header>
   );
 };

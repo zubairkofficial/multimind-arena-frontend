@@ -83,11 +83,11 @@ const AdminUsers = () => {
   }));
 
   return (
-    <>
+    <div className="container mx-5">
       {isLoading ? (
         <Preloader />
       ) : (
-        <div>
+        <div >
          <Searchbar heading="Manage Users" placeholder="Search user..."/>
           <CustomTable
             headers={tableHeaders}
@@ -103,7 +103,7 @@ const AdminUsers = () => {
           />
         </div>
       )}
-    </>
+    </div>
   );
 };
 

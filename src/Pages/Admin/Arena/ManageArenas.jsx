@@ -7,6 +7,7 @@ import {
 import CustomTable from "../../../components/Table/CustomTable";
 import Pagination from "../../../components/Table/Pagination";
 import Searchbar from "../../../components/Searchbar/Searchbar";
+import Logo from '../../../../public/assets/images/logo/logo.png';
 
 export default function ManageArenas() {
   const navigate = useNavigate();
@@ -113,6 +114,8 @@ export default function ManageArenas() {
           borderRadius: "50%",
           objectFit: "cover",
         }}
+        onError={(e) => e.target.src = Logo} // Fallback to Logo if the image fails to load
+
       />
     ),
     title: arena.title,
@@ -137,7 +140,7 @@ export default function ManageArenas() {
       <>
         <button
           className="btn btn-sm btn-outline-success me-2"
-          onClick={() => navigate(`/admin/edit-arena/${arena.id}`)}
+          // onClick={() => navigate(`/admin/edit-arena/${arena.id}`)}
         >
           <i className="fas fa-edit"></i>
         </button>
@@ -152,7 +155,7 @@ export default function ManageArenas() {
   }));
 
   return (
-    <div>
+    <div className="container mx-5">
       <Searchbar
         heading="Manage Arenas"
         title="Create Arena"
