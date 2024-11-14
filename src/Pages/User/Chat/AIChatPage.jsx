@@ -1,79 +1,79 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useLocation, useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+import { useGetAIFigureByIdQuery } from "../../../features/api/aiFigureApi"; // Import the query hook
 import axios from "axios";
 import MessageBubble from "./MessageBubble";
 import AIFigureInfoCard from "./../../../components/Chat/AIFigureInfoCard";
-import "./../../../components/ArenaChat/arenachat.css";
 import Helpers from "../../../Config/Helpers";
+import Logo from '../../../../public/assets/images/logo/logo.png';
 
 export default function AIChatPage() {
   const navigate = useNavigate();
-  const location = useLocation();
-  const { figureId } = useParams();
-  const [aiFigure, setAiFigure] = useState(location.state);
+  const { figureId } = useParams();  // Get figureId from URL params
+
+  // Use the custom hook to fetch the AI figure by ID
+  const { data: aiFigure, isLoading, error } = useGetAIFigureByIdQuery(figureId);
+
   const [message, setMessage] = useState("");
   const [chatMessages, setChatMessages] = useState([]);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingMessage, setIsLoadingMessage] = useState(false);
   const chatContainerRef = useRef(null);
 
-  const userImage =
-    JSON.parse(localStorage.getItem("user"))?.image ||
-    "/assets/images/logo/logo.png";
-  const aiImage = aiFigure?.image || "/assets/images/logo/logo.png";
+  const userImage = JSON.parse(localStorage.getItem("user"))?.image ?? Logo;
+  const aiImage = aiFigure?.image ?? Logo;
 
-  // Fetch previous chat messages on component load
+  // Log the figure for debugging
+  console.log("figure", aiFigure);  // Ensure it's correctly passed
+
+  // Fetch chat messages logic (same as before)
   useEffect(() => {
-    const fetchPreviousMessages = async () => {
-      try {
-        const response = await axios.get(
-          `${Helpers.apiUrl}ai-figures/previous-chat/${figureId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
+    if (aiFigure) {
+      const fetchPreviousMessages = async () => {
+        try {
+          const response = await axios.get(`${Helpers.apiUrl}ai-figures/previous-chat/${figureId}`, {
+            headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+          });
+
+          const previousMessages = response.data.map((msg) => [
+            {
+              sender: "You",
+              content: msg.sendMessage,
+              isUser: true,
+              time: new Date(msg.createdAt).toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: true,
+              }),
             },
-          }
-        );
+            {
+              sender: aiFigure?.name || "AI Figure",  // Fallback if aiFigure.name is missing
+              content: msg.receiveMessage,
+              isUser: false,
+              time: new Date(msg.createdAt).toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: true,
+              }),
+            },
+          ]).flat();
 
-        // Map response data to the chatMessages structure
-        const previousMessages = response.data.flatMap((msg) => [
-          {
-            sender: "You",
-            content: msg.sendMessage,
-            isUser: true,
-            time: new Date(msg.createdAt).toLocaleTimeString([], {
-              hour: "2-digit",
-              minute: "2-digit",
-              hour12: true,
-            }),
-          },
-          {
-            sender: aiFigure.name,
-            content: msg.receiveMessage,
-            isUser: false,
-            time: new Date(msg.createdAt).toLocaleTimeString([], {
-              hour: "2-digit",
-              minute: "2-digit",
-              hour12: true,
-            }),
-          },
-        ]);
+          setChatMessages(previousMessages);
+        } catch (error) {
+          console.error("Failed to load previous messages", error);
+        }
+      };
 
-        setChatMessages(previousMessages);
-      } catch (error) {
-        console.error("Failed to load previous messages", error);
-      }
-    };
+      fetchPreviousMessages();
+    }
+  }, [figureId, aiFigure]);  // Ensure it runs when aiFigure changes
 
-    fetchPreviousMessages();
-  }, [figureId, aiFigure]);
-
+  // Auto-scroll to the bottom whenever the chat messages change
   useEffect(() => {
     if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop =
-        chatContainerRef.current.scrollHeight;
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
     }
-  }, [chatMessages]);
+  }, [chatMessages]);  // When chatMessages updates, scroll to bottom
 
   const handleLeaveRoom = () => {
     navigate("/ai-figure-gallery");
@@ -95,22 +95,15 @@ export default function AIChatPage() {
 
       setChatMessages((prevMessages) => [...prevMessages, userMessage]);
       setMessage("");
-      setIsLoading(true);
+      setIsLoadingMessage(true);
 
       try {
-        const response = await axios.post(
-          `${Helpers.apiUrl}ai-figures/chat/${figureId}`,
-          { message: userMessage.content },
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
+        const response = await axios.post(`${Helpers.apiUrl}ai-figures/chat/${figureId}`, { message: userMessage.content }, {
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${localStorage.getItem("token")}` },
+        });
 
         const aiResponse = {
-          sender: aiFigure.name,
+          sender: aiFigure?.name || "AI Figure",
           content: response.data || "This is an automated response.",
           isUser: false,
           time: new Date().toLocaleTimeString([], {
@@ -135,42 +128,29 @@ export default function AIChatPage() {
         setChatMessages((prevMessages) => [...prevMessages, errorMessage]);
       }
 
-      setIsLoading(false);
+      setIsLoadingMessage(false);
     }
   };
 
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="d-flex h-100 bg-transparent text-color-light">
-      <div
-        className="arena-info-container"
-        style={{
-          width: isMobile ? "100%" : "",
-          opacity: 1,
-          overflow: "hidden",
-          position: isMobile ? "absolute" : "static",
-          top: isMobile ? "100px" : "0",
-          zIndex: isMobile ? 10 : "auto",
-        }}
-      ></div>
-
+      {/* Your other JSX */}
       <div className="flex-grow-1 d-flex flex-column chat-message-area full-width">
         <AIFigureInfoCard
-          name={aiFigure?.name || "Chat Arena"}
+          name={aiFigure?.name ?? "Chat Arena"}
           image={aiImage}
           handleLeaveRoom={handleLeaveRoom}
         />
-        <div
-          ref={chatContainerRef}
-          className="flex-grow-1 pt-4 px-4 overflow-auto chat-message-container"
-        >
+        <div ref={chatContainerRef} className="flex-grow-1 pt-4 px-4 overflow-auto chat-message-container">
           {chatMessages.map((msg, index) => (
-            <div
-              key={index}
-              className={`d-flex ${msg.isUser ? "flex-row-reverse" : ""}`}
-            >
+            <div key={index} className={`d-flex ${msg.isUser ? "flex-row-reverse" : ""}`}>
               <div style={{ width: "50px", margin: "0 10px" }}>
                 <img
-                  src={msg.isUser ? userImage : aiImage}
+                  src={msg.isUser ? userImage : aiImage || Logo}
                   alt={`${msg.isUser ? "User" : "AI"} profile`}
                   style={{
                     width: "40px",
@@ -178,17 +158,18 @@ export default function AIChatPage() {
                     borderRadius: "50%",
                     objectFit: "cover",
                   }}
+                  onError={(e) => e.target.src = Logo} // Fallback to Logo if the image fails to load
                 />
               </div>
               <MessageBubble message={msg} />
             </div>
           ))}
 
-          {isLoading && (
+          {isLoadingMessage && (
             <div className="d-flex">
               <div style={{ width: "50px", margin: "0 10px" }}>
                 <img
-                  src={aiImage}
+                  src={aiImage || Logo}
                   alt="AI profile"
                   style={{
                     width: "40px",
@@ -196,6 +177,7 @@ export default function AIChatPage() {
                     borderRadius: "50%",
                     objectFit: "cover",
                   }}
+                  onError={(e) => e.target.src = Logo} // Fallback to Logo if the image fails to load
                 />
               </div>
               <div
@@ -212,11 +194,7 @@ export default function AIChatPage() {
                   alignItems: "center",
                 }}
               >
-                <div
-                  className="spinner-border text-light"
-                  role="status"
-                  style={{ marginRight: "10px" }}
-                >
+                <div className="spinner-border text-light" role="status" style={{ marginRight: "10px" }}>
                   <span className="visually-hidden">Loading...</span>
                 </div>
                 <span>AI is thinking...</span>
@@ -226,10 +204,7 @@ export default function AIChatPage() {
         </div>
 
         <div className="p-1 border-color-light chat-input-container">
-          <form
-            onSubmit={handleSubmit}
-            className="mt-5 d-flex align-items-center w-100 position-relative bg-transparent"
-          >
+          <form onSubmit={handleSubmit} className="mt-5 d-flex align-items-center w-100 position-relative bg-transparent">
             <input
               type="text"
               className="form-control p-3 bg-color-black text-light pr-5"
@@ -237,12 +212,12 @@ export default function AIChatPage() {
               placeholder="Message..."
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              disabled={isLoading}
+              disabled={isLoadingMessage}
             />
             <button
               type="submit"
               className="btn btn-large rounded-circle position-absolute end-0 top-50 translate-middle-y me-5 btn-success text-white shadow"
-              disabled={isLoading}
+              disabled={isLoadingMessage}
             >
               <i className="fas fa-send"></i>
             </button>

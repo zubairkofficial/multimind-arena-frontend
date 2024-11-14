@@ -54,12 +54,24 @@ export const aiFigureApi = apiSlice.injectEndpoints({
                 },
             }),
         }),
+        getAIFigureById: builder.query({
+            query: (id) => ({
+              url: `ai-figures/${id}`,
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${Helpers.getItem("token")}`,
+              },
+            }),
+            transformResponse: (response) => response,  // You can add any transformations if needed
+          }),
     }),
 });
 
 // Export hooks for usage in components
 export const {
     useGetAllAIFiguresQuery,
+    useGetAIFigureByIdQuery,
     useAddAIFigureMutation,
     useDeleteAIFigureMutation,
     useUpdateAIFigureMutation,

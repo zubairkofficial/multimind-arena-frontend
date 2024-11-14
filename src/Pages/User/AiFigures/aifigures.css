@@ -134,7 +134,9 @@
     /* Centers items horizontally on mobile */
 }
 
-
+.error-text{
+    color: red;
+}
 /* Mobile screens (1 column, centered cards) */
 
 @media (max-width: 767px) {

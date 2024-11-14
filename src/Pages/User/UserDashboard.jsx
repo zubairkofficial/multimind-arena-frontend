@@ -8,6 +8,8 @@ import Preloader from "../../Pages/Landing/Preloader";
 import { useSelector } from "react-redux";
 import { getSocket, initiateSocketConnection } from "../../app/socket";
 import "./../../components/Arenas/arenas.css";
+import { ArenaRequestStatus } from '../../common'; // Ensure this is imported to check status
+import {  useGetUserByIdQuery } from '../../features/api/userApi'; // Import the query hook
 
 export default function UserDashboard() {
   const { data: arenas, error, isLoading, refetch } = useGetAllArenasQuery();
@@ -17,8 +19,13 @@ export default function UserDashboard() {
   const [isJoining, setIsJoining] = useState(false);
 
   const navigate = useNavigate();
-  const userId = useSelector((state) => state.user.user.id);
+  const user = useSelector((state) => state.user.user);
+  const userId = user.id;
   const isMounted = useRef(true);
+
+  
+  const { data: userData, isLoading: userLoading, error: userError } = useGetUserByIdQuery(user.id);
+ 
 
   useEffect(() => {
     isMounted.current = true;
@@ -153,7 +160,7 @@ export default function UserDashboard() {
       <div className="arena-dashboard">
         <div className="search-bar-section">
           <SearchBar
-            onClick={() => navigate("/add-arena")}
+            onClick={() => navigate(userData?.createArenaRequestStatus === ArenaRequestStatus.APPROVED ? "/add-arena" : "/request-arena")}
             heading="Join Arena Now"
             title="Create Arena"
             placeholder="Search for arenas..."

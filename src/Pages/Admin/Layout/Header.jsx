@@ -49,7 +49,7 @@ const Header = () => {
                 </button>
               </div>
               <div className="logo">
-                <Link to="/">
+                <Link to="/admin/dashboard">
                   <img
                     className="logo-light"
                     src="/assets/images/logo/logo.png"

@@ -21,6 +21,7 @@ import UserLayout from "./Pages/User/Layout/Index";
 import EditProfile from "./Pages/User/Profile/EditProfile";
 import UserDashboard from "./Pages/User/UserDashboard";
 import UserAddArena from "./Pages/User/AddArena/AddArena";
+import StatusArena from "./Pages/User/AddArena/StatusArena";
 import AddAIFigure from "./Pages/Admin/AiFigures/AddAIFigures";
 import Home from "./Pages/Admin/Home/Home";
 import UserAIFigureGallery from "./Pages/User/AiFigures/UserAiFigureGallery";
@@ -42,6 +43,7 @@ import ManageBundlePlan from './Pages/Admin/Payments/AdminTokenPlan'
 import CreateCard from './Pages/User/Payments/CreateCard'
 import Purchase from './Pages/User/Payments/Purchase'
 import ExistingCards from './Pages/User/Payments/ExistingCards'
+import ManageArenaAccess from './Pages/Admin/Arena/ManageArenaAccess'
 // Define routes
 export const router = createBrowserRouter([
   // Default Routes
@@ -105,6 +107,10 @@ export const router = createBrowserRouter([
           path: "manage-transactions",
           element: <ManageTransaction />,
         },
+      {
+          path: "arena-access",
+          element: <ManageArenaAccess />,
+        },
       // {
       //   path: "bundles",
       //   element: <ManageBundle />,
@@ -125,6 +131,7 @@ export const router = createBrowserRouter([
         path: "add-arena",
         element: <AddArena />,
       },
+    
       {
         path: "recent-activity",
         element: <RecentActivity />,
@@ -183,6 +190,10 @@ export const router = createBrowserRouter([
       {
         path: "ai-figure-gallery",
         element: <UserAIFigureGallery />,
+      },
+      {
+        path: "request-arena",
+        element: <StatusArena />,
       },
       {
         path: "/add-ai-figure",

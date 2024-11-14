@@ -296,7 +296,7 @@ export default function ArenaChatPage() {
               {/* If the message is received, show image on the left */}
               {msg.sender !== "You" && (
                 <img
-                  src={msg.user.image}
+                  src={msg.user.image|Logo}
                   alt={msg.user.name}
                   className="message-image"
                   style={{
@@ -314,7 +314,7 @@ export default function ArenaChatPage() {
               {/* If the message is sent by the user, show image on the right */}
               {msg.sender === "You" && (
                 <img
-                  src={userObj.image}
+                  src={userObj.image|Logo}
                   alt="You"
                   className="message-image"
                   style={{

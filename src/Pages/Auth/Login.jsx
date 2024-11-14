@@ -7,26 +7,33 @@ import Helpers from "../../Config/Helpers";
 import { useDispatch } from "react-redux";
 import { setUser } from "../../features/userSlice";
 import { useLoginMutation } from "../../features/api/authApi"; // Import the login mutation
-import Logo from '../../../public/assets/images/logo/logo.png'
+import Logo from '../../../public/assets/images/logo/logo.png';
 
 const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
-  
+
   // Using the login mutation
-  const [login, { isLoading }] = useLoginMutation(); // Hook for login mutation
-  const [error, setError] = useState(null); // Local error state
+  const [login, { isLoading }] = useLoginMutation();
+  const [error, setError] = useState(null);
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
 
   // Local State for form data
   const [formData, setFormData] = useState({ email: "", password: "" });
 
   // Handle form input changes
   const handleChange = (e) => {
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [name]: value,
     });
+
+    // Clear specific error when user starts typing
+    if (name === "email") setEmailError("");
+    if (name === "password") setPasswordError("");
   };
 
   // Function to handle successful login
@@ -43,40 +50,42 @@ const Login = () => {
     Helpers.setItem("token", userData.token);
 
     // Redirect based on user role
-    if (userData.user.isAdmin) {
-      navigate("/admin/dashboard");
-    } else {
-      navigate("/dashboard");
-    }
+    navigate(userData.user.isAdmin ? "/admin/dashboard" : "/dashboard");
   };
 
   // Handle form submission using login mutation
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null); // Reset the error
+    setError(null); // Reset the general error
 
-    // Check for empty fields
-    if (!formData.email || !formData.password) {
-      setError("Both fields are required");
-      return;
+    // Check for empty fields and specific validations
+    let hasError = false;
+    if (!formData.email) {
+      setEmailError("Email is required");
+      hasError = true;
     }
+    if (!formData.password) {
+      setPasswordError("Password is required");
+      hasError = true;
+    } else if (formData.password.length < 8) {
+      setPasswordError("Password must be at least 8 characters");
+      hasError = true;
+    }
+
+    if (hasError) return;
 
     try {
       // Trigger the login mutation
-      const userData = await login(formData).unwrap(); // `unwrap` to handle the fulfilled/rejected state manually
-      handleLoginSuccess(userData); // Handle login success
+      const userData = await login(formData).unwrap();
+      handleLoginSuccess(userData);
     } catch (err) {
-      // Handle login error
-      setError(
-        err?.data?.message || "Login failed. Please check your credentials."
-      );
+      setError(err?.data?.message || "Login failed. Please check your credentials.");
     }
   };
 
   // Handle Google login
   const handleGoogleLogin = () => {
-    const googleLoginUrl =
-      "https://chat-arena-backend-4ba91b3feb6b.herokuapp.com/google-auth";
+    const googleLoginUrl = "https://chat-arena-backend-4ba91b3feb6b.herokuapp.com/google-auth";
     window.location.href = googleLoginUrl;
   };
 
@@ -109,22 +118,15 @@ const Login = () => {
                       src={Logo}
                       alt="sign-up logo"
                       style={{ height: "80px", width: "auto" }}
-                      onError={(e) => e.target.src = Logo} // Fallback to Logo if the image fails to load
-
+                      onError={(e) => (e.target.src = Logo)}
                     />
                   </div>
                   <div className="signup-box-bottom">
                     <div className="signup-box-content">
                       <div className="social-btn-grp">
-                        <button
-                          className="btn-default btn-border"
-                          onClick={handleGoogleLogin}
-                        >
+                        <button className="btn-default btn-border" onClick={handleGoogleLogin}>
                           <span className="icon-left">
-                            <img
-                              src="assets/images/sign-up/google.png"
-                              alt="Google Icon"
-                            />
+                            <img src="assets/images/sign-up/google.png" alt="Google Icon" />
                           </span>
                           Continue with Google
                         </button>
@@ -146,6 +148,7 @@ const Login = () => {
                             value={formData.email}
                             onChange={handleChange}
                           />
+                          {emailError && <p className="text-danger">{emailError}</p>}
                         </div>
                         <div className="input-section password-section">
                           <div className="icon">
@@ -158,6 +161,7 @@ const Login = () => {
                             value={formData.password}
                             onChange={handleChange}
                           />
+                          {passwordError && <p className="text-danger">{passwordError}</p>}
                         </div>
                         <div className="forget-text">
                           <Link className="btn-read-more" to="/forgot-password">
@@ -165,11 +169,7 @@ const Login = () => {
                           </Link>
                         </div>
                         {error && <p className="text-danger">{error}</p>}
-                        <button
-                          type="submit"
-                          className="btn-default"
-                          disabled={isLoading}
-                        >
+                        <button type="submit" className="btn-default" disabled={isLoading}>
                           {isLoading ? "Signing In..." : "Sign In"}
                         </button>
                       </form>
@@ -197,3 +197,4 @@ const Login = () => {
 };
 
 export default Login;
+  

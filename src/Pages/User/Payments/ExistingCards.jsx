@@ -1,13 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { useGetAllCardsQuery, useSelectCardMutation } from "../../../features/api/cardApi";
 import { Notyf } from 'notyf'; // Import Notyf
 import 'notyf/notyf.min.css'; // Import Notyf styles
 import styled from 'styled-components';
+import { useGetUserByIdQuery } from '../../../features/api/userApi'; // Import the query hook
 
 const ExistingCards = ({ onSelectCard }) => {
   const { state } = useLocation();
   const { coins, price } = state || {}; // Destructure coins and price from state
+  const user = useSelector((state) => state.user.user);
+
+  const userId = user?.id;
+  const { data: userData, isLoading, isError, refetch } = useGetUserByIdQuery(userId);
 
   const navigate = useNavigate();
   const { data: existingCards, isLoading: isCardsLoading, error } = useGetAllCardsQuery();
@@ -29,6 +35,7 @@ const ExistingCards = ({ onSelectCard }) => {
       // Call the selectCard mutation with cardId, price, and coins
       await selectCard({ cardId, price, coins }).unwrap();
       notyf.success("Card payment successfully!"); // Show success notification
+      refetch()
       navigate("/purchase"); // Navigate to the purchase page after success
     } catch (error) {
       notyf.error(error?.data?.message || "Error selecting card"); // Show error notification
@@ -107,7 +114,7 @@ const HeaderContainer = styled.div`
 
 const Title = styled.h1`
   font-size: 24px;
-  color: #333;
+  color: #fff;
 `;
 
 const CardsList = styled.div`

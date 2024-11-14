@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'; 
 import { useCreateCardMutation, useGetAllCardsQuery } from "../../../features/api/cardApi";
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Notyf } from 'notyf'; // Import Notyf
 import 'notyf/notyf.min.css'; // Import Notyf styles
+import { useSelector } from 'react-redux';
+import { useGetUserByIdQuery } from '../../../features/api/userApi'; // Import the query hook
 
 export const theme = {
   primaryColor: '#4CAF50',
@@ -30,8 +32,14 @@ const CreateCard = () => {
     cvc: '',
   });
 
+  const [errors, setErrors] = useState({});
+  
   const { data: existingCards, refetch: refetchCards } = useGetAllCardsQuery(); 
   const [createCard, { isLoading, error, data, isSuccess }] = useCreateCardMutation(); 
+  const user = useSelector((state) => state.user.user);
+
+  const userId = user?.id;
+  const { data: userData, isError, refetch:userRefetch } = useGetUserByIdQuery(userId);
 
   const notyf = new Notyf(); // Initialize Notyf
 
@@ -43,8 +51,44 @@ const CreateCard = () => {
     }));
   };
 
+  const validateForm = () => {
+    const newErrors = {};
+
+    // Card Number Validation (must be 16 digits)
+    if (!/^\d{16}$/.test(cardDetails.cardNumber)) {
+      newErrors.cardNumber = 'Card number must be exactly 16 digits.';
+    }
+
+    // Expiry Month Validation (must be between 01 and 12)
+    if (!/^(0[1-9]|1[0-2])$/.test(cardDetails.expMonth)) {
+      newErrors.expMonth = 'Expiry month must be between 01 and 12.';
+    }
+
+    // Expiry Year Validation (must be a valid year, not in the past)
+    if (!/^\d{4}$/.test(cardDetails.expYear) || parseInt(cardDetails.expYear) < new Date().getFullYear()) {
+      newErrors.expYear = 'Please enter a valid 4 digits expiry year.';
+    }
+
+    // CVC Validation (must be 3 or 4 digits)
+    if (!/^\d{3,4}$/.test(cardDetails.cvc)) {
+      newErrors.cvc = 'CVC must be 3 or 4 digits.';
+    }
+
+    return newErrors;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Validate the form before submission
+    const formErrors = validateForm();
+    setErrors(formErrors);
+    
+    // If there are validation errors, stop form submission
+    if (Object.keys(formErrors).length > 0) {
+      return;
+    }
+
     try {
       const payload = {
         ...cardDetails,
@@ -57,11 +101,17 @@ const CreateCard = () => {
 
       // On success, show a success notification
       notyf.success("Card created successfully! Redirecting...");
-      
-      // Navigate to existing cards page and refetch the cards
-      navigate("/existing-card");
+      userRefetch()
       refetchCards(); // Refetch the list of cards
-
+      // Navigate to existing cards page and refetch the cards
+     setCardDetails( {
+        cardNumber: '',
+        expMonth: '',
+        expYear: '',
+        cvc: '',
+      })
+      navigate("/");
+      
     } catch (err) {
       // Show error notification
       notyf.error("Failed to create the card. Please try again.");
@@ -86,8 +136,8 @@ const CreateCard = () => {
             style={styles.input}
             placeholder="Card Number"
             maxLength={16}
-            required
           />
+          {errors.cardNumber && <p style={styles.error}>{errors.cardNumber}</p>}
         </div>
 
         <div style={styles.inputGroup}>
@@ -103,8 +153,8 @@ const CreateCard = () => {
             style={styles.input}
             placeholder="MM"
             maxLength={2}
-            required
           />
+          {errors.expMonth && <p style={styles.error}>{errors.expMonth}</p>}
         </div>
 
         <div style={styles.inputGroup}>
@@ -120,8 +170,8 @@ const CreateCard = () => {
             style={styles.input}
             placeholder="YYYY"
             maxLength={4}
-            required
           />
+          {errors.expYear && <p style={styles.error}>{errors.expYear}</p>}
         </div>
 
         <div style={styles.inputGroup}>
@@ -137,11 +187,11 @@ const CreateCard = () => {
             style={styles.input}
             placeholder="CVC"
             maxLength={4}
-            required
           />
+          {errors.cvc && <p style={styles.error}>{errors.cvc}</p>}
         </div>
 
-        {error && <p style={styles.error}>{error.message || 'Something went wrong'}</p>}
+        {error && <p style={styles.error}>{error?.data?.message || 'Something went wrong'}</p>}
         {isSuccess && <p style={styles.success}>Card created successfully! Redirecting...</p>}
 
         <button type="submit" style={styles.submitButton} disabled={isLoading}>
@@ -165,7 +215,7 @@ const styles = {
     textAlign: 'center',
     marginBottom: '20px',
     fontSize: '24px',
-    color: '#333',
+    color: '#fff',
   },
   form: {
     display: 'flex',

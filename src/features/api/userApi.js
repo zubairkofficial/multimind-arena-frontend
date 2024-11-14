@@ -55,7 +55,43 @@ export const userApi = apiSlice.injectEndpoints({
             }),
             providesTags: ["UserTransactions"], // Tag for caching transaction data
         }),
+        createArenaRequest: builder.mutation({
+            query: (userId) => ({
+              url: "user/request-arena", // The endpoint for requesting an arena
+              method: "POST",
+              body: { userId }, // Send userId in the request body
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${Helpers.getItem("token")}`,
+              },
+            }),
+            }),
+        updateArenaRequestStatus: builder.mutation({
+                query: ({ userId, newStatus }) => ({
+                  url: `user/update-request-status/${userId}`,  // The correct endpoint URL
+                  method: "PUT",
+                  body: { status: newStatus },
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${Helpers.getItem("token")}`,
+                  },
+                }),
+              }),
+              getUsersWithPendingStatus: builder.query({
+                query: () => ({
+                    url: "user/pending-status",
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${Helpers.getItem("token")}`,
+                    },
+                }),
+                providesTags: ["User"], // Tag for caching pending status users
+            }),
+       
     }),
+    
+    
 });
 
 // Export hooks for usage in components
@@ -63,5 +99,8 @@ export const {
     useGetUserByIdQuery,
     useUpdateUserMutation,
     useGetAllUsersQuery,
+    useCreateArenaRequestMutation,
     useGetUserTransactionHistoryQuery, // Export the hook for user transaction history
+    useUpdateArenaRequestStatusMutation,
+    useGetUsersWithPendingStatusQuery
 } = userApi;

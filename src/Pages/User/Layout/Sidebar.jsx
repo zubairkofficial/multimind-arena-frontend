@@ -1,12 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-import Logo from '../../../../public/assets/images/logo/logo.png'
+import Logo from '../../../../public/assets/images/logo/logo.png';
+import { ArenaRequestStatus } from '../../../common';  // Correct named import for ArenaRequestStatus
+import { useGetUserByIdQuery } from "../../../features/api/userApi";
 
 const Sidebar = () => {
   const sidebarOpen = useSelector((state) => state.sidebar.sidebarOpen);
 
-  const user = useSelector((state) => state.user.user); 
+  const user = useSelector((state) => state.user.user);
+  const { data: userData, isLoading: userLoading, error: userError,refetch } = useGetUserByIdQuery(user.id);
+ 
+
+
   // Local state to hold user details
   const [userDetails, setUserDetails] = useState({
     name: "User", // default value
@@ -19,23 +25,27 @@ const Sidebar = () => {
     if (user) {
       setUserDetails({
         name: user.name || "User",
-        //email: user.email || "user@example.com",
       });
+    refetch()
+
     }
   }, []);
+
 
   // Sidebar menu items
   const mainMenuItems = [
     { path: "/dashboard", icon: "fa-home", label: "Playground" },
-   
-    { path: "/add-arena", icon: "fa-plus-circle", label: "Add Arena" },
-    { path: "/ai-figure-gallery", icon: "fa-images", label: "AI Figure Gallery" }, // Added Add Arena option
+    {
+      path: userData?.createArenaRequestStatus === ArenaRequestStatus.APPROVED ? "/add-arena" : "/request-arena",
+      icon: "fa-plus-circle",
+      label: userData?.createArenaRequestStatus === ArenaRequestStatus.APPROVED ? "Add Arena" : "Request"
+    },
+    { path: "/ai-figure-gallery", icon: "fa-images", label: "AI Figure Gallery" },
   ];
 
   const settingMenuItems = [
     { path: "/view-profile", icon: "fa-user", label: "Profile Details" },
     { path: "/purchase", icon: "fa-shop", label: "Buy Arena Coins" },
-   
   ];
 
   return (
@@ -64,14 +74,10 @@ const Sidebar = () => {
           <div className="inner">
             <div className="content-item-content">
               <div className="rbt-default-sidebar-wrapper">
-                {/* Main menu */}
                 <nav className="mainmenu-nav">
                   <ul className="dashboard-mainmenu rbt-default-sidebar-list">
                     {mainMenuItems.map((item, index) => (
-                      <li
-                        key={index}
-                        className="d-flex justify-content-center align-items-center"
-                      >
+                      <li key={index} className="d-flex justify-content-center align-items-center">
                         <Link to={item.path}>
                           <i className={`fa-solid ${item.icon}`} />
                           <span>{item.label}</span>
@@ -81,7 +87,6 @@ const Sidebar = () => {
                   </ul>
                 </nav>
                 <div className="rbt-sm-separator" />
-                {/* Settings menu */}
                 <nav className="mainmenu-nav">
                   <ul className="dashboard-mainmenu rbt-default-sidebar-list">
                     <li className="has-submenu">
@@ -114,7 +119,6 @@ const Sidebar = () => {
               </div>
             </div>
           </div>
-          {/* User profile section */}
           <div className="subscription-box d-flex justify-content-center align-items-center">
             <div className="inner">
               <Link
@@ -123,19 +127,18 @@ const Sidebar = () => {
               >
                 <div className=" ">
                   <img
-                     className="img-fluid rounded-circle" // Bootstrap classes for responsiveness and circular shape
-                     style={{
-                       width: "40px",
-                       height: "40px",
-                       borderRadius: "50%",
-                       objectFit: "cover",
-                       marginRight: "10px",
-                       border: "2px solid #00ff00",
-                     }}
-                    src={user.image  || Logo}
+                    className="img-fluid rounded-circle"
+                    style={{
+                      width: "40px",
+                      height: "40px",
+                      borderRadius: "50%",
+                      objectFit: "cover",
+                      marginRight: "10px",
+                      border: "2px solid #00ff00",
+                    }}
+                    src={user.image || Logo}
                     alt="Author"
-                    onError={(e) => e.target.src = Logo} // Fallback to Logo if the image fails to load
-
+                    onError={(e) => (e.target.src = Logo)} // Fallback to Logo if the image fails to load
                   />
                 </div>
                 <div className="author-desc ">

@@ -1,11 +1,11 @@
 // socket.js
 import { io } from "socket.io-client";
-
+import Helpers from "../Config/Helpers";
 let socket;
 
 export const initiateSocketConnection = () => {
     if (!socket) {
-        socket = io("https://chat-arena-backend-4ba91b3feb6b.herokuapp.com"); // Update with your socket server URL
+        socket = io('http://localhost:8080' ?? "http://13.60.19.246"); // Update with your socket server URL
         console.log("Socket connected");
     }
 };

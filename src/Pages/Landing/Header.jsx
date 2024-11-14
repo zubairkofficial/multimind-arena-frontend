@@ -60,22 +60,22 @@ const Header = () => {
                     </Link>
                   </li>
                   <li className="has-dropdown has-menu-child-item position-relative">
-                    <Link to="/tools" style={{ color: "#ffffff" }}>
+                    <Link to="/" style={{ color: "#ffffff" }}>
                       Tools
                     </Link>
                   </li>
                   <li className="with-megamenu has-menu-child-item">
-                    <Link to="/arenas" style={{ color: "#ffffff" }}>
+                    <Link to="/" style={{ color: "#ffffff" }}>
                       Arenas
                     </Link>
                   </li>
                   <li>
-                    <Link to="/roadmap" style={{ color: "#ffffff" }}>
+                    <Link to="/" style={{ color: "#ffffff" }}>
                       Roadmap
                     </Link>
                   </li>
                   <li>
-                    <Link to="/how-to-use" style={{ color: "#ffffff" }}>
+                    <Link to="/" style={{ color: "#ffffff" }}>
                       How to use
                     </Link>
                   </li>
@@ -169,7 +169,7 @@ const Header = () => {
           </li>
           <li>
             <Link
-              to="/tools"
+              to="/"
               className="d-block py-2 text-decoration-none"
               style={{ color: "#ffffff" }}
             >
@@ -178,7 +178,7 @@ const Header = () => {
           </li>
           <li>
             <Link
-              to="/arenas"
+              to="/"
               className="d-block py-2 text-decoration-none"
               style={{ color: "#ffffff" }}
             >
@@ -187,7 +187,7 @@ const Header = () => {
           </li>
           <li>
             <Link
-              to="/how-to-use"
+              to="/"
               className="d-block py-2 text-decoration-none"
               style={{ color: "#ffffff" }}
             >
@@ -196,7 +196,7 @@ const Header = () => {
           </li>
           <li>
             <Link
-              to="/roadmap"
+              to="/"
               className="d-block py-2 text-decoration-none"
               style={{ color: "#ffffff" }}
             >

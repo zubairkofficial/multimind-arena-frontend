@@ -42,7 +42,7 @@ const Header = () => {
                 </button>
               </div>
               <div className="logo">
-                <Link to="/">
+                <Link to="/dashboard">
                   <img
                     className="logo-light"
                     src="/assets/images/logo/logo.png"
@@ -81,7 +81,7 @@ const Header = () => {
                       <div className="content">
                         <span className="title">{user?.name || "Loading..." }</span>
                         <span className="available-coins">
-                          {user?.availableCoins ? ` ${user.availableCoins} coins` : "No Coins"}
+                          {user?.availableCoins ? ` ${user.availableCoins} coins` : ` ${0} coins`}
                         </span>
                       </div>
                     </div>
@@ -123,13 +123,13 @@ const Header = () => {
                         </Link>
                       </li>
                       <li>
-                        <Link to="/shop">
+                        <Link to="/purchase">
                           <i className="fa-sharp fa-regular fa-briefcase" />
                           <span>Plans and Billing</span>
                         </Link>
                       </li>
                       <li>
-                        <Link to="/history">
+                        <Link to="/dashboard">
                           <i className="fa-sharp fa-regular fa-users" />
                           <span>History</span>
                         </Link>

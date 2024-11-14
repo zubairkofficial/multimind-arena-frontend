@@ -5,11 +5,14 @@ import "notyf/notyf.min.css";
 import axios from "axios";
 import { setUser } from "../../../features/userSlice";
 import Helpers from "../../../Config/Helpers";
+import { useGetUserByIdQuery } from '../../../features/api/userApi'; // Import the query hook
 
 const ProfileDetailsForm = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.user);
+
   const userId = user?.id;
+  const { data: userData, isLoading, isError, refetch } = useGetUserByIdQuery(userId);
 
   const [isUpdating, setIsUpdating] = useState(false);
   const [updateError, setUpdateError] = useState(null);
@@ -22,6 +25,12 @@ const ProfileDetailsForm = () => {
   });
   const [image, setImage] = useState(null); // State for storing image file
   const [imagePreview, setImagePreview] = useState(null); // State for image preview
+
+  // Error states for each field
+  const [nameError, setNameError] = useState("");
+  const [usernameError, setUsernameError] = useState("");
+  const [phoneNumberError, setPhoneNumberError] = useState("");
+  const [imageError, setImageError] = useState("");
 
   // Populate form data when user data is fetched
   useEffect(() => {
@@ -41,6 +50,11 @@ const ProfileDetailsForm = () => {
       ...formData,
       [e.target.id]: e.target.value,
     });
+
+    // Clear specific error when the user starts typing
+    if (e.target.id === "name") setNameError("");
+    if (e.target.id === "username") setUsernameError("");
+    if (e.target.id === "phoneNumber") setPhoneNumberError("");
   };
 
   // Handle image file change and generate a preview
@@ -48,6 +62,7 @@ const ProfileDetailsForm = () => {
     const file = e.target.files[0];
     setImage(file);
     setImagePreview(URL.createObjectURL(file)); // Generate preview URL
+    setImageError(""); // Clear image error
   };
 
   // Handle form submission
@@ -57,6 +72,29 @@ const ProfileDetailsForm = () => {
 
     setIsUpdating(true);
     setUpdateError(null);
+
+    // Validation
+    let hasError = false;
+    if (!formData.name) {
+      setNameError("Name is required");
+      hasError = true;
+    }
+    if (!formData.username) {
+      setUsernameError("Username is required");
+      hasError = true;
+    }
+    if (!formData.phoneNumber) {
+      setPhoneNumberError("Phone Number is required");
+      hasError = true;
+    }
+    if (!image) {
+      setImageError("Image is required");
+      hasError = true;
+    }
+
+    if (hasError) {
+      setIsUpdating(false)
+      return;} // If any field has an error, prevent form submission
 
     // Create FormData object
     const dataToSend = new FormData();
@@ -81,7 +119,7 @@ const ProfileDetailsForm = () => {
       );
 
       const updatedUser = response.data.user;
-
+      refetch();
       // Dispatch the updated user to the Redux store
       dispatch(setUser({ user: updatedUser }));
 
@@ -99,16 +137,8 @@ const ProfileDetailsForm = () => {
   };
 
   return (
-    <div
-      className="tab-pane fade active show"
-      id="profile"
-      role="tabpanel"
-      aria-labelledby="profile-tab"
-    >
-      <form
-        onSubmit={handleSubmit}
-        className="rbt-profile-row rbt-default-form row row--15"
-      >
+    <div className="tab-pane fade active show" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+      <form onSubmit={handleSubmit} className="rbt-profile-row rbt-default-form row row--15">
         {/* Full Name Field */}
         <div className="col-lg-12 col-md-12 col-sm-12 col-12">
           <div className="form-group">
@@ -119,8 +149,9 @@ const ProfileDetailsForm = () => {
               value={formData.name}
               onChange={handleChange}
               placeholder="John Doe"
-              required
+     
             />
+            {nameError && <p className="text-danger">{nameError}</p>}
           </div>
         </div>
 
@@ -134,8 +165,8 @@ const ProfileDetailsForm = () => {
               value={formData.username}
               onChange={handleChange}
               placeholder="Adam Milner"
-              required
             />
+            {usernameError && <p className="text-danger">{usernameError}</p>}
           </div>
         </div>
 
@@ -149,8 +180,8 @@ const ProfileDetailsForm = () => {
               value={formData.phoneNumber}
               onChange={handleChange}
               placeholder="+1-234-567-890"
-              required
             />
+            {phoneNumberError && <p className="text-danger">{phoneNumberError}</p>}
           </div>
         </div>
 
@@ -170,12 +201,12 @@ const ProfileDetailsForm = () => {
                 onChange={handleImageChange}
                 accept="image/*"
                 className="file-input"
-                required
               />
               <label htmlFor="image" className="upload-button">
                 Choose Image
               </label>
             </div>
+            {imageError && <p className="text-danger">{imageError}</p>}
           </div>
         </div>
 

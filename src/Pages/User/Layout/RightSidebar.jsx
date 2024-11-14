@@ -11,7 +11,7 @@ const RightSidebar = () => {
   const [error, setError] = useState(null);
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
-
+console.log("aiFigures",aiFigures)
   useEffect(() => {
     const fetchHistoryData = async () => {
       try {
@@ -66,10 +66,10 @@ const RightSidebar = () => {
 
     fetchHistoryData();
   }, [token]);
-
   // Handle figure click to navigate to the chat page
-  const handleFigureClick = (id) => {
-    navigate(`/chat/${id}`);
+  const handleFigureClick = (id,figure) => {
+    console.log("figure++++++++++++++++++++++",figure)
+    navigate(`/chat/${id}`,{ state: figure});
   };
 
   const renderFigureList = (figures) => (
@@ -90,7 +90,7 @@ const RightSidebar = () => {
                 fontWeight: 'bold',
                 transition: 'background-color 0.3s ease, color 0.3s ease',
               }}
-              onClick={() => handleFigureClick(figure.id)} // Navigate to chat page on click
+              onClick={() => handleFigureClick(figure.id,figure)} // Navigate to chat page on click
               onMouseEnter={(e) => {
                 e.target.style.backgroundColor = '#00FF00';
                 e.target.style.borderRadius = '10px';

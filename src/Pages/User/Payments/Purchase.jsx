@@ -6,10 +6,10 @@ import styled from 'styled-components';
 const theme = {
   primaryColor: '#4CAF50',
   secondaryColor: '#f3f3f3',
-  textColor: '#333',
+  textColor: '#fff',
   buttonHoverColor: '#45a049',
   inputBorderColor: '#ccc',
-  backgroundColor: '#f9f9f9',
+  backgroundColor: ` var(--color-bg-1)`,
   buttonDisabledColor: '#b0b0b0',
   borderRadius: '8px',
   padding: '20px',
@@ -21,7 +21,6 @@ const Purchase = () => {
   const [error, setError] = useState('');
 
   const handlePurchase = () => {
-    // Check if the number of coins is at least 1000
     if (coins < 1000) {
       setError('Minimum purchase is 1000 coins.');
       return;
@@ -45,9 +44,9 @@ const Purchase = () => {
           value={coins}
           onChange={(e) => {
             setCoins(e.target.value);
-            setError(''); // Clear error when the user changes the value
+            setError('');
           }}
-          min="1000" // Enforce minimum 1000 coins in the input
+          min="1000"
           placeholder="Enter number of coins"
         />
 
@@ -61,14 +60,14 @@ const Purchase = () => {
   );
 };
 
-// Styled-components for consistent styling
+// Styled-components with green shadow styling
 const Container = styled.div`
   padding: ${theme.padding};
   max-width: 400px;
   margin: 50px auto;
   background-color: ${theme.backgroundColor};
   border-radius: ${theme.borderRadius};
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4); /* Green shadow */
 `;
 
 const Title = styled.h1`
@@ -103,7 +102,7 @@ const Input = styled.input`
 
 const PurchaseButton = styled.button`
   background-color: ${theme.primaryColor};
-  color: #fff;
+  color: ${theme.textColor};
   padding: 12px 0;
   border-radius: 5px;
   border: none;

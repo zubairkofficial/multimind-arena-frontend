@@ -9,9 +9,9 @@ import Logo from '../../../public/assets/images/logo/logo.png'
 
 const Register = () => {
   const navigate = useNavigate();
-  
+
   // Hook for registerUser mutation
-  const [registerUser, { isLoading }] = useRegisterUserMutation(); // Use registerUser mutation from the API
+  const [registerUser, { isLoading }] = useRegisterUserMutation();
 
   // Local State for form data
   const [formData, setFormData] = useState({
@@ -22,37 +22,66 @@ const Register = () => {
     confirmPassword: "",
   });
 
-  // Error state
-  const [error, setError] = useState(null);
+  // Individual error states for each field
+  const [nameError, setNameError] = useState("");
+  const [usernameError, setUsernameError] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [confirmPasswordError, setConfirmPasswordError] = useState("");
+  const [error, setError] = useState(null); // General error
 
   // Handle form input changes
   const handleChange = (e) => {
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [name]: value,
     });
+
+    // Clear specific error when the user starts typing
+    if (name === "name") setNameError("");
+    if (name === "username") setUsernameError("");
+    if (name === "email") setEmailError("");
+    if (name === "password") setPasswordError("");
+    if (name === "confirmPassword") setConfirmPasswordError("");
   };
 
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null); // Reset previous error messages
+    setError(null); // Reset general error message
 
     // Validate form data
-    if (
-      !formData.name ||
-      !formData.username ||
-      !formData.email ||
-      !formData.password ||
-      !formData.confirmPassword
-    ) {
-      setError("All fields are required");
-      return;
+    let hasError = false;
+
+    if (!formData.name) {
+      setNameError("Name is required");
+      hasError = true;
     }
-    if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match");
-      return;
+    if (!formData.username) {
+      setUsernameError("Username is required");
+      hasError = true;
     }
+    if (!formData.email) {
+      setEmailError("Email is required");
+      hasError = true;
+    }
+    if (!formData.password) {
+      setPasswordError("Password is required");
+      hasError = true;
+    } else if (formData.password.length < 8) {
+      setPasswordError("Password must be at least 8 characters");
+      hasError = true;
+    }
+    if (!formData.confirmPassword) {
+      setConfirmPasswordError("Please confirm your password");
+      hasError = true;
+    } else if (formData.password !== formData.confirmPassword) {
+      setConfirmPasswordError("Passwords do not match");
+      hasError = true;
+    }
+
+    if (hasError) return;
 
     try {
       // Trigger the registerUser mutation
@@ -61,24 +90,21 @@ const Register = () => {
         username: formData.username,
         email: formData.email,
         password: formData.password,
-      }).unwrap(); // Unwrap the mutation to handle success and error states manually
+      }).unwrap();
 
       const notyf = new Notyf();
-      // Display a success notification
       notyf.success("User Registered Successfully. Please verify your email to continue", 3000);
-      navigate("/user-verification"); 
-        } catch (err) {
-      // Extract the error message from the API response
+      navigate("/user-verification");
+    } catch (err) {
       const errorMessage = err?.data?.message || "Registration failed. Please try again.";
       console.error("Failed to register:", errorMessage);
-      setError(errorMessage); // Set the error message for display
+      setError(errorMessage);
     }
   };
 
   // Handle Google login
   const handleGoogleLogin = () => {
-    const googleLoginUrl =
-      "https://chat-arena-backend-4ba91b3feb6b.herokuapp.com/google-auth";
+    const googleLoginUrl = "https://chat-arena-backend-4ba91b3feb6b.herokuapp.com/google-auth";
     window.location.href = googleLoginUrl;
   };
 
@@ -93,14 +119,13 @@ const Register = () => {
       localStorage.setItem("type", userObj.isAdmin);
       localStorage.setItem("user", JSON.stringify(userObj));
 
-      window.location.href = "/dashboard"; // Redirect to dashboard after successful Google login
+      window.location.href = "/dashboard";
     }
   }, []);
 
   return (
     <div>
       <main className="page-wrapper">
-        {/* Start Sign up Area */}
         <div className="signup-area">
           <div className="wrapper">
             <div className="row">
@@ -111,23 +136,15 @@ const Register = () => {
                       src={Logo}
                       alt="sign-up logo"
                       style={{ height: "80px", width: "auto" }}
-                      onError={(e) => e.target.src = Logo} // Fallback to Logo if the image fails to load
-
+                      onError={(e) => (e.target.src = Logo)}
                     />
                   </div>
                   <div className="signup-box-bottom">
                     <div className="signup-box-content">
                       <div className="social-btn-grp">
-                        {/* Google login button */}
-                        <button
-                          className="btn-default btn-border"
-                          onClick={handleGoogleLogin}
-                        >
+                        <button className="btn-default btn-border" onClick={handleGoogleLogin}>
                           <span className="icon-left">
-                            <img
-                              src="assets/images/sign-up/google.png"
-                              alt="Google Icon"
-                            />
+                            <img src="assets/images/sign-up/google.png" alt="Google Icon" />
                           </span>
                           Continue with Google
                         </button>
@@ -149,6 +166,7 @@ const Register = () => {
                             value={formData.name}
                             onChange={handleChange}
                           />
+                          {nameError && <p className="text-danger">{nameError}</p>}
                         </div>
                         <div className="input-section">
                           <div className="icon">
@@ -161,6 +179,7 @@ const Register = () => {
                             value={formData.username}
                             onChange={handleChange}
                           />
+                          {usernameError && <p className="text-danger">{usernameError}</p>}
                         </div>
                         <div className="input-section mail-section">
                           <div className="icon">
@@ -173,6 +192,7 @@ const Register = () => {
                             value={formData.email}
                             onChange={handleChange}
                           />
+                          {emailError && <p className="text-danger">{emailError}</p>}
                         </div>
                         <div className="input-section password-section">
                           <div className="icon">
@@ -185,6 +205,7 @@ const Register = () => {
                             value={formData.password}
                             onChange={handleChange}
                           />
+                          {passwordError && <p className="text-danger">{passwordError}</p>}
                         </div>
                         <div className="input-section password-section">
                           <div className="icon">
@@ -197,13 +218,10 @@ const Register = () => {
                             value={formData.confirmPassword}
                             onChange={handleChange}
                           />
+                          {confirmPasswordError && <p className="text-danger">{confirmPasswordError}</p>}
                         </div>
                         {error && <p className="text-danger">{error}</p>}
-                        <button
-                          type="submit"
-                          className="btn-default"
-                          disabled={isLoading}
-                        >
+                        <button type="submit" className="btn-default" disabled={isLoading}>
                           {isLoading ? "Signing Up..." : "Sign Up"}
                         </button>
                       </form>
@@ -225,7 +243,6 @@ const Register = () => {
             <i className="fa-sharp fa-regular fa-arrow-left" />
           </Link>
         </div>
-        {/* End Sign up Area */}
       </main>
     </div>
   );

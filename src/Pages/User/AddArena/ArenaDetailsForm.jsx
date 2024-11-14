@@ -8,8 +8,10 @@ import Helpers from "../../../Config/Helpers";
 import Slider from "react-slick";
 import AIFigureCard from "./AIFigureCard";
 import "./../AiFigures/aifigures.css";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 const ArenaDetailsForm = () => {
+  const navigate = useNavigate();
   // Arena and AI figure queries
   const {
     data: arenaTypesData,
@@ -25,8 +27,10 @@ const ArenaDetailsForm = () => {
   // Form data state
   const [roles, setRoles] = useState([]);
   const [image, setImage] = useState(null);
+  const [imageError, setImageError] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({
     name: "",
     duration: null,
@@ -59,15 +63,66 @@ const ArenaDetailsForm = () => {
       ...formData,
       [id]: value === "Unlimited" ? null : value,
     });
-    console.log(value);
+
+    const error = validateField(id, updatedValue);
+    setErrors({ ...errors, [id]: error });
+  
   };
-  console.log("form--------", formData.duration);
+  
   // Handle image file change and generate a preview
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     setImage(file);
     setImagePreview(URL.createObjectURL(file));
+    setImageError("");
   };
+
+  const validateField = (field, value) => {
+    let error = "";
+    switch (field) {
+      case "name":
+        if (!value) error = "Topic name is required.";
+        break;
+      case "arenaTypeId":
+        if (!value) error = "Arena type is required.";
+        break;
+      case "maxParticipants":
+        if (!value) error = "Max participants are required.";
+        else if (isNaN(value) || value <= 0) error = "Please enter a valid number.";
+        break;
+        case "duration":
+          if (!value) error = "Duration is required.";
+          else if (isNaN(value) && value !== "Unlimited") error = "Please select a valid duration.";
+          break;
+      case "description":
+        if (!value) error = "Description is required.";
+        break;
+        case "image":
+          if (!value) error = "Image is required.";
+          else if (value && !["image/jpeg", "image/png"].includes(value.type)) {
+            error = "Only JPEG and PNG images are allowed.";
+          }
+          break;
+      default:
+        break;
+    }
+    return error;
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    let formIsValid = true;
+    for (const field in formData) {
+      const error = validateField(field, formData[field]);
+      if (error) {
+        newErrors[field] = error;
+        formIsValid = false;
+      }
+    }
+    setErrors(newErrors);
+    return formIsValid;
+  };
+
 
   const handleAIFigureSelect = (figureId) => {
     const isSelected = formData.aiFigureId.includes(figureId);
@@ -111,7 +166,7 @@ const ArenaDetailsForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const notyf = new Notyf();
-
+ if (!validateForm()) return
     setIsSubmitting(true);
     console.log("formData.duration", formData.duration);
     // Calculate expiry time or set to empty string if duration is "Unlimited"
@@ -120,6 +175,10 @@ const ArenaDetailsForm = () => {
         ? null
         : calculateExpiryTime(Number(formData.duration));
 
+        if (!image) {
+          setImageError("Image is required");
+          hasError = true;
+        }
     // Create FormData object
     const dataToSend = new FormData();
     dataToSend.append("name", formData.name);
@@ -152,17 +211,18 @@ const ArenaDetailsForm = () => {
       setIsSubmitting(false);
 
       // Clear form data after successful submission
-      // setFormData({
-      //   name: "",
-      //   duration: "",
-      //   arenaTypeId: "",
-      //   aiFigureId: [],
-      //   aiFigureRoles: {},
-      //   description: "",
-      //   maxParticipants: "",
-      // });
+      setFormData({
+        name: "",
+        duration: "",
+        arenaTypeId: "",
+        aiFigureId: [],
+        aiFigureRoles: {},
+        description: "",
+        maxParticipants: "",
+      });
       setImage(null);
       setImagePreview(null);
+      navigate('/dashboard')
     } catch (err) {
       notyf.error("Failed to create arena. Please try again.");
       setIsSubmitting(false); // End loading
@@ -232,8 +292,9 @@ const ArenaDetailsForm = () => {
             value={formData.name}
             onChange={handleChange}
             placeholder="Enter Topic"
-            required
+            
           />
+          {errors.name && <span className="error-text">{errors.name}</span>}
         </div>
 
         {/* Arena Type */}
@@ -246,7 +307,7 @@ const ArenaDetailsForm = () => {
             id="arenaTypeId"
             value={formData.arenaTypeId}
             onChange={handleChange}
-            required
+            
           >
             <option value="">Select Arena Type</option>
             {arenaTypesData.map((type) => (
@@ -255,6 +316,7 @@ const ArenaDetailsForm = () => {
               </option>
             ))}
           </select>
+          {errors.arenaTypeId && <span className="error-text">{errors.arenaTypeId}</span>}
         </div>
 
         {/* AI Figure Selection */}
@@ -275,6 +337,7 @@ const ArenaDetailsForm = () => {
               {category}
             </button>
           ))}
+    
         </div>
 
         {/* AI Figure Selection */}
@@ -309,7 +372,7 @@ const ArenaDetailsForm = () => {
               <select
                 value={formData.aiFigureRoles[figureId] || ""}
                 onChange={(e) => handleRoleChange(figureId, e.target.value)}
-                required
+                
                 style={{ width: "100%", padding: "0.5rem", fontSize: "1rem" }}
               >
                 <option value="">Select Role</option>
@@ -337,7 +400,9 @@ const ArenaDetailsForm = () => {
                   alt="Arena Preview"
                   style={{ width: "100px", height: "100px" }}
                 />
+            {errors.image && <span className="error-text">{errors.image}</span>}
               </div>
+              
             )}
             <div className="upload-section">
               <input
@@ -351,6 +416,8 @@ const ArenaDetailsForm = () => {
                 Choose Image
               </label>
             </div>
+            {imageError && <p className="text-danger">{imageError}</p>}
+        
           </div>
         </div>
 
@@ -364,13 +431,15 @@ const ArenaDetailsForm = () => {
             id="maxParticipants"
             value={formData.maxParticipants}
             onChange={handleChange}
-            required
+            
           >
             <option value="">Select Max Participants</option>
             <option value={2}>2</option>
             <option value={100}>100</option>
             <option value={0}>Unlimited</option>
           </select>
+          {errors.maxParticipants && <span className="error-text">{errors.maxParticipants}</span>}
+      
         </div>
 
         {/* Max Duration */}
@@ -383,7 +452,7 @@ const ArenaDetailsForm = () => {
             id="duration"
             value={formData.duration}
             onChange={handleChange}
-            required
+            
           >
             <option value="">Select Duration</option>
             <option value="15">15 minutes</option>
@@ -392,7 +461,7 @@ const ArenaDetailsForm = () => {
             <option value="90">90 minutes</option>
             <option value="Unlimited">Unlimited</option>
           </select>
-        </div>
+          {errors.duration && <span className="error-text">{errors.duration}</span>} </div>
 
         {/* Description */}
         <div
@@ -406,8 +475,10 @@ const ArenaDetailsForm = () => {
             onChange={handleChange}
             placeholder="Enter a description of the arena"
             rows="4"
-            required
+            
           ></textarea>
+           {errors.description && <span className="error-text">{errors.description}</span>}
+      
         </div>
 
         {/* Submit Button */}
