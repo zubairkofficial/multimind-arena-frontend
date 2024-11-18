@@ -87,7 +87,7 @@ export default function ErrorLogs() {
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="container mx-5">
+    <div className="container mx-3">
       {/* Search Bar */}
       <Searchbar
     
@@ -96,7 +96,7 @@ export default function ErrorLogs() {
         onChange={(e) => setSearchText(e.target.value)}
       />
 
-      <div className="error-logs text-light">
+      <div className=" manage-arenas text-light">
         <CustomTable headers={tableHeaders} data={tableData} />
 
         <Pagination

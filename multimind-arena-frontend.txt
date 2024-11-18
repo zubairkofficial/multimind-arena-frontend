@@ -1,0 +1,105 @@
+Frontend Functionalities - Step-by-Step Guide
+1. User Registration
+Step 1: Navigate to the registration page.
+Step 2: Fill in the required fields:
+Email address
+Username
+Password
+Phone number (optional)
+Step 3: Click on "Register" or "Submit" to complete registration.
+Step 4: Check your email inbox for a confirmation email.
+Step 5: Click on the link in the email to verify your email address.
+Step 6: Once verified, your account is active, and you can proceed to log in.
+2. User Login
+Step 1: Navigate to the login page.
+Step 2: Enter your registered email and password.
+Step 3: Click on "Login" to authenticate and access the platform.
+Step 4: If successful, you'll be redirected to the home page with an authenticated session.
+3. Password Management
+Forgot Password:
+
+Step 1: Go to the "Forgot Password" page.
+Step 2: Enter your registered email address.
+Step 3: Submit the form to receive a password reset link in your email.
+Step 4: Open your email, click the password reset link.
+Step 5: Set a new password and confirm it.
+Step 6: Your password is now reset. You can log in with the new password.
+Reset Password (via link):
+
+Step 1: After receiving the reset email, click on the link provided.
+Step 2: Enter and confirm your new password.
+Step 3: Submit to reset your password successfully.
+Change Password (while logged in):
+
+Step 1: Navigate to the "Change Password" section in your profile settings.
+Step 2: Enter your current password.
+Step 3: Enter the new password and confirm it.
+Step 4: Save the changes. Your password has now been updated.
+4. User Profile Management
+View Profile:
+
+Step 1: Log in to your account.
+Step 2: Navigate to the "Profile" section.
+Step 3: Your details (email, username, profile photo) will be displayed.
+Update Profile:
+
+Step 1: Go to the "Profile" settings page.
+Step 2: Edit the fields that need to be updated (name, phone number, profile photo).
+Step 3: Click "Save" to update your profile information.
+Delete Account (Admin-only feature):
+
+Step 1: Contact an admin to request account deletion.
+Step 2: Admin will confirm the deletion and remove the account from the platform.
+5. Arena Access Request
+Request Arena Access:
+
+Step 1: Navigate to the "Arena" section in your user dashboard.
+Step 2: Click "Request Access" to send a request to the admin for arena access.
+Step 3: Wait for approval or rejection of your request. You will be notified about the status.
+Admin Approval of Arena Request:
+
+Step 1: Admin reviews pending arena access requests.
+Step 2: Admin approves or rejects the requests based on user eligibility.
+Step 3: You will receive a notification about the approval or rejection of your arena request.
+6. AI Figure Management
+Create a New AI Figure:
+
+Step 1: Navigate to the "AI Figures" section in your user dashboard.
+Step 2: Click "Create New AI Figure."
+Step 3: Fill in the necessary information, such as name, description, and properties.
+Step 4: Save the new AI figure. It will now appear in your AI Figure list.
+Update an Existing AI Figure:
+
+Step 1: Select an AI figure from the list you want to update.
+Step 2: Click on "Edit" or "Update."
+Step 3: Modify the necessary details and click "Save" to update the AI figure.
+Delete an AI Figure:
+
+Step 1: Select an AI figure from the list that you want to delete.
+Step 2: Click "Delete" to remove the AI figure permanently.
+Step 3: Confirm the deletion. The AI figure will be removed from your list.
+7. Google Authentication for Login
+Step 1: On the login page, click the "Login with Google" button.
+Step 2: A Google sign-in page will pop up.
+Step 3: Enter your Google credentials to authenticate.
+Step 4: Upon successful authentication, you'll be redirected to the platform with a logged-in session.
+8. Admin User Management
+View All Users:
+
+Step 1: Admin users can view a list of all registered users.
+Step 2: Navigate to the "User Management" section from the admin panel.
+Step 3: Admins can view user details, such as email, username, and account status.
+Delete User Account (Admin-only feature):
+
+Step 1: Admin can select a user account to delete.
+Step 2: Click "Delete" next to the user’s details.
+Step 3: Confirm the deletion. The user account will be permanently removed.
+9. Admin Arena Request Management
+Review and Approve Arena Requests:
+Step 1: Admins can review pending arena requests.
+Step 2: Click "Approve" or "Reject" based on the user's eligibility and status.
+Step 3: Once processed, users will be notified about the approval or rejection.
+10. Admin AI Figure Management
+View and Manage AI Figures:
+Step 1: Admin can navigate to the "AI Figures" section in the admin panel.
+Step 2: Admin can create, edit, or delete AI figures on behalf of users.

@@ -66,7 +66,7 @@ export default function Pagination({
           </button>
 
           {/* Page numbers */}
-          {pages.map((page, index) => (
+          {pages?.map((page, index) => (
             <button
               key={index}
               className={`btn btn-outline-light me-2 ${
@@ -96,7 +96,7 @@ export default function Pagination({
           </button>
           </div>
         </div>
-        <div className="d-flex align-items-center mt-2 h-1">
+        <div className="d-flex align-items-center mx-4 h-1">
             <label htmlFor="entries-select" className="me-2">
               Entries per page:
             </label>

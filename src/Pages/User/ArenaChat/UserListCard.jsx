@@ -42,7 +42,7 @@ export default function UserListCard({ users, ai }) {
         }}
       >
         <ul className="list-unstyled" style={{ padding: 0, margin: 0 }}>
-          {users.map((user, index) => (
+          {users?.map((user, index) => (
             <li
               key={index}
               onClick={() => handleUserClick(user, false)}
@@ -76,7 +76,7 @@ export default function UserListCard({ users, ai }) {
       <h4 style={{ marginBottom: "1rem" }}>AI Figures</h4>
       <div style={{ flex: 1, overflowY: "auto" }}>
         <ul className="list-unstyled" style={{ padding: 0, margin: 0 }}>
-          {ai.map((user, index) => (
+          {ai?.map((user, index) => (
             <li
               key={index}
               onClick={() => handleUserClick(user, true)}

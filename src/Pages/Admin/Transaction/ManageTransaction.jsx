@@ -67,9 +67,9 @@ const ManageTransaction = () => {
   }));
 
   return (
-    <div className="container mx-5">
+    <div className="container">
       <h1 className="text-xl mb-5">Manage Transactions</h1>
-
+<div className='manage-arenas'>
       <CustomTable
         headers={tableHeaders}
         data={tableData}
@@ -82,6 +82,7 @@ const ManageTransaction = () => {
         entriesPerPage={entriesPerPage}
         onEntriesChange={handleEntriesChange}
       />
+      </div>
     </div>
   );
 };

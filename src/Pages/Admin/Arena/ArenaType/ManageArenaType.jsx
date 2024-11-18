@@ -57,7 +57,7 @@ export default function ManageArenaType() {
   };
 
   const tableHeaders = ["Arena Type Name", "Actions"];
-  const tableData = currentArenaTypes.map((arenaType) => ({
+  const tableData = currentArenaTypes?.map((arenaType) => ({
     name: arenaType.name,
     actions: (
       <>
@@ -89,7 +89,7 @@ export default function ManageArenaType() {
         </button>
       </div>
 
-      <div className="manage-arena-types text-light">
+      <div className="manage-arenas text-light">
         <CustomTable headers={tableHeaders} data={tableData} />
 
         <Pagination

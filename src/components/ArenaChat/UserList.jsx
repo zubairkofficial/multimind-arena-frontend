@@ -50,7 +50,7 @@ function UserList({ participants, handleModal }) {
           color: '#cfcfcf',
         }}
       >
-        {participants.map((participant, index) => (
+        {participants?.map((participant, index) => (
           <li
             key={index}
             className="mb-2 d-flex align-items-center"

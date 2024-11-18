@@ -39,7 +39,7 @@ const CustomTable = ({
                 </div>
               )}
               {/* Render custom filters passed as props */}
-              {filters.map((filter, index) => (
+              {filters?.map((filter, index) => (
                 <div className="col-md-4" key={index}>
                   <label htmlFor={filter.id} className="form-label">
                     {filter.label}:
@@ -76,9 +76,9 @@ const CustomTable = ({
           </thead>
           <tbody>
             {data.length > 0 ? (
-              data.map((row, index) => (
+              data?.map((row, index) => (
                 <tr key={index}>
-                  {Object.keys(row).map((key, i) => (
+                  {Object.keys(row)?.map((key, i) => (
                     <td key={i}>{row[key]}</td>
                   ))}
                 </tr>

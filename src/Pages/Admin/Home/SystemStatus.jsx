@@ -4,21 +4,21 @@ import CustomTable from './../../../components/Table/CustomTable';
 
 const errorData = [
   {
-    path: 'backend/users',
+    path: 'api/v1/users',
     errorMessage: 'Internal Server Error',
-    stack: 'Error: Internal Server Error at backend/users',
+    stack: 'Error: Internal Server Error at api/v1/users',
     timestamp: '2024-09-29 14:30',
   },
   {
-    path: 'backend/auth',
+    path: 'api/v1/auth',
     errorMessage: 'Unauthorized Access',
-    stack: 'Error: Unauthorized Access at backend/auth',
+    stack: 'Error: Unauthorized Access at api/v1/auth',
     timestamp: '2024-09-29 14:25',
   },
   {
-    path: 'backend/data',
+    path: 'api/v1/data',
     errorMessage: 'Data Not Found',
-    stack: 'Error: Data Not Found at backend/data',
+    stack: 'Error: Data Not Found at api/v1/data',
     timestamp: '2024-09-29 14:20',
   },
 ];

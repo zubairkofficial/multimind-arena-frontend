@@ -69,7 +69,7 @@ const AIFigureGallery = () => {
       </div>
 
       <div className="category-menu d-flex mb-3" role="navigation" aria-label="Category Filter">
-        {categories.map((category) => (
+        {categories?.map((category) => (
           <button
             key={category}
             className={`category-btn ${filter === category ? "active" : ""}`}
@@ -85,10 +85,10 @@ const AIFigureGallery = () => {
       {/* <div className="gallery-grid" aria-labelledby="gallery-heading" role="grid"> */}
         <div className="container">
         <div className="row ">
-        {filteredFigures.map((figure) => (
+        {filteredFigures?.map((figure) => (
           <>
           <div className= {sidebarOpen && rightSidebarOpen?'col-12 col-md-6 col-lg-6 ':sidebarOpen | rightSidebarOpen?'col-12 col-md-4 col-lg-4': "col-12 col-md-3 col-lg-3"}>
-          <div className="m-4">
+          <div className="m-4 bg-error">
           <AIFigureCard
             key={figure.id}
             figure={figure}

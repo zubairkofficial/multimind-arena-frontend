@@ -229,7 +229,7 @@ const ArenaDetailsForm = () => {
             required
           >
             <option value="">Select Arena Type</option>
-            {arenaTypesData.map((type) => (
+            {arenaTypesData?.map((type) => (
               <option key={type.id} value={type.id}>
                 {type.name}
               </option>
@@ -254,7 +254,7 @@ const ArenaDetailsForm = () => {
             {/* AI Figure Selection */}
 
             <Slider {...sliderSettings}>
-              {aiFiguresData.map((figure) => (
+              {aiFiguresData?.map((figure) => (
                 <div key={figure.id} className="slider-item">
                   <AIFigureCard
                     figure={figure}
@@ -265,7 +265,7 @@ const ArenaDetailsForm = () => {
               ))}
             </Slider>
           </div>
-          {formData.aiFigureId.map((figureId) => (
+          {formData.aiFigureId?.map((figureId) => (
             <div
               key={figureId}
               style={{
@@ -290,7 +290,7 @@ const ArenaDetailsForm = () => {
                 }}
               >
                 <option value="">Select Role</option>
-                {roles.map((role) => (
+                {roles?.map((role) => (
                   <option key={role.id} value={role.id}>
                     {role.roleName}
                   </option>

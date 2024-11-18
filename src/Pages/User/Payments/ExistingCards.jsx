@@ -73,7 +73,7 @@ const ExistingCards = ({ onSelectCard }) => {
         </PriceInfo>
 
         <CardsList>
-          {existingCards.map((card) => (
+          {existingCards?.map((card) => (
             <ExistingCard key={card.id}>
               <p>Card Number: **** **** **** {card.cardNumber.slice(-4)}</p>
               <ChooseCardButton 

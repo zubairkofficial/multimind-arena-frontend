@@ -35,7 +35,7 @@ export default function AIChatPage() {
             headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
           });
 
-          const previousMessages = response.data.map((msg) => [
+          const previousMessages = response.data?.map((msg) => [
             {
               sender: "You",
               content: msg.sendMessage,
@@ -146,7 +146,7 @@ export default function AIChatPage() {
           handleLeaveRoom={handleLeaveRoom}
         />
         <div ref={chatContainerRef} className="flex-grow-1 pt-4 px-4 overflow-auto chat-message-container">
-          {chatMessages.map((msg, index) => (
+          {chatMessages?.map((msg, index) => (
             <div key={index} className={`d-flex ${msg.isUser ? "flex-row-reverse" : ""}`}>
               <div style={{ width: "50px", margin: "0 10px" }}>
                 <img

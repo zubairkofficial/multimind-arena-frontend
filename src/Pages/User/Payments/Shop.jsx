@@ -44,7 +44,7 @@ const Shop = () => {
     <div style={styles.shopContainer}>
       <h1 style={styles.title}>Shop</h1>
       <div style={styles.itemList}>
-        {bundlesData.map((item) => ( // Use bundlesData instead of items
+        {bundlesData?.map((item) => ( // Use bundlesData instead of items
           <div key={item.id} style={styles.itemCard}>
             <CoinIcon />
             <h2 style={styles.itemLabel}>{item.name} - {item.coins} Coins</h2> {/* Display bundle name */}

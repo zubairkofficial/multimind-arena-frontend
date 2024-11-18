@@ -83,12 +83,13 @@ const AdminUsers = () => {
   }));
 
   return (
-    <div className="container mx-5">
+    <div className="container mx-3">
       {isLoading ? (
         <Preloader />
       ) : (
         <div >
          <Searchbar heading="Manage Users" placeholder="Search user..."/>
+          <div className="manage-arenas">
           <CustomTable
             headers={tableHeaders}
             data={tableData}
@@ -101,6 +102,7 @@ const AdminUsers = () => {
             entriesPerPage={entriesPerPage}
             onEntriesChange={handleEntriesChange}
           />
+          </div>
         </div>
       )}
     </div>

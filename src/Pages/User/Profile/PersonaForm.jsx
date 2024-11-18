@@ -87,7 +87,7 @@ const PersonaForm = () => {
       <div className="mt--30">
         <h5>Existing Personas</h5>
         <ul>
-          {personas.map((persona, index) => (
+          {personas?.map((persona, index) => (
             <li key={index}>
               {persona.emoji} {persona.name} - {persona.description}
             </li>

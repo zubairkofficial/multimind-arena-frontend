@@ -155,7 +155,7 @@ export default function ManageArenas() {
   }));
 
   return (
-    <div className="container mx-5">
+    <div className="container mx-3">
       <Searchbar
         heading="Manage Arenas"
         title="Create Arena"

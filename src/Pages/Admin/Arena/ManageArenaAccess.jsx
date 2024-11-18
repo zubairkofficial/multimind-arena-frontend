@@ -22,14 +22,14 @@ const ManageArenaAccess = () => {
       notyf.error('Failed to load users');
     }
     if (users) {
-      console.log("users", users.map(user => ({
+      console.log("users", users?.map(user => ({
         id: user.id,
         name: user.name,
         username: user.username,
         createArenaRequestStatus: user.createArenaRequestStatus,
       })));
       
-      const allUsers = users.map(user => ({
+      const allUsers = users?.map(user => ({
         id: user.id,
         userName: user.username,
         status: user.createArenaRequestStatus || ArenaRequestStatus.STATUS,
@@ -50,7 +50,7 @@ const ManageArenaAccess = () => {
 
       // Update the status locally in the state after successful API call
       setUserDetails((prevUsers) =>
-        prevUsers.map((user) =>
+        prevUsers?.map((user) =>
           user.id === userId
             ? { ...user, status: newStatus }  // Update the status locally
             : user
@@ -85,7 +85,7 @@ const ManageArenaAccess = () => {
 
   // Table headers and data
   const tableHeaders = ["User ID", "User Name", "Name", "Arena Request Status", "Actions"];
-  const tableData = currentUsers.map(user => ({
+  const tableData = currentUsers?.map(user => ({
     "User ID": user.id,
     "User Name": user.userName,
     "Name": user.name,

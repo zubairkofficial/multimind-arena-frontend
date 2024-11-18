@@ -46,7 +46,7 @@ const AIFigureSelection = ({ formData, setFormData, roles }) => {
     <div style={{ marginBottom: "2rem" }}>
       <label>Select AI Figures (max 3)</label>
       <Slider {...sliderSettings}>
-        {formData.aiFigureId.map((figure) => (
+        {formData?.aiFigureId?.map((figure) => (
           <AIFigureCard
             key={figure.id}
             figure={figure}
@@ -63,7 +63,7 @@ const AIFigureSelection = ({ formData, setFormData, roles }) => {
             onChange={(e) => handleRoleChange(figureId, e.target.value)}
           >
             <option value="">Select Role</option>
-            {roles.map((role) => (
+            {roles?.map((role) => (
               <option key={role.id} value={role.id}>
                 {role.roleName}
               </option>

@@ -81,7 +81,7 @@ const ChatHistory = () => {
       {messages.length === 0 ? (
         <li style={{ textAlign: 'center', color: '#CCCCCC' }}>No messages found.</li>
       ) : (
-        messages.map((msg) => (
+        messages?.map((msg) => (
           <li key={msg.id} style={{ marginBottom: '20px' }}>
             <div style={{
               display: 'flex', 

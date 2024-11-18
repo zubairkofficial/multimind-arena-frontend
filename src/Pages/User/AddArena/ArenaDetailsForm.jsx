@@ -355,7 +355,7 @@ const ArenaDetailsForm = () => {
               ))}
             </Slider>
           </div>
-          {formData.aiFigureId.map((figureId) => (
+          {formData.aiFigureId?.map((figureId) => (
             <div
               key={figureId}
               style={{

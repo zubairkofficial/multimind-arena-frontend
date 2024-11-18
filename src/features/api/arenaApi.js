@@ -33,7 +33,7 @@ export const arenaApi = apiSlice.injectEndpoints({
         // Delete an arena
         deleteArena: builder.mutation({
             query: (arenaId) => ({
-                url: `arena/${arenaId}`,
+                url: `arenas/${arenaId}`,
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",

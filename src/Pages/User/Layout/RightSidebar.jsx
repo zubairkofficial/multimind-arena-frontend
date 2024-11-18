@@ -77,7 +77,7 @@ console.log("aiFigures",aiFigures)
       {figures.length === 0 ? (
         <li>No AI figures found.</li>
       ) : (
-        figures.map((figure) => (
+        figures?.map((figure) => (
           <li key={figure.id} style={{ backgroundColor: '#101010' }}>
             <Link
               to={`#`}

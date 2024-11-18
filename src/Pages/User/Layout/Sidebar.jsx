@@ -76,7 +76,7 @@ const Sidebar = () => {
               <div className="rbt-default-sidebar-wrapper">
                 <nav className="mainmenu-nav">
                   <ul className="dashboard-mainmenu rbt-default-sidebar-list">
-                    {mainMenuItems.map((item, index) => (
+                    {mainMenuItems?.map((item, index) => (
                       <li key={index} className="d-flex justify-content-center align-items-center">
                         <Link to={item.path}>
                           <i className={`fa-solid ${item.icon}`} />
@@ -103,7 +103,7 @@ const Sidebar = () => {
                       </Link>
                       <div className="collapse" id="collapseSettings">
                         <ul className="submenu rbt-default-sidebar-list">
-                          {settingMenuItems.map((item, index) => (
+                          {settingMenuItems?.map((item, index) => (
                             <li key={index}>
                               <Link to={item.path}>
                                 <i className={`fa-sharp fa-regular ${item.icon}`} />

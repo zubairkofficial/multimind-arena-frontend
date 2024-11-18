@@ -174,7 +174,7 @@ export default function UserDashboard() {
               arenas={arenas}
               handleJoin={handleJoinArena}
             />
-            {sortedArenaCategories.map(([type, arenasList]) => (
+            {sortedArenaCategories?.map(([type, arenasList]) => (
               <ArenaCategory
                 key={type}
                 title={type}

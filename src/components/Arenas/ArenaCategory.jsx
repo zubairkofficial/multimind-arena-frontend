@@ -35,7 +35,7 @@ const ArenaCategory = ({ title, arenas, handleJoin }) => {
     <div className="arena-category-container">
       <h4 className="arena-category-title">{title}</h4>
       <Slider {...settings} className="arena-slider">
-        {arenas.map((arena) => (
+        {arenas?.map((arena) => (
           <div key={arena.id} className="arena-card-container">
             <ArenaCard arena={arena} onJoin={() => handleJoin(arena)} />
           </div>

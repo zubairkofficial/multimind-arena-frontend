@@ -118,7 +118,7 @@ const ManageAiFigures = () => {
   }));
 
   return (
-    <div className="container mx-5">
+    <div className="container mx-3">
       <Searchbar
         heading="Manage AI Figures"
         title="Add AI Figure"
@@ -127,7 +127,7 @@ const ManageAiFigures = () => {
         onSearch={handleSearchChange} // Replace onChange with onSearch
       />
 
-      <div className="manage-aifigures text-light">
+      <div className="manage-arenas text-light">
         <CustomTable headers={tableHeaders} data={tableData} />
 
         <Pagination

@@ -110,7 +110,7 @@ const CreateCard = () => {
         expYear: '',
         cvc: '',
       })
-      navigate("/");
+      navigate("/dashboard");
       
     } catch (err) {
       // Show error notification
