@@ -7,3 +7,14 @@ export const ArenaRequestStatus= {
   APPROVED : 'APPROVED',
   REJECTED : 'REJECTED',
 }
+
+
+// Enum for model types
+export const ModelType = {
+  GPT_3: 'gpt-3',
+  GPT_4o: 'gpt-4o',
+  LLAMA: 'llama3',
+  
+};
+
+

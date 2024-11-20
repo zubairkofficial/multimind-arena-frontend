@@ -83,8 +83,8 @@ export default function ManageArenaType() {
   return (
     <div className="container mx-5">
       <div className="d-flex justify-content-between mb-4">
-        <h2>Manage Arena Types</h2>
-        <button className="btn-default" onClick={handleCreateArenaType}>
+        <h2 className="fs-5">Manage Arena Types</h2>
+        <button className="btn-default btn-small" onClick={handleCreateArenaType}>
           Create Arena Type
         </button>
       </div>

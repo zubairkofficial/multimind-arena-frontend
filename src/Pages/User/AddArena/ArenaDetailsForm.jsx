@@ -276,7 +276,7 @@ const ArenaDetailsForm = () => {
 
   return (
     <div
-      className="arena-details-form-container"
+      className="arena-details-form-container fs-6 font-bold"
       style={{ padding: "2rem", margin: "0 auto", maxWidth: "800px" }}
     >
       <form onSubmit={handleSubmit} className="arena-form grid-container mb-5">
@@ -444,24 +444,31 @@ const ArenaDetailsForm = () => {
 
         {/* Max Duration */}
         <div
-          className="form-group grid-item"
-          style={{ width: "48%", display: "inline-block", marginTop: "1rem" }}
-        >
-          <label htmlFor="duration">Duration (minutes)</label>
-          <select
-            id="duration"
-            value={formData.duration}
-            onChange={handleChange}
-            
-          >
-            <option value="">Select Duration</option>
-            <option value="15">15 minutes</option>
-            <option value="30">30 minutes</option>
-            <option value="60">60 minutes</option>
-            <option value="90">90 minutes</option>
-            <option value="Unlimited">Unlimited</option>
-          </select>
-          {errors.duration && <span className="error-text">{errors.duration}</span>} </div>
+  className="form-group grid-item"
+  style={{
+    width: "48%",
+    display: "inline-block",
+    marginTop: "1rem",
+    fontSize: "12px",  // Adjusted font size
+  }}
+>
+  <label htmlFor="duration" style={{ fontSize: "14px" }}>Duration (minutes)</label>
+  <select
+    id="duration"
+    value={formData.duration}
+    onChange={handleChange}
+    style={{ fontSize: "12px" }}  // Adjusted font size for select dropdown
+  >
+    <option value="">Select Duration</option>
+    <option value="15">15 minutes</option>
+    <option value="30">30 minutes</option>
+    <option value="60">60 minutes</option>
+    <option value="90">90 minutes</option>
+    <option value="Unlimited">Unlimited</option>
+  </select>
+  {errors.duration && <span className="error-text" style={{ fontSize: "12px" }}>{errors.duration}</span>} {/* Adjust error text font size */}
+</div>
+
 
         {/* Description */}
         <div

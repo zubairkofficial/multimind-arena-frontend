@@ -88,8 +88,19 @@ export const userApi = apiSlice.injectEndpoints({
                 }),
                 providesTags: ["User"], // Tag for caching pending status users
             }),
-       
+            getUserInfoCount: builder.query({
+                query: (userId) => ({
+                  url: `user/userInfo-count/${userId}`, // Backend endpoint
+                  method: "GET",
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${Helpers.getItem("token")}`, // Assuming token is stored
+                  },
+                }),
+                  }),
     }),
+  
+    
     
     
 });
@@ -102,5 +113,6 @@ export const {
     useCreateArenaRequestMutation,
     useGetUserTransactionHistoryQuery, // Export the hook for user transaction history
     useUpdateArenaRequestStatusMutation,
-    useGetUsersWithPendingStatusQuery
+    useGetUsersWithPendingStatusQuery,
+    useGetUserInfoCountQuery
 } = userApi;

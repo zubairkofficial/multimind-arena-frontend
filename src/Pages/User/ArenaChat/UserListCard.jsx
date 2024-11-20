@@ -1,9 +1,7 @@
 import React, { useState } from "react";
-import Logo from '../../../../public/assets/images/logo/logo.png'
+import Logo from "../../../../public/assets/images/logo/logo.png";
 
 export default function UserListCard({ users, ai }) {
-  console.log("Users", users);
-  console.log("AI", ai);
   const [showModal, setShowModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [isAi, setIsAi] = useState(false);
@@ -31,9 +29,11 @@ export default function UserListCard({ users, ai }) {
         maxHeight: "80vh",
         flexDirection: "column",
         color: "#fff",
+        overflow: "hidden",
+        width: "100%",
       }}
     >
-      <h4 style={{ marginBottom: "1rem" }}>Participants</h4>
+      <h4 style={{ marginBottom: "1rem", fontSize: "1rem" }}>Participants</h4>
       <div
         style={{
           flex: 1,
@@ -55,25 +55,24 @@ export default function UserListCard({ users, ai }) {
             >
               <img
                 src={user.image || Logo}
-                alt={user.name}
+                alt={user?.name}
                 style={{
-                  width: "40px",
-                  height: "40px",
+                  width: "30px",
+                  height: "30px",
                   borderRadius: "50%",
                   objectFit: "cover",
                   marginRight: "10px",
                   border: "2px solid #00ff00",
                 }}
-                onError={(e) => e.target.src = Logo} // Fallback to Logo if the image fails to load
-
+                onError={(e) => (e.target.src = Logo)}
               />
-              <span style={{ fontSize: "1.5rem" }}>{user.name}</span>
+              <span style={{ fontSize: "0.9rem" }}>{user?.name}</span>
             </li>
           ))}
         </ul>
       </div>
 
-      <h4 style={{ marginBottom: "1rem" }}>AI Figures</h4>
+      <h4 style={{ marginBottom: "1rem", fontSize: "1rem" }}>AI Figures</h4>
       <div style={{ flex: 1, overflowY: "auto" }}>
         <ul className="list-unstyled" style={{ padding: 0, margin: 0 }}>
           {ai?.map((user, index) => (
@@ -88,20 +87,19 @@ export default function UserListCard({ users, ai }) {
               }}
             >
               <img
-                src={user.image || Logo}
-                alt={user.name}
+                src={user?.image || Logo}
+                alt={user?.name}
                 style={{
-                  width: "40px",
-                  height: "40px",
+                  width: "30px",
+                  height: "30px",
                   borderRadius: "50%",
                   objectFit: "cover",
                   marginRight: "10px",
                   border: "2px solid #00ff00",
                 }}
-                onError={(e) => e.target.src = Logo} // Fallback to Logo if the image fails to load
-
+                onError={(e) => (e.target.src = Logo)}
               />
-              <span style={{ fontSize: "1.5rem" }}>{user.name}</span>
+              <span style={{ fontSize: "0.9rem" }}>{user?.name}</span>
             </li>
           ))}
         </ul>
@@ -121,20 +119,21 @@ export default function UserListCard({ users, ai }) {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            zIndex: 1000,
+            zIndex: 999,
           }}
           onClick={handleCloseModal}
         >
           <div
             className="modal-content"
             style={{
-              padding: "2rem",
+              padding: "1.5rem",
               backgroundColor: "#222",
               borderRadius: "8px",
-              maxWidth: "400px",
-              width: "90%",
+              maxWidth: "90%",
+              width: "100%",
               color: "#fff",
               position: "relative",
+              textAlign: "center",
             }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -157,31 +156,39 @@ export default function UserListCard({ users, ai }) {
               src={selectedUser.image || Logo}
               alt={selectedUser.name}
               style={{
-                width: "80px",
-                height: "80px",
+                width: "60px",
+                height: "60px",
                 borderRadius: "50%",
                 objectFit: "cover",
                 marginBottom: "1rem",
                 border: "2px solid #00ff00",
               }}
-              onError={(e) => e.target.src = Logo} // Fallback to Logo if the image fails to load
-
+              onError={(e) => (e.target.src = Logo)}
             />
-            <h3>{selectedUser.name}</h3>
+            <h3 style={{ fontSize: "1rem" }}>{selectedUser.name}</h3>
             {isAi ? (
               <>
-                <p>
+                <p style={{ fontSize: "0.9rem" }}>
                   <strong>Description:</strong>{" "}
                   {selectedUser.description || "N/A"}
                 </p>
-                <button className="btn-default btn-small">Chat Now</button>
+                <button
+                  className="btn-default btn-small"
+                  style={{
+                    fontSize: "0.8rem",
+                    padding: "0.5rem 1rem",
+                    borderRadius: "5px",
+                  }}
+                >
+                  Chat Now
+                </button>
               </>
             ) : (
               <>
-                <p>
+                <p style={{ fontSize: "0.9rem" }}>
                   <strong>Email:</strong> {selectedUser.email || "N/A"}
                 </p>
-                <p>
+                <p style={{ fontSize: "0.9rem" }}>
                   <strong>Phone:</strong> {selectedUser.phoneNumber || "N/A"}
                 </p>
               </>

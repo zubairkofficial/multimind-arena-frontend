@@ -118,7 +118,7 @@ const ManageArenaAccess = () => {
 
   return (
     <div className="container mx-5">
-      <h1 className="text-xl mb-5">Manage Arena Access</h1>
+      <h1 className=" fs-5 ps-2">Manage Arena Access</h1>
 
       <CustomTable
         headers={tableHeaders}

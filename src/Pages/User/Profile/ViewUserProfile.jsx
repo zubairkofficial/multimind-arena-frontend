@@ -14,9 +14,9 @@ const ViewUserProfile = () => {
 
   return (
     <div className="container mt-4">
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <h4>User Profile</h4>
-        <Link to="/edit-profile" className="btn-default btn-small">
+      <div className="d-flex justify-content-between align-items-center mb-4 ">
+        <h4 className="fs-4">User Profile</h4>
+        <Link to="/edit-profile" className="btn-default btn-small ">
           Edit Profile
         </Link>
       </div>
@@ -32,7 +32,7 @@ const ViewUserProfile = () => {
         />
       </div>
 
-      <form className="d-flex justify-content-center">
+      <form className="d-flex justify-content-center fs-5 font-bold ">
         <div>
           <div className="row">
             <div className="col-md-6">

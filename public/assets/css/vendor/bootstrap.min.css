@@ -42,7 +42,7 @@
 }
 
 @media (prefers-reduced-motion:no-preference) {
-    :root {
+     :root {
         scroll-behavior: smooth
     }
 }
@@ -5386,8 +5386,28 @@ fieldset:disabled .btn {
     padding: 1rem 1rem
 }
 
+.cart-body {
+    display: flex;
+    justify-content: space-between;
+    padding: 1.5rem;
+    align-items: center;
+}
+
+.cart-body .ls svg {
+    font-size: 24px;
+    font-size: 1.25rem;
+}
+
+.cart-body .ls svg:nth-child(1) {
+    font-size: 20px;
+}
+
+.cart-body .ls svg:nth-child(3) {
+    font-size: 1.25rem;
+}
+
 .card-title {
-    margin-bottom: .5rem
+    margin-bottom: .5rem;
 }
 
 .card-subtitle {

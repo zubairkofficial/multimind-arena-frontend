@@ -1,6 +1,7 @@
 import React from 'react';
 import CustomTable from './../../../components/Table/CustomTable'; // Import the reusable CustomTable component
 import { Link } from 'react-router-dom';
+import './Home.css'
 const activitiesData = [
   {
     time: '2024-09-29 14:23',
@@ -54,10 +55,10 @@ const RecentActivities = () => {
   }));
 
   return (
-    <div className="row mb-4">
+    <div className="row mb-4 ">
       <div className="col-md-12">
-        <div className="card recent-activities-card">
-          <h4 className="card-header">Recent Activities</h4>
+        <div className="card recent-activities-card table-glass">
+          <h4 className="card-header text-white font-weight-bold fs-4 ps-5">Recent Activities</h4>
           <div className="card-body">
             {/* Use CustomTable without pagination */}
             <CustomTable

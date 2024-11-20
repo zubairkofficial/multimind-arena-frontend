@@ -45,8 +45,8 @@ const SystemStatus = () => {
   return (
     <div className="row mb-4" onClick={handleRowClick}>
       <div className="col-md-12">
-        <div className="card system-status-card">
-          <h4 className="card-header">Error History</h4>
+        <div className="card system-status-card table-glass">
+          <h4 className="card-header text-white font-weight-bold fs-4 ps-5">Error History</h4>
           <div className="card-body">
             <CustomTable
               headers={tableHeaders}

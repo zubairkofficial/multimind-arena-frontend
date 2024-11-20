@@ -2,6 +2,9 @@ import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useGetAIFigureByIdQuery } from "../../../features/api/aiFigureApi"; // Import the query hook
 import axios from "axios";
+import {  useSelector } from "react-redux";
+import {  useGetUserByIdQuery } from '../../../features/api/userApi'; // Import the query hook
+
 import MessageBubble from "./MessageBubble";
 import AIFigureInfoCard from "./../../../components/Chat/AIFigureInfoCard";
 import Helpers from "../../../Config/Helpers";
@@ -22,6 +25,10 @@ export default function AIChatPage() {
 
   const userImage = JSON.parse(localStorage.getItem("user"))?.image ?? Logo;
   const aiImage = aiFigure?.image ?? Logo;
+  const userId = useSelector((state) => state.user.user?.id); // Assuming user ID is stored in Redux
+
+  // Fetch user details by ID
+  const { data: user,  isError,refetch:userRefetch } = useGetUserByIdQuery(userId);
 
   // Log the figure for debugging
   console.log("figure", aiFigure);  // Ensure it's correctly passed
@@ -101,7 +108,7 @@ export default function AIChatPage() {
         const response = await axios.post(`${Helpers.apiUrl}ai-figures/chat/${figureId}`, { message: userMessage.content }, {
           headers: { "Content-Type": "application/json", Authorization: `Bearer ${localStorage.getItem("token")}` },
         });
-
+        userRefetch()
         const aiResponse = {
           sender: aiFigure?.name || "AI Figure",
           content: response.data || "This is an automated response.",

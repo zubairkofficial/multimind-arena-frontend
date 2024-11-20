@@ -9,7 +9,14 @@ import { useSelector } from "react-redux";
 import { getSocket, initiateSocketConnection } from "../../app/socket";
 import "./../../components/Arenas/arenas.css";
 import { ArenaRequestStatus } from '../../common'; // Ensure this is imported to check status
-import {  useGetUserByIdQuery } from '../../features/api/userApi'; // Import the query hook
+import {  useGetUserByIdQuery,useGetUserInfoCountQuery } from '../../features/api/userApi'; // Import the query hook
+import { FaUser } from "react-icons/fa6";
+import { FaUserCheck } from "react-icons/fa6";
+import { HiMiniCpuChip } from "react-icons/hi2";
+import { Link } from 'react-router-dom';
+
+
+
 
 export default function UserDashboard() {
   const { data: arenas, error, isLoading, refetch } = useGetAllArenasQuery();
@@ -20,13 +27,44 @@ export default function UserDashboard() {
 
   const navigate = useNavigate();
   const user = useSelector((state) => state.user.user);
-  const userId = user.id;
+  const userId = user?.id;
   const isMounted = useRef(true);
 
   
-  const { data: userData, isLoading: userLoading, error: userError } = useGetUserByIdQuery(user.id);
+  const { data: userData, isLoading: userLoading, error: userError } = useGetUserByIdQuery(user?.id);
  
+  const { data: userTotalCountData } = useGetUserInfoCountQuery(userId); // Fetch API data
 
+  const cardsData = [
+    {
+      title: "Remaning Coins",
+      count: userData?.availableCoins??0,
+      className: "total-users-card",
+      path: "/admin/users",
+      userIcon: <FaUser />,
+    },
+    {
+      title: "Total Arenas",
+      count: userTotalCountData?.arenasCount??0,
+      className: "active-arenas-card",
+      path: "/admin/manage-arenas",
+      userIcon: <FaUserCheck />,
+    },
+    {
+      title: "AI Figures",
+      count: userTotalCountData?.aifiguresCount??0,
+      className: "ai-figures-card",
+      path: "/admin/manage-ai-figures",
+      userIcon: <HiMiniCpuChip />,
+    },
+    // {
+    //   title: "Total Coins",
+    //   count: 8,
+    //   className: "daily-active-users-card",
+    //   path: "/admin/users",
+    //   userIcon: <FaUser />,
+    // },
+  ];
   useEffect(() => {
     isMounted.current = true;
     refetch();
@@ -86,7 +124,7 @@ export default function UserDashboard() {
 
     // Introduce a small delay before navigation
     setTimeout(() => {
-      response && navigate(`/arena-chat/${response.id}`, { state: response });
+      response && navigate(`/arena-chat/${response?.id}`, { state: response });
     }, 500);
   };
 
@@ -115,7 +153,7 @@ export default function UserDashboard() {
       if (socket) {
         socket.emit(
           "joinRoom",
-          { arenaId: arena.id, userId },
+          { arenaId: arena?.id, userId },
           (error, success) => {
             if (error) {
               console.error("Socket error:", error);
@@ -142,7 +180,7 @@ export default function UserDashboard() {
   };
   console.log("No join", joinError);
   const arenasByType = arenas?.reduce((acc, arena) => {
-    const type = arena.arenaType.name;
+    const type = arena?.arenaType?.name;
     if (!acc[type]) acc[type] = [];
     acc[type].push(arena);
     return acc;
@@ -157,15 +195,38 @@ export default function UserDashboard() {
 
   return (
     <div className="container">
+    
       <div className="arena-dashboard">
         <div className="search-bar-section">
           <SearchBar
             onClick={() => navigate(userData?.createArenaRequestStatus === ArenaRequestStatus.APPROVED ? "/add-arena" : "/request-arena")}
-            heading="Join Arena Now"
-            title="Create Arena"
+            heading={`Welcome to Arena1, ${userData?.name}`}
+            title="Create Arena "
             placeholder="Search for arenas..."
+            style={{fontSize:"2.4rem"}}
           />
         </div>
+        <div className="row mb-4">
+     {cardsData.map((card, index) => (
+        <div className="col-md-3" key={index}>
+        <Link to={card.path}>
+          {/* admin-card card*/}
+          <div className={`text-white card-glass ${card.className}`}>
+            {/* card-body */}
+            <div className="card-body d-flex align-items-center">
+              <div className="ls">
+                {card.userIcon}
+              </div>
+              <div className="rs ms-3">
+                <h5 className="card-title">{card.title}</h5>
+                <h2 className="card-text text-center">{card.count}</h2>
+              </div>
+            </div>
+          </div>
+        </Link>
+      </div>
+      ))}
+     </div>
 
         {arenas?.length > 0 ? (
           <>

@@ -3,6 +3,8 @@ import { Clock, Info, Users } from "lucide-react";
 import "./ArenaCard.css";
 import Logo from '../../../public/assets/images/logo/logo.png';
 
+
+
 export default function ArenaCard({ arena, onJoin }) {
   const [isInfoHovered, setIsInfoHovered] = useState(false);
   const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
@@ -24,18 +26,23 @@ export default function ArenaCard({ arena, onJoin }) {
   const handleInfoMouseLeave = () => {
     setIsInfoHovered(false);
   };
-
+ 
   return (
-    <div className="arena-card m-3 h-20">
-      <div className="arena-card-image-wrapper">
-        <img src={arena?.image ?? Logo}  alt="Arena Image" className="arena-card-image"   onError={(e) => e.target.src = Logo} // Fallback to Logo if the image fails to load
+    <>
+    
+  
+    <div className="arena-card  h-20">
+      
+      <div className=" img-fluid">
+        <img src={arena?.image ?? Logo}  alt="Arena Image" className="arena-card-image "   onError={(e) => e.target.src = Logo} // Fallback to Logo if the image fails to load
   />
       </div>
       <div className="arena-card-content">
-        <h3 className="arena-card-title">{arena.name}</h3>
-        <div className="arena-card-description">{arena.description}</div>
+        <h3 className="arena-card-title font-bold fs-6">{arena.name}</h3>
         <div className="arena-info">
+          
           <div className="arena-info-item">
+            
             <Users className="icon mx-2"  size={14} />
           
             <span>{arena.userArenas.length}/{arena.maxParticipants === 0 ? "Unlimited" : arena.maxParticipants}</span>
@@ -53,6 +60,8 @@ export default function ArenaCard({ arena, onJoin }) {
           </div>
         </div>
         <div className="arena-card-footer">
+        <div className="arena-card-description text-wrap">{arena.description}</div>
+
           <button className="btn custom-btn" onClick={onJoin}>Join Arena</button>
           <div className="arena-status">
             <span className={`arena-card-status ${arena.status === "open" ? "active-badge" : "inactive"}`}>
@@ -72,10 +81,11 @@ export default function ArenaCard({ arena, onJoin }) {
             left: tooltipPosition.x + 15,
           }}
         >
-          <p><strong>Description:</strong> {arena.description}</p>
-          <p><strong>Created by:</strong> @{arena.createdBy.username}</p>
+          <p><strong>Description:</strong> {arena?.description}</p>
+          <p><strong>Created by:</strong> @{arena?.createdBy?.username}</p>
         </div>
       )}
     </div>
+    </>
   );
 }

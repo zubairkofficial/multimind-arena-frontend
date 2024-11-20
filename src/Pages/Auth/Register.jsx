@@ -104,7 +104,7 @@ const Register = () => {
 
   // Handle Google login
   const handleGoogleLogin = () => {
-    const googleLoginUrl = "https://chat-arena-backend-4ba91b3feb6b.herokuapp.com/google-auth";
+    const googleLoginUrl = "http://ec2-13-60-19-246.eu-north-1.compute.amazonaws.com/google-auth";
     window.location.href = googleLoginUrl;
   };
 

@@ -36,14 +36,14 @@ export default function ManageArenas() {
   const formattedData = arenasData?.map((arena) => ({
     id: arena.id,
     image: arena.image,
-    title: arena.name,
+    title: arena?.name,
     type: arena.arenaType?.name || "Unknown",
     aiFigure: arena.arenaAIFigures?.map((fig) => fig.id).join(", ") || "None",
     expirySession: arena.expiryTime
       ? new Date(arena.expiryTime).toLocaleDateString()
       : "N/A",
     status: arena.status.charAt(0).toUpperCase() + arena.status.slice(1),
-    creator: arena.createdBy.name,
+    creator: arena.createdBy?.name,
   }));
 
   // Modify the filtering logic to search across multiple fields

@@ -22,7 +22,7 @@ function AIFigureInfoCard({
 
   return (
     <div>
-      <div className="d-flex justify-content-between align-items-center p-3  ">
+      <div className=" d-flex justify-content-between align-items-center p-3  ">
         <div className="d-flex gap-3">
           {/* Arena Name */}{" "}
           <img

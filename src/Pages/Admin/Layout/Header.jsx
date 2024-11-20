@@ -1,12 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleSidebar } from "./../../../features/sidebarSlice"; // Import the action
 import Logo from '../../../../public/assets/images/logo/logo.png';
+import { useGetUserByIdQuery } from "../../../features/api/userApi"; // Import the query hook
+import { clearUser } from "../../../features/userSlice";
 
 const Header = () => {
   const dispatch = useDispatch();
   const sidebarOpen = useSelector((state) => state.sidebar.sidebarOpen);
+  const userId = useSelector((state) => state.user.user?.id); // Assuming user ID is stored in Redux
+  const navigate = useNavigate();
+
+  // Fetch user details by ID
+  const { data: userData, isLoading, isError } = useGetUserByIdQuery(userId);
 
   const [userDetails, setUserDetails] = useState({
     name: "Test User", // default values
@@ -28,8 +35,10 @@ const Header = () => {
     dispatch(toggleSidebar()); // Dispatch action to toggle sidebar state
   };
 
-  const handleLogout = () => {
-    localStorage.clear();
+  const handleLogout =async () => {
+    await localStorage.clear();
+    dispatch(clearUser()); // Clear the Redux user state
+    navigate("/login");
   };
 
   return (
@@ -71,17 +80,19 @@ const Header = () => {
               {/* Start Mobile-Menu-Bar */}
               {/* Start Admin meta Group */}
               <div className="rbt-admin-panel account-access rbt-user-wrapper right-align-dropdown">
-                <div className="rbt-admin-card grid-style">
+                <div className="rbt-admin-card grid-style rounded-4" style={{background:"#0a3d0c"}}>
                   <Link className="d-flex align-items-center" to="#">
-                    <div className="inner d-flex align-items-center">
+                    <div className="inner d-flex align-items-center" >
                       <div className="img-box">
                         <img
+                          height="10rem"
+                          width="27rem"
                           src="/assets/images/team/team-01sm.jpg"
                           alt="Admin"
                         />
                       </div>
                       <div className="content">
-                        <span className="title ">{userDetails.name}</span>
+                        <span className="title text-capitalize ">{userDetails.name}</span>
                        
                       </div>
                     </div>
@@ -90,7 +101,7 @@ const Header = () => {
                     </div>
                   </Link>
                 </div>
-                <div className="rbt-user-menu-list-wrapper">
+                <div className="rbt-user-menu-list-wrapper" style={{background:"#0a3d0c"}}>
                   <div className="inner">
                     <div className="rbt-admin-profile">
                       <div className="admin-thumbnail">
@@ -100,7 +111,7 @@ const Header = () => {
                         />
                       </div>
                       <div className="admin-info">
-                        <span className="name">{userDetails.name}</span>
+                        <span className="name text-capitalize">{userDetails.name}</span>
                         <Link
                           className="rbt-btn-link color-primary"
                           to="/admin/view-profile"
@@ -109,6 +120,8 @@ const Header = () => {
                         </Link>
                       </div>
                     </div>
+                    <hr style={{ borderTop: "4px solid #00ff00" }} className="mt-0" />
+
                     <ul className="user-list-wrapper user-nav">
                       <li>
                         <Link to="/profile">
@@ -134,7 +147,9 @@ const Header = () => {
                     <hr className="mt--10 mb--10" />
                     <ul className="user-list-wrapper">
                       <li>
-                        <Link to="/" onClick={handleLogout}>
+                        <Link 
+                        to="/login"
+                        onClick={handleLogout}>
                           <i className="fa-sharp fa-solid fa-right-to-bracket" />
                           <span>Logout</span>
                         </Link>

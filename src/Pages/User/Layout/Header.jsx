@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleSidebar, toggleRightSidebar } from "./../../../features/sidebarSlice";
 import { clearUser } from "../../../features/userSlice";
@@ -8,6 +8,7 @@ import Logo from '../../../../public/assets/images/logo/logo.png';
 
 const Header = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const sidebarOpen = useSelector((state) => state.sidebar.sidebarOpen);
   const rightSidebarOpen = useSelector((state) => state.rightSidebar.rightSidebarOpen);
   const userId = useSelector((state) => state.user.user?.id); // Assuming user ID is stored in Redux
@@ -23,8 +24,9 @@ const Header = () => {
     dispatch(toggleRightSidebar());
   };
 
-  const handleLogout = () => {
+  const handleLogout =async () => {
     dispatch(clearUser());
+    navigate('/login')
   };
 
   return (
@@ -59,7 +61,7 @@ const Header = () => {
                 <div className="hamberger"></div>
               </div>
               <div className="rbt-admin-panel account-access rbt-user-wrapper right-align-dropdown">
-                <div className="rbt-admin-card grid-style">
+                <div className="rbt-admin-card grid-style rounded-4" style={{background:"#0a3d0c"}}>
                   <Link className="d-flex align-items-center" to="#">
                     <div className="inner d-flex align-items-center">
                       <div className="">
@@ -79,10 +81,8 @@ const Header = () => {
                         />
                       </div>
                       <div className="content">
-                        <span className="title">{user?.name || "Loading..." }</span>
-                        <span className="available-coins">
-                          {user?.availableCoins ? ` ${user.availableCoins} coins` : ` ${0} coins`}
-                        </span>
+                        <span className="title fs-4 font-bold">{user?.name || "Loading..." }</span>
+                       
                       </div>
                     </div>
                     <div className="icon">
@@ -90,31 +90,37 @@ const Header = () => {
                     </div>
                   </Link>
                 </div>
-                <div className="rbt-user-menu-list-wrapper">
+                <div className="rbt-user-menu-list-wrapper" style={{ background:"#0a3d0c"}}>
                   <div className="inner">
                     <div className="rbt-admin-profile">
-                      <div className="">
+                      <div className="me-2" >
                         <img
                           src={user?.image || Logo}
                           className="img-fluid rounded-circle"
                           style={{
-                            width: "40px",
-                            height: "40px",
+                            width: "4rem",
+                            height: "3.4rem",
                             borderRadius: "50%",
                             objectFit: "cover",
                             marginRight: "10px",
                             border: "2px solid #00ff00",
+                            padding:"1px"
+                            
+                           
                           }}
                           onError={(e) => (e.target.src = Logo)}
                         />
                       </div>
-                      <div className="admin-info">
-                        <span className="name">{user?.name || "Loading..."}</span>
+                      <div className="admin-info ps-3">
+                        <span className="name fs-5 font-bold">{user?.name || "Loading..." }</span>
+                      <span className="name fs-6">{user?.availableCoins} Coins</span>
                         <Link className="rbt-btn-link color-primary" to="/view-profile">
                           View Profile
                         </Link>
                       </div>
+                     
                     </div>
+                    <hr style={{ borderTop: "4px solid #00ff00" }} className="mt-0" />
                     <ul className="user-list-wrapper user-nav">
                       <li>
                         <Link to="/edit-profile">
@@ -139,7 +145,7 @@ const Header = () => {
                     <hr className="mt--10 mb--10" />
                     <ul className="user-list-wrapper">
                       <li>
-                        <Link to="/" onClick={handleLogout}>
+                        <Link  onClick={handleLogout}>
                           <i className="fa-sharp fa-solid fa-right-to-bracket" />
                           <span>Logout</span>
                         </Link>

@@ -5,7 +5,7 @@ let socket;
 
 export const initiateSocketConnection = () => {
     if (!socket) {
-        socket = io( "http://localhost:8080"); // Update with your socket server URL
+        socket = io("http://localhost:8080"); // Update with your socket server URL
         console.log("Socket connected");
     }
 };

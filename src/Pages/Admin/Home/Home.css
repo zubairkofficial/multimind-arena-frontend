@@ -20,9 +20,13 @@
     /* Increase card height */
 }
 
+
+
+
+
 .admin-card:hover {
     transform: translateY(-10px);
-    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.8);
+    box-shadow: 0 4px 15px var(--card-hover-shadow);
     /* Green box shadow on hover */
 }
 
@@ -109,7 +113,7 @@
 /* General card styling */
 
 .card {
-    background-color: #101010;
+    background-color: #4caf50;
     border: none;
     border-radius: 20px;
     padding: 2rem;
@@ -142,3 +146,43 @@
  ::-webkit-scrollbar-thumb:hover {
     background: #555;
 }
+.card-glass {
+    background: #0a3d0c; /* Semi-transparent background */
+    backdrop-filter: blur(10px); /* Blur effect */
+    border-radius: 15px; /* Rounded corners */
+    border: 2px solid #4caf50; /* Light border */
+    transition: transform 0.3s; /* Smooth hover effect */
+
+  }
+  .table-glass {
+    background: #444; /* Semi-transparent background */
+    backdrop-filter: blur(10px); /* Blur effect */
+    border-radius: 15px; /* Rounded corners */
+    border: 2px solid #4caf50; /* Light border */
+    transition: transform 0.3s; /* Smooth hover effect */
+
+  }
+  
+  .card-glass:hover {
+    transform: scale(1.05); /* Scale effect on hover */
+  }
+  
+  .card-body {
+    padding: 20px; /* Padding for card content */
+  }
+  
+  .ls {
+    font-size: 2rem; /* Adjust icon size */
+  }
+  
+  .rs {
+    text-align: left; /* Align text to the left */
+  }
+  
+  .card-title {
+    font-weight: bold; /* Bold title */
+  }
+  
+  .card-text {
+    font-size: 1.5rem; /* Adjust count size */
+  }

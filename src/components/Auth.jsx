@@ -13,14 +13,14 @@ const Auth = ({ children, isAuth = true, isAdmin = false }) => {
     let minutesPassed = Math.floor((currentTime - loginTime) / (1000 * 60));
 
     // Session expiration check: Expire after 60 minutes
-    if (minutesPassed > 60) {
-      localStorage.clear();
-      Helpers.toast(
-        "error",
-        "Session expired. Please login again to continue."
-      );
-      return <Navigate to="/login" />;
-    }
+    // if (minutesPassed > 60) {
+    //   localStorage.clear();
+    //   Helpers.toast(
+    //     "error",
+    //     "Session expired. Please login again to continue."
+    //   );
+    //   return <Navigate to="/login" />;
+    // }
   }
 
   // For protected routes

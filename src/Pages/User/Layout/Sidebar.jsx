@@ -1,46 +1,54 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-import Logo from '../../../../public/assets/images/logo/logo.png';
-import { ArenaRequestStatus } from '../../../common';  // Correct named import for ArenaRequestStatus
+import { useLocation, Link } from "react-router-dom";
+import Logo from "../../../../public/assets/images/logo/logo.png";
+import { ArenaRequestStatus } from "../../../common"; // Correct named import for ArenaRequestStatus
 import { useGetUserByIdQuery } from "../../../features/api/userApi";
-
+import "./layout.css";
 const Sidebar = () => {
   const sidebarOpen = useSelector((state) => state.sidebar.sidebarOpen);
-
   const user = useSelector((state) => state.user.user);
-  const { data: userData, isLoading: userLoading, error: userError,refetch } = useGetUserByIdQuery(user.id);
- 
+  const {
+    data: userData,
+    isLoading: userLoading,
+    error: userError,
+    refetch,
+  } = useGetUserByIdQuery(user.id);
 
-
-  // Local state to hold user details
   const [userDetails, setUserDetails] = useState({
     name: "User", // default value
     email: "user@example.com", // default value
   });
 
-  // Fetch user data from local storage when the component mounts
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user")); // Assuming user data is stored as an object in local storage
     if (user) {
       setUserDetails({
         name: user.name || "User",
       });
-    refetch()
-
+      refetch();
     }
   }, []);
-
 
   // Sidebar menu items
   const mainMenuItems = [
     { path: "/dashboard", icon: "fa-home", label: "Playground" },
     {
-      path: userData?.createArenaRequestStatus === ArenaRequestStatus.APPROVED ? "/add-arena" : "/request-arena",
+      path:
+        userData?.createArenaRequestStatus === ArenaRequestStatus.APPROVED
+          ? "/add-arena"
+          : "/request-arena",
       icon: "fa-plus-circle",
-      label: userData?.createArenaRequestStatus === ArenaRequestStatus.APPROVED ? "Add Arena" : "Request"
+      label:
+        userData?.createArenaRequestStatus === ArenaRequestStatus.APPROVED
+          ? "Add Arena"
+          : "Request",
     },
-    { path: "/ai-figure-gallery", icon: "fa-images", label: "AI Figure Gallery" },
+    {
+      path: "/ai-figure-gallery",
+      icon: "fa-images",
+      label: "AI Figure Gallery",
+    },
   ];
 
   const settingMenuItems = [
@@ -48,6 +56,13 @@ const Sidebar = () => {
     { path: "/purchase", icon: "fa-shop", label: "Buy Arena Coins" },
   ];
 
+  const location = useLocation(); // Get the current route
+
+  // Helper function to check if the current path matches the link's path
+  const isActive = (path) => {
+    return location.pathname === path ? "active" : ""; // Return 'active' class if the path matches
+  };
+  console.log("isActive", isActive);
   return (
     <>
       <div className="popup-mobile-menu">
@@ -75,19 +90,42 @@ const Sidebar = () => {
             <div className="content-item-content">
               <div className="rbt-default-sidebar-wrapper">
                 <nav className="mainmenu-nav">
-                  <ul className="dashboard-mainmenu rbt-default-sidebar-list">
+                  <ul className="dashboard-mainmenu rbt-default-sidebar-list ">
                     {mainMenuItems?.map((item, index) => (
-                      <li key={index} className="d-flex justify-content-center align-items-center">
+                      <li
+                        key={index}
+                        className={`d-flex justify-content-center align-items-center fs-3 ${isActive(
+                          item.path
+                        )}`}
+                      >
                         <Link to={item.path}>
-                          <i className={`fa-solid ${item.icon}`} />
-                          <span>{item.label}</span>
+                          <i
+                            style={{
+                              color:
+                                isActive(item.path) === "active"
+                                  ? "#00ff00"
+                                  : "",
+                            }} // Check if the link is active
+                            className={`fa-solid ${item.icon}`}
+                          />
+                          <span
+                            style={{
+                              color:
+                                isActive(item.path) === "active"
+                                  ? "#00ff00"
+                                  : "",
+                            }} // Apply the same style to the text
+                            className="fs-4 font-bold"
+                          >
+                            {item.label}
+                          </span>
                         </Link>
                       </li>
                     ))}
                   </ul>
                 </nav>
                 <div className="rbt-sm-separator" />
-                <nav className="mainmenu-nav">
+                <nav className="mainmenu-nav" >
                   <ul className="dashboard-mainmenu rbt-default-sidebar-list">
                     <li className="has-submenu">
                       <Link
@@ -104,9 +142,11 @@ const Sidebar = () => {
                       <div className="collapse" id="collapseSettings">
                         <ul className="submenu rbt-default-sidebar-list">
                           {settingMenuItems?.map((item, index) => (
-                            <li key={index}>
+                            <li key={index} className={isActive(item.path)}>
                               <Link to={item.path}>
-                                <i className={`fa-sharp fa-regular ${item.icon}`} />
+                                <i
+                                  className={`fa-sharp fa-regular ${item.icon}`}
+                                />
                                 <span>{item.label}</span>
                               </Link>
                             </li>
@@ -146,7 +186,7 @@ const Sidebar = () => {
                 </div>
               </Link>
               <div className="btn-part">
-                <Link to="/shop" className="btn-default btn-border">
+                <Link to="/shop" className="btn-default btn-border" style={{background:"#0a3d0c",color:"#00ff00"}}>
                   Upgrade
                 </Link>
               </div>

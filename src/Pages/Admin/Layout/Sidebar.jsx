@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link,useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Logo from '../../../../public/assets/images/logo/logo.png';
-
+import './Sidebar.css'
 const Sidebar = () => {
   const sidebarOpen = useSelector((state) => state.sidebar.sidebarOpen);
+  const location = useLocation(); // Get the current location (path)
 
   // Local state to hold user details
   const [userDetails, setUserDetails] = useState({
@@ -33,8 +34,11 @@ const Sidebar = () => {
     { path: "/admin/arena-types", icon: "fa-info", label: "Manage Arena Types" }, 
     { path: "/admin/manage-transactions", icon: "fa-coin", label: "Manage Transactions" }, 
     { path: "/admin/arena-access", icon: "fa-hourglass-half", label: "Manage Arena Access" }, 
+    { path: "/admin/llm-dashboard", icon: "fa-hourglass-half", label: "Llm Model" }, 
   ];
-
+  const isActive = (path) => {
+    return location.pathname === path ? "active" : ""; // Return 'active' class if the path matches
+  };
   return (
     <>
       <div className="popup-mobile-menu ">
@@ -68,11 +72,25 @@ const Sidebar = () => {
                     {menuItems.map((item, index) => (
                       <li
                         key={index}
-                        className="d-flex justify-content-center align-items-center"
+                        className={`d-flex justify-content-center align-items-center ${isActive(item.path)}`}
                       >
                         <Link to={item.path}>
-                          <i className={`fa-solid ${item.icon}`} />
-                          <span>{item.label}</span>
+                          <i className={`fa-solid ${item.icon}`}
+                           style={{
+                            color:
+                              isActive(item.path) === "active"
+                                ? "#00ff00"
+                                : "",
+                          }} // Apply the same style to the text
+                          />
+                          <span 
+                           style={{
+                            color:
+                              isActive(item.path) === "active"
+                                ? "#00ff00"
+                                : "",
+                          }} // Apply the same style to the text
+                          >{item.label}</span>
                         </Link>
                       </li>
                     ))}

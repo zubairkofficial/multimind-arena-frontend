@@ -20,6 +20,7 @@
     overflow: hidden;
     /* Hides any overflow from different aspect ratios */
     position: relative;
+    object-fit: contain;
 }
 
 .arena-card-image {

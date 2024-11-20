@@ -8,7 +8,7 @@ const UserAddArena = () => {
     <div className="p-5">
       {/* Admin Banner Area */}
 
-      <h3 className="title d-flex justify-content-center">Add New Arena</h3>
+      <h3 className="title d-flex ps-5 fs-5 font-bold ">Add New Arena</h3>
 
    
 

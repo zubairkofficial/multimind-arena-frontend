@@ -8,22 +8,43 @@ import Logo from '../../../public/assets/images/logo/logo.png'
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState(""); // State to track email validation error
   const [forgotPassword, { isLoading }] = useForgotPasswordMutation(); // Hook for forgotPassword mutation
   const notyf = new Notyf();
+
+  // Regular expression for email validation
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
 
   // Handle email input
   const handleChange = (e) => {
     setEmail(e.target.value);
+
+    // Validate email in real-time
+    if (!validateEmail(e.target.value)) {
+      setEmailError("Please enter a valid email address.");
+    } else {
+      setEmailError(""); // Clear error if email is valid
+    }
   };
 
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Final email validation before submission
+    if (!validateEmail(email)) {
+      setEmailError("Please enter a valid email address.");
+      return;
+    }
+
     try {
       // Trigger the forgot password mutation
       await forgotPassword(email).unwrap();
       // Show success toast
+      setEmail("")
       notyf.success("Reset password email sent successfully.");
     } catch (err) {
       // Show error message
@@ -41,7 +62,10 @@ const ForgotPassword = () => {
               <div className="col-lg-6 bg-color-blackest left-wrapper">
                 <div className="sign-up-box">
                   <div className="signup-box-top">
-                    <img src={Logo} alt="sign-up logo"   onError={(e) => e.target.src = Logo} // Fallback to Logo if the image fails to load
+                    <img
+                      src={Logo}
+                      alt="sign-up logo"
+                      onError={(e) => (e.target.src = Logo)} // Fallback to Logo if the image fails to load
                     />
                   </div>
                   <div className="signup-box-bottom">
@@ -57,15 +81,19 @@ const ForgotPassword = () => {
                             type="email"
                             value={email}
                             onChange={handleChange}
-                            className="text-center"
+                            className={`text-center ${
+                              emailError ? "is-invalid" : ""
+                            }`}
                             placeholder="Enter your email"
-                            required
                           />
+                          {emailError && (
+                            <div className="text-danger mt-2">{emailError}</div>
+                          )}
                         </div>
                         <Button
                           type="submit"
                           className="btn-default mt-4"
-                          disabled={isLoading}
+                          disabled={isLoading || emailError}
                         >
                           {isLoading ? "Sending..." : "Send Reset Link"}
                         </Button>

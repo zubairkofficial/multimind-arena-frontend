@@ -72,7 +72,7 @@ const AIFigureGallery = () => {
         {categories?.map((category) => (
           <button
             key={category}
-            className={`category-btn ${filter === category ? "active" : ""}`}
+            className={`category-btn fs-5 font-bold text-capitalize ${filter === category ? "active" : ""}`}
             onClick={() => setFilter(category)}
             aria-pressed={filter === category}
             aria-label={`Filter by ${category}`}
@@ -88,7 +88,7 @@ const AIFigureGallery = () => {
         {filteredFigures?.map((figure) => (
           <>
           <div className= {sidebarOpen && rightSidebarOpen?'col-12 col-md-6 col-lg-6 ':sidebarOpen | rightSidebarOpen?'col-12 col-md-4 col-lg-4': "col-12 col-md-3 col-lg-3"}>
-          <div className="m-4 bg-error">
+          <div className="m-4  ">
           <AIFigureCard
             key={figure.id}
             figure={figure}

@@ -44,33 +44,54 @@ import CreateCard from './Pages/User/Payments/CreateCard'
 import Purchase from './Pages/User/Payments/Purchase'
 import ExistingCards from './Pages/User/Payments/ExistingCards'
 import ManageArenaAccess from './Pages/Admin/Arena/ManageArenaAccess'
+// import AuthRedirect from "./AuthRedirect";
+import ManageAdminLlmModels from "./Pages/Admin/LlmModel/index";
+import CreateAdminLlmModel from "./Pages/Admin/LlmModel/CreateAdminLlmMoel";
 // Define routes
 export const router = createBrowserRouter([
   // Default Routes
   {
     path: "/",
-    element: <Index />,
+    element:  (
+    // <AuthRedirect>
+       <Index />
+     //   </AuthRedirect>
+        ),
   },
   {
     path: "/register",
-    element: <Register />,
+    element: (
+      // <AuthRedirect>
+        <Register />
+      // </AuthRedirect>
+    ),
+  },
+  {
+    path: "/login",
+    element: (
+      // <AuthRedirect>
+        <Login />
+      // </AuthRedirect>
+    ),
+  },
+  {
+    path: "/forgot-password",
+    element: (
+      // <AuthRedirect>
+        <ForgotPassword />
+      // </AuthRedirect>
+    ),
   },
   {
     path: "/user-verification",
     element: <UserVerification />,
   },
-  {
-    path: "/login",
-    element: <Login />,
-  },
+  
   {
     path: "/verify-email",
     element: <VerifyEmail />,
   },
-  {
-    path: "/forgot-password",
-    element: <ForgotPassword />,
-  },
+  
   {
     path: "/reset-password",
     element: <ResetPassword />,
@@ -94,6 +115,14 @@ export const router = createBrowserRouter([
       {
         path: "users",
         element: <AdminUsers />,
+      },
+      {
+        path: "llm-dashboard",
+        element: <ManageAdminLlmModels />,
+      },
+      {
+        path: "create-llm",
+        element: <CreateAdminLlmModel />,
       },
       {
         path: "manage-arenas",

@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation,Navigate } from "react-router-dom";
 import { Notyf } from "notyf";
 import "notyf/notyf.min.css";
 import Helpers from "../../Config/Helpers";
-import { useDispatch } from "react-redux";
 import { setUser } from "../../features/userSlice";
 import { useLoginMutation } from "../../features/api/authApi"; // Import the login mutation
 import Logo from '../../../public/assets/images/logo/logo.png';
+import { useDispatch, useSelector } from "react-redux";
 
 const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
+  const token = useSelector((state) => state.auth.token); // Get token from Redux state
 
   // Using the login mutation
   const [login, { isLoading }] = useLoginMutation();
@@ -36,6 +37,10 @@ const Login = () => {
     if (name === "password") setPasswordError("");
   };
 
+
+  if (token) {
+    return <Navigate to="/dashboard" replace />; // If the user is already logged in, redirect to the dashboard
+  }
   // Function to handle successful login
   const handleLoginSuccess = (userData) => {
     const notyf = new Notyf();
@@ -50,7 +55,7 @@ const Login = () => {
     Helpers.setItem("token", userData.token);
 
     // Redirect based on user role
-    navigate(userData.user.isAdmin ? "/admin/dashboard" : "/dashboard");
+    navigate(userData?.user?.isAdmin ? "/admin/dashboard" : "/dashboard");
   };
 
   // Handle form submission using login mutation
@@ -85,7 +90,7 @@ const Login = () => {
 
   // Handle Google login
   const handleGoogleLogin = () => {
-    const googleLoginUrl = "https://chat-arena-backend-4ba91b3feb6b.herokuapp.com/google-auth";
+    const googleLoginUrl = "http://ec2-13-60-19-246.eu-north-1.compute.amazonaws.com/google-auth";
     window.location.href = googleLoginUrl;
   };
 
@@ -97,7 +102,7 @@ const Login = () => {
 
     if (token && user) {
       try {
-        const userObj = JSON.parse(user);
+        const userObj =user&& JSON.parse(user);
         handleLoginSuccess({ user: userObj, token });
       } catch (error) {
         setError("Failed to log in with Google. Please try again.");
