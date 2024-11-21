@@ -70,7 +70,7 @@ const CustomTable = ({
           <thead>
             <tr>
               {headers.map((header, index) => (
-                <th key={index}>{header}</th>
+                <th key={index} className='fs-5 font-bold'>{header}</th>
               ))}
             </tr>
           </thead>

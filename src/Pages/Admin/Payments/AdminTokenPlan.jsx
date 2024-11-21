@@ -72,7 +72,8 @@ const ManageBundlePlan = () => {
 
   return (
     <div className="manage-bundle-plan-container" style={{ padding: "2rem", maxWidth: "800px" }}>
-      <form onSubmit={(e) => { e.preventDefault(); handleAddBundle(); }} className="bundle-form">
+      <form onSubmit={(e) => { e.preventDefault(); handleAddBundle(); }} className="bundle-form fs-6">
+        <h6 className="fs-5">Add New Bundle</h6>
         <div className="form-group">
           <label>Name</label>
           <input type="text" value={label} onChange={(e) => setLabel(e.target.value)} placeholder="Enter Package Name" required />
@@ -102,8 +103,8 @@ const ManageBundlePlan = () => {
         </div>
 
         <div className="form-group">
-          <button type="submit" className="btn-default" disabled={isSubmitting}>
-            {isSubmitting ? "Processing..." : (location.state ? "Update Bundle" : "Add Bundle")}
+          <button type="submit" className="btn-default btn-small" disabled={isSubmitting}>
+           <span className="fs-5"> {isSubmitting ? "Processing..." : (location.state ? "Update Bundle" : "Add Bundle")}</span>
           </button>
         </div>
       </form>

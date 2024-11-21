@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { useGetUsersWithPendingStatusQuery, useUpdateArenaRequestStatusMutation } from "../../../features/api/userApi"; // Import the new query for pending status
+import { useGetUsersWithPendingStatusQuery, useUpdateArenaRequestStatusMutation } from "../../../features/api/userApi";
 import { Notyf } from 'notyf';
 import 'notyf/notyf.min.css';
 import CustomTable from '../../../components/Table/CustomTable';
 import Pagination from '../../../components/Table/Pagination';
-import { ArenaRequestStatus } from '../../../common'; // Ensure this is imported to check status
+import { ArenaRequestStatus } from '../../../common';
 import './ManageArenaAccess.css';
+import Searchbar from "../../../components/Searchbar/Searchbar";
 
 const ManageArenaAccess = () => {
   const notyf = new Notyf();
 
-  // Fetching only users with a pending arena access status
   const { data: users, isLoading, error } = useGetUsersWithPendingStatusQuery();
-  const [updateArenaRequestStatus] = useUpdateArenaRequestStatusMutation(); // Hook for updating status
+  const [updateArenaRequestStatus] = useUpdateArenaRequestStatusMutation();
   const [userDetails, setUserDetails] = useState([]);
+  const [searchText, setSearchText] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [entriesPerPage, setEntriesPerPage] = useState(5);
 
@@ -22,14 +23,7 @@ const ManageArenaAccess = () => {
       notyf.error('Failed to load users');
     }
     if (users) {
-      console.log("users", users?.map(user => ({
-        id: user.id,
-        name: user.name,
-        username: user.username,
-        createArenaRequestStatus: user.createArenaRequestStatus,
-      })));
-      
-      const allUsers = users?.map(user => ({
+      const allUsers = users.map(user => ({
         id: user.id,
         userName: user.username,
         status: user.createArenaRequestStatus || ArenaRequestStatus.STATUS,
@@ -38,54 +32,49 @@ const ManageArenaAccess = () => {
       setUserDetails(allUsers);
     }
   }, [users, error]);
-  
 
   const handleStatusChange = async (userId, newStatus) => {
     try {
-      // Call the mutation to update the status
       const response = await updateArenaRequestStatus({ userId, newStatus }).unwrap();
-
-      // Success notification
       notyf.success(`Request ${newStatus === ArenaRequestStatus.APPROVED ? 'approved' : newStatus === ArenaRequestStatus.REJECTED ? 'rejected' : 'status updated'} successfully!`);
-
-      // Update the status locally in the state after successful API call
       setUserDetails((prevUsers) =>
-        prevUsers?.map((user) =>
+        prevUsers.map((user) =>
           user.id === userId
-            ? { ...user, status: newStatus }  // Update the status locally
+            ? { ...user, status: newStatus }
             : user
         )
       );
     } catch (error) {
-      // Error handling
       notyf.error('Failed to update the request status');
     }
   };
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+  const handleSearchChange = (query) => {
+    setSearchText(query);
+    setCurrentPage(1); // Reset to the first page when applying a search filter
+  };
 
-  // Pagination logic
+  const filteredUsers = userDetails.filter(user =>
+    user.userName.toLowerCase().includes(searchText.toLowerCase()) ||
+    user.name.toLowerCase().includes(searchText.toLowerCase())
+  );
+
   const indexOfLastUser = currentPage * entriesPerPage;
   const indexOfFirstUser = indexOfLastUser - entriesPerPage;
-  const currentUsers = userDetails.slice(indexOfFirstUser, indexOfLastUser);
-  const totalPages = Math.ceil(userDetails.length / entriesPerPage);
+  const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
+  const totalPages = Math.ceil(filteredUsers.length / entriesPerPage);
 
-  // Handle page change
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
 
-  // Handle entries per page change
   const handleEntriesChange = (newEntriesPerPage) => {
     setEntriesPerPage(newEntriesPerPage);
     setCurrentPage(1);
   };
 
-  // Table headers and data
   const tableHeaders = ["User ID", "User Name", "Name", "Arena Request Status", "Actions"];
-  const tableData = currentUsers?.map(user => ({
+  const tableData = currentUsers.map(user => ({
     "User ID": user.id,
     "User Name": user.userName,
     "Name": user.name,
@@ -97,34 +86,35 @@ const ManageArenaAccess = () => {
       ? "Rejected"
       : "Not Requested",
     "Actions": (
-      <>
-        <select
-          value={user.status}
-          onChange={(e) => handleStatusChange(user.id, e.target.value)} // Handle status change
-          className="form-select"
-          style={{
-            backgroundColor: "var(--select-bg-color)", 
-            color: "var(--select-text-color)", 
-            borderColor: "var(--select-border-color)"
-          }}
-        >
-          <option value={ArenaRequestStatus.PENDING}>Pending Approval</option>
-          <option value={ArenaRequestStatus.APPROVED}>Approved</option>
-          <option value={ArenaRequestStatus.REJECTED}>Rejected</option>
-        </select>
-      </>
+      <select
+        value={user.status}
+        onChange={(e) => handleStatusChange(user.id, e.target.value)}
+        className="form-select"
+        style={{
+          backgroundColor: "var(--select-bg-color)", 
+          color: "var(--select-text-color)", 
+          borderColor: "var(--select-border-color)"
+        }}
+      >
+        <option value={ArenaRequestStatus.PENDING}>Pending Approval</option>
+        <option value={ArenaRequestStatus.APPROVED}>Approved</option>
+        <option value={ArenaRequestStatus.REJECTED}>Rejected</option>
+      </select>
     ),
   }));
 
   return (
-    <div className="container mx-5">
-      <h1 className=" fs-5 ps-2">Manage Arena Access</h1>
-
+    <div className="container ms-3">
+      <Searchbar
+        heading="Manage Arena Access"
+        placeholder="Search by User Name or Name..."
+        onSearch={handleSearchChange}
+      />
+      <div className='manage-arenas'>
       <CustomTable
         headers={tableHeaders}
         data={tableData}
       />
-
       <Pagination
         totalPages={totalPages}
         currentPage={currentPage}
@@ -132,6 +122,7 @@ const ManageArenaAccess = () => {
         entriesPerPage={entriesPerPage}
         onEntriesChange={handleEntriesChange}
       />
+      </div>
     </div>
   );
 };

@@ -140,14 +140,14 @@ export const router = createBrowserRouter([
           path: "arena-access",
           element: <ManageArenaAccess />,
         },
-      // {
-      //   path: "bundles",
-      //   element: <ManageBundle />,
-      // },
-      // {
-      //   path: "add-bundle-plan",
-      //   element: <ManageBundlePlan />,
-      // },
+      {
+        path: "bundles",
+        element: <ManageBundle />,
+      },
+      {
+        path: "add-bundle-plan",
+        element: <ManageBundlePlan />,
+      },
       {
         path: "update-bundle-plan",
         element: <ManageBundlePlan />,

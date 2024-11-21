@@ -38,9 +38,9 @@ const Login = () => {
   };
 
 
-  if (token) {
-    return <Navigate to="/dashboard" replace />; // If the user is already logged in, redirect to the dashboard
-  }
+  // if (token) {
+  //   return <Navigate to="/dashboard" replace />; // If the user is already logged in, redirect to the dashboard
+  // }
   // Function to handle successful login
   const handleLoginSuccess = (userData) => {
     const notyf = new Notyf();

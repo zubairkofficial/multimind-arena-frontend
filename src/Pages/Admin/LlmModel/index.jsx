@@ -75,7 +75,7 @@ const handleCreateLlmModel=()=>{
   }));
 
   return (
-    <div className="container mx-5">
+    <div className="container ms-3">
       <Searchbar
         heading="Manage LLM Models"
         title="Create LLM Model"
@@ -83,7 +83,7 @@ const handleCreateLlmModel=()=>{
         onClick={ handleCreateLlmModel}
         onSearch={handleSearchChange}
       />
-
+<div className="manage-arenas">
       <CustomTable headers={tableHeaders} data={tableData} />
 
       <Pagination
@@ -93,16 +93,7 @@ const handleCreateLlmModel=()=>{
         entriesPerPage={entriesPerPage}
         onEntriesChange={handleEntriesChange}
       />
-
-      {/* Create LLM Model Modal */}
-      {showCreateModal && (
-        <div className="modal-wrapper">
-          {/* <CreateAdminLlmModel /> */}
-          <button className="btn btn-sm btn-outline-secondary" onClick={() => setShowCreateModal(false)}>
-            Close
-          </button>
-        </div>
-      )}
+      </div>
 
       {/* Delete Confirmation Modal */}
       <ConfirmationModal

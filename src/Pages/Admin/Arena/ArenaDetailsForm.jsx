@@ -197,7 +197,7 @@ const ArenaDetailsForm = () => {
   return (
     <div
       className="arena-details-form-container"
-      style={{ padding: "2rem", margin: "0 auto", maxWidth: "800px" }}
+      style={{ padding: "0.9rem", margin: "0 auto", maxWidth: "800px" }}
     >
       <form onSubmit={handleSubmit} className="arena-form grid-container">
         {/* Arena Topic */}
@@ -212,7 +212,6 @@ const ArenaDetailsForm = () => {
             value={formData.name}
             onChange={handleChange}
             placeholder="Enter Topic"
-            required
           />
         </div>
 
@@ -226,7 +225,7 @@ const ArenaDetailsForm = () => {
             id="arenaTypeId"
             value={formData.arenaTypeId}
             onChange={handleChange}
-            required
+            
           >
             <option value="">Select Arena Type</option>
             {arenaTypesData?.map((type) => (
@@ -282,7 +281,7 @@ const ArenaDetailsForm = () => {
               <select
                 value={formData.aiFigureRoles[figureId] || ""}
                 onChange={(e) => handleRoleChange(figureId, e.target.value)}
-                required
+                
                 style={{
                   width: "100%",
                   padding: "0.5rem",
@@ -313,6 +312,7 @@ const ArenaDetailsForm = () => {
                   src={imagePreview}
                   alt="Arena Preview"
                   style={{ width: "100px", height: "100px" }}
+               
                 />
               </div>
             )}
@@ -324,8 +324,8 @@ const ArenaDetailsForm = () => {
                 accept="image/*"
                 style={{ display: "none" }} // Hide default file input styling
               />
-              <label htmlFor="image" className="upload-button">
-                Choose Image
+              <label htmlFor="image" className="upload-button ">
+              <span className="fs-6">Choose Image</span>
               </label>
             </div>
           </div>
@@ -344,7 +344,7 @@ const ArenaDetailsForm = () => {
             value={formData.maxParticipants}
             onChange={handleChange}
             placeholder="Enter Max Number"
-            required
+            
           />
         </div>
 
@@ -361,7 +361,7 @@ const ArenaDetailsForm = () => {
             value={formData.duration}
             onChange={handleChange}
             placeholder="Enter Duration"
-            required
+            
           />
         </div>
 
@@ -377,7 +377,7 @@ const ArenaDetailsForm = () => {
             onChange={handleChange}
             placeholder="Enter a description of the arena"
             rows="4"
-            required
+            
           ></textarea>
         </div>
 

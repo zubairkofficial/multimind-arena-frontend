@@ -34,7 +34,8 @@ const Sidebar = () => {
     { path: "/admin/arena-types", icon: "fa-info", label: "Manage Arena Types" }, 
     { path: "/admin/manage-transactions", icon: "fa-coin", label: "Manage Transactions" }, 
     { path: "/admin/arena-access", icon: "fa-hourglass-half", label: "Manage Arena Access" }, 
-    { path: "/admin/llm-dashboard", icon: "fa-hourglass-half", label: "Llm Model" }, 
+    { path: "/admin/llm-dashboard", icon: "fa-brain", label: "Llm Model" }, 
+    { path: "/admin/bundles", icon: "fa-brain", label: "Bundle Package" }, 
   ];
   const isActive = (path) => {
     return location.pathname === path ? "active" : ""; // Return 'active' class if the path matches

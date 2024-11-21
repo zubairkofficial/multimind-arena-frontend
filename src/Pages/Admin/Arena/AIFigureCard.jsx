@@ -17,7 +17,7 @@ export default function AIFigureCard({ figure, onSelect, isSelected }) {
       </div>
       <div className="aifigure-card-content">
         <h3 className="aifigure-card-title">{figure.name}</h3>
-        <p className="aifigure-card-description">{figure.description}</p>
+        <p className="aifigure-card-description text-wrap">{figure.description}</p>
       </div>
       {isSelected && (
         <div className="aifigure-card-overlay">

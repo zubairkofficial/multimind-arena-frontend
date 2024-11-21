@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   useGetAllArenaTypesQuery,
@@ -6,11 +6,14 @@ import {
 } from "../../../../features/api/arenaApi";
 import CustomTable from "../../../../components/Table/CustomTable";
 import Pagination from "../../../../components/Table/Pagination";
+import Preloader from "../../../Landing/Preloader";
+import Searchbar from "../../../../components/Searchbar/Searchbar";
 
 export default function ManageArenaType() {
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const [entriesPerPage, setEntriesPerPage] = useState(5);
+  const [searchText, setSearchText] = useState("");
 
   // Fetch arena types using the RTK query
   const { data: arenaTypesData, error, isLoading } = useGetAllArenaTypesQuery();
@@ -18,14 +21,19 @@ export default function ManageArenaType() {
 
   const arenaTypes = arenaTypesData || [];
 
+  // Filter arena types based on search text
+  const filteredArenaTypes = arenaTypes.filter((arenaType) =>
+    arenaType.name.toLowerCase().includes(searchText.toLowerCase())
+  );
+
   // Pagination calculations
   const indexOfLastArenaType = currentPage * entriesPerPage;
   const indexOfFirstArenaType = indexOfLastArenaType - entriesPerPage;
-  const currentArenaTypes = arenaTypes.slice(
+  const currentArenaTypes = filteredArenaTypes.slice(
     indexOfFirstArenaType,
     indexOfLastArenaType
   );
-  const totalPages = Math.ceil(arenaTypes.length / entriesPerPage);
+  const totalPages = Math.ceil(filteredArenaTypes.length / entriesPerPage);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -34,6 +42,11 @@ export default function ManageArenaType() {
   const handleEntriesChange = (newEntries) => {
     setEntriesPerPage(newEntries);
     setCurrentPage(1); // Reset to the first page when changing entries per page
+  };
+
+  const handleSearchChange = (query) => {
+    setSearchText(query); // Update search text
+    setCurrentPage(1); // Reset to the first page after filtering
   };
 
   const handleCreateArenaType = () => {
@@ -57,7 +70,7 @@ export default function ManageArenaType() {
   };
 
   const tableHeaders = ["Arena Type Name", "Actions"];
-  const tableData = currentArenaTypes?.map((arenaType) => ({
+  const tableData = currentArenaTypes.map((arenaType) => ({
     name: arenaType.name,
     actions: (
       <>
@@ -77,17 +90,18 @@ export default function ManageArenaType() {
     ),
   }));
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <Preloader />;
   if (error) return <div>Error loading arena types...</div>;
 
   return (
-    <div className="container mx-5">
-      <div className="d-flex justify-content-between mb-4">
-        <h2 className="fs-5">Manage Arena Types</h2>
-        <button className="btn-default btn-small" onClick={handleCreateArenaType}>
-          Create Arena Type
-        </button>
-      </div>
+    <div className="container mx-3">
+      <Searchbar
+        heading="Manage Arena Types"
+        placeholder="Search arena type..."
+        title="Add Arena Type"
+        onClick={handleCreateArenaType}
+        onSearch={handleSearchChange} // Adding search functionality
+      />
 
       <div className="manage-arenas text-light">
         <CustomTable headers={tableHeaders} data={tableData} />

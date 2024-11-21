@@ -4,6 +4,7 @@ import { Notyf } from 'notyf';
 import 'notyf/notyf.min.css';
 import CustomTable from '../../../components/Table/CustomTable';
 import Pagination from '../../../components/Table/Pagination';
+import Searchbar from "../../../components/Searchbar/Searchbar";
 
 const ManageTransaction = () => {
   const notyf = new Notyf();
@@ -11,6 +12,7 @@ const ManageTransaction = () => {
   // Fetching the user transaction history
   const { data: users, isLoading, error } = useGetUserTransactionHistoryQuery();
   const [transactions, setTransactions] = useState([]);
+  const [searchText, setSearchText] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [entriesPerPage, setEntriesPerPage] = useState(5);
 
@@ -35,15 +37,23 @@ const ManageTransaction = () => {
     }
   }, [users, error]);
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+  const handleSearchChange = (query) => {
+    setSearchText(query);
+    setCurrentPage(1); // Reset to the first page when filtering
+  };
+
+  const filteredTransactions = transactions.filter(transaction =>
+    transaction.userName.toLowerCase().includes(searchText.toLowerCase()) ||
+    transaction.id.toString().toLowerCase().includes(searchText.toLowerCase()) ||
+    transaction.price.toLowerCase().includes(searchText.toLowerCase()) ||
+    transaction.date.toLowerCase().includes(searchText.toLowerCase())
+  );
 
   // Pagination logic
   const indexOfLastTransaction = currentPage * entriesPerPage;
   const indexOfFirstTransaction = indexOfLastTransaction - entriesPerPage;
-  const currentTransactions = transactions.slice(indexOfFirstTransaction, indexOfLastTransaction);
-  const totalPages = Math.ceil(transactions.length / entriesPerPage);
+  const currentTransactions = filteredTransactions.slice(indexOfFirstTransaction, indexOfLastTransaction);
+  const totalPages = Math.ceil(filteredTransactions.length / entriesPerPage);
 
   // Handle page change
   const handlePageChange = (pageNumber) => {
@@ -57,7 +67,7 @@ const ManageTransaction = () => {
   };
 
   // Table headers and data
-  const tableHeaders = ["Transaction ID", "User Name" , "Price", "Coins","Date"];
+  const tableHeaders = ["Transaction ID", "User Name", "Price", "Coins", "Date"];
   const tableData = currentTransactions.map(transaction => ({
     "Transaction ID": transaction.id,
     "User Name": transaction.userName,
@@ -66,22 +76,31 @@ const ManageTransaction = () => {
     "Date": transaction.date,
   }));
 
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
   return (
-    <div className="container">
-      <h1 className="text-xl mb-5">Manage Transactions</h1>
-<div className='manage-arenas'>
-      <CustomTable
-        headers={tableHeaders}
-        data={tableData}
+    <div className="container mx-3">
+      <Searchbar
+        heading="Manage Transactions"
+        placeholder="Search by User Name, Transaction ID, or Date..."
+        onSearch={handleSearchChange}
       />
 
-      <Pagination
-        totalPages={totalPages}
-        currentPage={currentPage}
-        onPageChange={handlePageChange}
-        entriesPerPage={entriesPerPage}
-        onEntriesChange={handleEntriesChange}
-      />
+      <div className="manage-arenas">
+        <CustomTable
+          headers={tableHeaders}
+          data={tableData}
+        />
+
+        <Pagination
+          totalPages={totalPages}
+          currentPage={currentPage}
+          onPageChange={handlePageChange}
+          entriesPerPage={entriesPerPage}
+          onEntriesChange={handleEntriesChange}
+        />
       </div>
     </div>
   );

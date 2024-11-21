@@ -36,7 +36,6 @@ const Header = () => {
   };
 
   const handleLogout =async () => {
-    await localStorage.clear();
     dispatch(clearUser()); // Clear the Redux user state
     navigate("/login");
   };
