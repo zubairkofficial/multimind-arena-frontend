@@ -1,10 +1,10 @@
 import { Notyf } from "notyf";
 
 class Helpers {
-  static localhost = "http://localhost:8080";
+  static localhost = "http://192.168.18.104";
   static server = "http://13.60.19.246";
 
-  static basePath = `${this.localhost}`;
+  static basePath = `${this.server}`;
   static apiUrl = `${this.basePath}/api/v1/`;
 
   static authUser = JSON.parse(localStorage.getItem("user") ?? "{}");
@@ -20,7 +20,7 @@ class Helpers {
 
   static getItem = (data, isJson = false) => {
     if (isJson) {
-      return (JSON.parse(localStorage.getItem(data)));
+      return JSON.parse(localStorage.getItem(data));
     } else {
       return localStorage.getItem(data);
     }
@@ -39,8 +39,6 @@ class Helpers {
       Authorization: `Bearer ${this.getToken()}`,
     },
   };
-
-
 
   static setItem = (key, data, isJson = false) => {
     if (isJson) {
@@ -63,19 +61,21 @@ class Helpers {
   };
   static loadScript(scriptName, dashboard = false) {
     return new Promise((resolve, reject) => {
-      const scriptPath = new URL(`/src/assets/js/${scriptName}`, import.meta.url).href;
-      const script = document.createElement('script');
+      const scriptPath = new URL(
+        `/src/assets/js/${scriptName}`,
+        import.meta.url
+      ).href;
+      const script = document.createElement("script");
       script.src = scriptPath;
       script.async = true;
 
       script.onload = () => resolve(script);
-      script.onerror = () => reject(new Error(`Script load error: ${scriptPath}`));
+      script.onerror = () =>
+        reject(new Error(`Script load error: ${scriptPath}`));
 
       document.body.appendChild(script);
-        });
-      }
-
+    });
+  }
 }
-
 
 export default Helpers;
