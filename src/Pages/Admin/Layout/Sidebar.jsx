@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Link,useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
-import Logo from '../../../../public/assets/images/logo/logo.png';
-import './Sidebar.css'
+import Logo from "../../../../public/assets/images/logo/logo.png";
+import "./Sidebar.css";
 const Sidebar = () => {
   const sidebarOpen = useSelector((state) => state.sidebar.sidebarOpen);
   const location = useLocation(); // Get the current location (path)
@@ -25,18 +25,56 @@ const Sidebar = () => {
   }, []);
 
   // Menu items for sidebar
+  // Menu items for sidebar
   const menuItems = [
-    { path: "/admin/dashboard", icon: "fa-home", label: "Dashboard" },
-    { path: "/admin/users", icon: "fa-user", label: "Manage Users" },
-    { path: "/admin/system-status", icon: "fa-warning", label: "Error Logs" },
-    { path: "/admin/manage-arenas", icon: "fa-cog", label: "Manage Arenas" },
-    { path: "/admin/manage-ai-figures", icon: "fa-images", label: "Manage AI Figures" }, // New option added
-    { path: "/admin/arena-types", icon: "fa-info", label: "Manage Arena Types" }, 
-    { path: "/admin/manage-transactions", icon: "fa-coin", label: "Manage Transactions" }, 
-    { path: "/admin/arena-access", icon: "fa-hourglass-half", label: "Manage Arena Access" }, 
-    { path: "/admin/llm-dashboard", icon: "fa-brain", label: "Llm Model" }, 
-    { path: "/admin/bundles", icon: "fa-brain", label: "Bundle Package" }, 
+    { path: "/admin/dashboard", icon: "fa-solid fa-house", label: "Dashboard" },
+    {
+      path: "/admin/users",
+      icon: "fa-solid fa-user-group",
+      label: "Manage Users",
+    },
+    {
+      path: "/admin/system-status",
+      icon: "fa-solid fa-bug",
+      label: "Error Logs",
+    },
+    {
+      path: "/admin/manage-arenas",
+      icon: "fa-solid fa-gamepad",
+      label: "Manage Arenas",
+    },
+    {
+      path: "/admin/manage-ai-figures",
+      icon: "fa-solid fa-robot",
+      label: "Manage AI Figures",
+    }, // New option added
+    {
+      path: "/admin/arena-types",
+      icon: "fa-solid fa-info-circle",
+      label: "Manage Arena Types",
+    },
+    {
+      path: "/admin/manage-transactions",
+      icon: "fa-solid fa-coins",
+      label: "Manage Transactions",
+    },
+    {
+      path: "/admin/arena-access",
+      icon: "fa-solid fa-hourglass-half",
+      label: "Manage Arena Access",
+    },
+    {
+      path: "/admin/llm-dashboard",
+      icon: "fa-solid fa-brain",
+      label: "LLM Model",
+    },
+    {
+      path: "/admin/bundles",
+      icon: "fa-solid fa-box",
+      label: "Bundle Package",
+    },
   ];
+
   const isActive = (path) => {
     return location.pathname === path ? "active" : ""; // Return 'active' class if the path matches
   };
@@ -51,8 +89,7 @@ const Sidebar = () => {
                   className="logo-light"
                   src="/assets/images/logo/logo.png"
                   alt="ChatBot Logo"
-                  onError={(e) => e.target.src = Logo} // Fallback to Logo if the image fails to load
-
+                  onError={(e) => (e.target.src = Logo)} // Fallback to Logo if the image fails to load
                 />
               </Link>
             </div>
@@ -73,25 +110,30 @@ const Sidebar = () => {
                     {menuItems.map((item, index) => (
                       <li
                         key={index}
-                        className={`d-flex justify-content-center align-items-center ${isActive(item.path)}`}
+                        className={`d-flex justify-content-center align-items-center ${isActive(
+                          item.path
+                        )}`}
                       >
                         <Link to={item.path}>
-                          <i className={`fa-solid ${item.icon}`}
-                           style={{
-                            color:
-                              isActive(item.path) === "active"
-                                ? "#00ff00"
-                                : "",
-                          }} // Apply the same style to the text
+                          <i
+                            className={`fa-solid ${item.icon}`}
+                            style={{
+                              color:
+                                isActive(item.path) === "active"
+                                  ? "#00ff00"
+                                  : "",
+                            }} // Apply the same style to the text
                           />
-                          <span 
-                           style={{
-                            color:
-                              isActive(item.path) === "active"
-                                ? "#00ff00"
-                                : "",
-                          }} // Apply the same style to the text
-                          >{item.label}</span>
+                          <span
+                            style={{
+                              color:
+                                isActive(item.path) === "active"
+                                  ? "#00ff00"
+                                  : "",
+                            }} // Apply the same style to the text
+                          >
+                            {item.label}
+                          </span>
                         </Link>
                       </li>
                     ))}
@@ -104,7 +146,7 @@ const Sidebar = () => {
           {/* Rest of the sidebar content */}
           <div className="subscription-box">
             <div className="inner">
-            <Link
+              <Link
                 to="/admin/view-profile"
                 className="autor-info d-flex justify-content-center align-items-center"
               >
@@ -119,7 +161,6 @@ const Sidebar = () => {
                   <h6>{userDetails.name}</h6>
                 </div>
               </Link>
-             
             </div>
           </div>
           <p className="subscription-copyright copyright-text text-center b3 small-text">

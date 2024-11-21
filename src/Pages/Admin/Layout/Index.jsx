@@ -8,8 +8,6 @@ const Index = () => {
   const sidebarOpen = useSelector((state) => state.sidebar.sidebarOpen);
   const dispatch = useDispatch();
 
-
-
   const handleSidebar = () => {
     dispatch(toggleSidebar()); // Dispatch action to toggle sidebar state
   };
@@ -20,20 +18,25 @@ const Index = () => {
         <div className="rbt-panel-wrapper">
           <Header sidebarOpen={sidebarOpen} setSidebarOpen={handleSidebar} />
           <Sidebar sidebarOpen={sidebarOpen} />
-          <div className = {` table-container content-wrapper ${sidebarOpen ? "hide-on-mobile": ""}`}>
+          <div
+            className={` table-container content-wrapper ${
+              sidebarOpen ? "hide-on-mobile" : ""
+            }`}
+          >
             <Outlet />
           </div>
         </div>
       </main>
       <style jsx>{`
         .content-wrapper {
+          display: flex;
+          justify-content: center;
           transition: margin 0.3s ease; /* Smooth transition for both margins */
           margin-left: ${sidebarOpen
             ? "310px"
             : "40px"}; /* Adjust the left margin for the sidebar */
-         
-        /* Add padding to ensure content is below the header */
-       
+
+          /* Add padding to ensure content is below the header */
         }
 
         /* Hide content when either sidebar is open on mobile */
@@ -46,7 +49,7 @@ const Index = () => {
             margin-left: ${sidebarOpen
               ? "200px"
               : "15px"}; /* Adjust margins for smaller screens */
-           /* Adjust padding for mobile if the header height is smaller */
+            /* Adjust padding for mobile if the header height is smaller */
           }
         }
       `}</style>

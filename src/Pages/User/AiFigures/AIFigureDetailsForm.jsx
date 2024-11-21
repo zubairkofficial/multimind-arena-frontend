@@ -166,7 +166,11 @@ const AIFigureDetailsForm = () => {
 
         <div className="col-12 mt--20 d-flex justify-content-center ">
           <div className="form-group mb--0">
-            <button type="submit" className="btn-default" disabled={isSubmitting}>
+            <button
+              type="submit"
+              className="btn-default"
+              disabled={isSubmitting}
+            >
               {isSubmitting ? "Creating AI Figure..." : "Create"}
             </button>
           </div>

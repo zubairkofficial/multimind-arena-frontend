@@ -25682,11 +25682,14 @@ body.active-light-mode .slider-area.bg-transparent .inner button.btn-default.btn
     opacity: 0.5;
 }
 
+
 /* Style for error messages */
+
 .error {
     color: red;
     font-size: 14px;
     margin-top: 5px;
-  }
-  
+}
+
+
 /*# sourceMappingURL=../maps/style.css.map */
