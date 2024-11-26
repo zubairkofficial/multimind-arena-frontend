@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useLocation, Link } from "react-router-dom";
 import Logo from "../../../../public/assets/images/logo/logo.png";
-import { ArenaRequestStatus } from "../../../common"; // Correct named import for ArenaRequestStatus
+import { ArenaRequestStatus, UserTier } from "../../../common"; // Correct named import for ArenaRequestStatus
 import { useGetUserByIdQuery } from "../../../features/api/userApi";
 import "./layout.css";
 const Sidebar = () => {
@@ -14,7 +14,7 @@ const Sidebar = () => {
     error: userError,
     refetch,
   } = useGetUserByIdQuery(user.id);
-
+console.log("userData",userData?.tier)
   const [userDetails, setUserDetails] = useState({
     name: "User", // default value
     email: "user@example.com", // default value
@@ -35,11 +35,13 @@ const Sidebar = () => {
     { path: "/dashboard", icon: "fa-home", label: "Playground" },
     {
       path:
+      userData?.tier==UserTier.PREMIUM?"/add-arena":
         userData?.createArenaRequestStatus === ArenaRequestStatus.APPROVED
           ? "/add-arena"
           : "/request-arena",
       icon: "fa-plus-circle",
       label:
+      userData?.tier==UserTier.PREMIUM?"Add Arena":
         userData?.createArenaRequestStatus === ArenaRequestStatus.APPROVED
           ? "Add Arena"
           : "Request",
@@ -54,6 +56,7 @@ const Sidebar = () => {
   const settingMenuItems = [
     { path: "/view-profile", icon: "fa-user", label: "Profile Details" },
     { path: "/purchase", icon: "fa-shop", label: "Buy Arena Coins" },
+    { path: "/deals", icon: "fa-gift", label: "Subscription Bundle Deals" },
   ];
 
   const location = useLocation(); // Get the current route
@@ -186,7 +189,7 @@ const Sidebar = () => {
                 </div>
               </Link>
               <div className="btn-part">
-                <Link to="/shop" className="btn-default btn-border" style={{background:"#0a3d0c",color:"#00ff00"}}>
+                <Link to="/deals" className="btn-default btn-border" style={{background:"#0a3d0c",color:"#00ff00"}}>
                   Upgrade
                 </Link>
               </div>

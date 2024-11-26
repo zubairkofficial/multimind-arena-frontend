@@ -35,7 +35,7 @@ import AddArenaType from "./Pages/Admin/Arena/ArenaType/AddArenaType";
 import AIChatPage from "./Pages/User/Chat/AIChatPage";
 import ErrorLogs from "./Pages/Admin/SystemStatus/ErrorLogs";
 import HistoryPage from "./Pages/User/History/HistoryPage";
-import Shop from "./Pages/User/Payments/Shop";
+import PackagePlan from "./Pages/User/Payments/PackagePlan";
 import ViewAdminProfile from "./Pages/Admin/Profile/ViewAdminProfile";
 import ManageBundle from './Pages/Admin/Payments/index'
 import UserVerification from "./Pages/Auth/UserVerification";
@@ -232,10 +232,10 @@ export const router = createBrowserRouter([
         path: "history/:id",
         element: <HistoryPage />,
       },
-      // {
-      //   path: "/shop",
-      //   element: <Shop/>,
-      // },
+      {
+        path: "/deals",
+        element: <PackagePlan/>,
+      },
       {
         path: "/purchase",
         element: <Purchase/>,

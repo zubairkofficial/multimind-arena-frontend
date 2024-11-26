@@ -90,7 +90,7 @@ const Login = () => {
 
   // Handle Google login
   const handleGoogleLogin = () => {
-    const googleLoginUrl = "http://ec2-13-60-19-246.eu-north-1.compute.amazonaws.com/google-auth";
+    const googleLoginUrl = "http://multibackend.cyberifyportfolio.com/google-auth";
     window.location.href = googleLoginUrl;
   };
 
@@ -152,6 +152,7 @@ const Login = () => {
                             placeholder="Enter email address"
                             value={formData.email}
                             onChange={handleChange}
+                            
                           />
                           {emailError && <p className="text-danger">{emailError}</p>}
                         </div>

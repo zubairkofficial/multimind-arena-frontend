@@ -8,10 +8,13 @@ import { useLocation } from "react-router-dom";
 import Preloader from "../../Landing/Preloader";
 import SearchBar from "../../../components/Searchbar/Searchbar";
 import { useSelector } from "react-redux";
-
+import { UserTier } from "../../../common";
+import {useGetUserByIdQuery } from "../../../features/api/userApi"
 const AIFigureGallery = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const user = useSelector((state) => state.user.user);
+  const { data: userData, isLoading: userLoading, error: userError } = useGetUserByIdQuery(user?.id);
 
   const { data: aiFigures, isLoading, isError, error } = useGetAllAIFiguresQuery();
   const sidebarOpen = useSelector((state) => state.sidebar.sidebarOpen);
@@ -26,7 +29,7 @@ const AIFigureGallery = () => {
   const categories = ["All", ...dynamicCategories];
 
   const handleCreateFigure = () => {
-    navigate("/add-ai-figure");
+    navigate( "/add-ai-figure");
   };
 
   const handleFigureClick = (figure) => {
@@ -65,6 +68,7 @@ const AIFigureGallery = () => {
           placeholder="Search AI Figures..."
           aria-labelledby="gallery-heading"
           heading="AI Figure Gallery"
+          isPremium={userData.tier===UserTier.FREE}
         />
       </div>
 

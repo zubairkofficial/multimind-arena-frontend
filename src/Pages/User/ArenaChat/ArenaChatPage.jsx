@@ -224,6 +224,7 @@ console.log("arena",arena)
         setShowUsers={setShowUsers}
         participantsCount={arena?.userArenas?.length || 0}
         expiryTime={arena?.expiryTime}
+        arenaModel={arena?.arenaModel}
       />
 
       {notification && (
@@ -252,8 +253,8 @@ console.log("arena",arena)
           >
             {msg.sender !== "You" && (
               <img
-                src={msg.user.image || Logo}
-                alt={msg.user.name}
+                src={msg?.user?.image || Logo}
+                alt={msg?.user?.name}
                 className="message-image"
                 style={{
                   width: "40px",
@@ -267,7 +268,7 @@ console.log("arena",arena)
             <MessageBubble message={msg} />
             {msg.sender === "You" && (
               <img
-                src={userData.image}
+                src={userData?.image}
                 alt="You"
                 className="message-image"
                 style={{
@@ -293,7 +294,7 @@ console.log("arena",arena)
             className="form-control p-3 bg-color-black text-light pr-5"
             style={{
               borderRadius: "50px",
-              fontSize: "0.85rem", // Reduced font size for input
+              fontSize: "1.2rem", // Reduced font size for input
             }}
             placeholder="Message..."
             value={message}

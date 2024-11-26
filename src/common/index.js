@@ -17,4 +17,8 @@ export const ModelType = {
   
 };
 
+export const UserTier={
+  FREE: 'FREE',
+  PREMIUM: 'PREMIUM',
+}
 

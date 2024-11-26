@@ -12,7 +12,9 @@ function ArenaInfoCard({
   setShowUsers,
   participantsCount = 0,
   expiryTime = null,
+  arenaModel=[]
 }) {
+  console.log("arenaModel",arenaModel)
   const [showDetails, setShowDetails] = useState(false); // State for toggling details
   const [showModal, setShowModal] = useState(false);
 
@@ -117,7 +119,7 @@ function ArenaInfoCard({
             ></i>
             Total Participants: <span style={{fontWeight:'bold'}}>{participantsCount}</span>
           </p>
-          <p style={{ marginBottom: "0", fontSize: "1.1rem" }}>
+          <p  style={{ marginBottom: "4px", fontSize: "1.1rem" }}>
             <i
               className="fas fa-clock"
               style={{ marginRight: "8px", color: "#28a745" }}
@@ -128,6 +130,7 @@ function ArenaInfoCard({
                 hour: "2-digit",
                 minute: "2-digit",
               })
+
             ) : (
               <img
                 src={Meta}
@@ -140,6 +143,30 @@ function ArenaInfoCard({
                 }}
               />
             )}
+          
+          </p>
+          <p style={{ marginBottom: "4px", fontSize: "1.1rem" }}>
+          <i
+  className="fas fa-brain"
+  style={{
+    marginRight: "8px",
+    color: "#28a745",
+    fontSize: "1.5rem",
+  }}
+></i>
+
+            Models: <span style={{fontWeight:'bold'}}> {arenaModel?.map((item, index) => {
+      try {
+        const parsedItem = JSON.parse(item); // Parse the stringified JSON
+        return (
+          <span key={index} style={{ marginRight: "8px" }}>
+            {parsedItem.label}
+          </span>
+        ); // Return the label
+      } catch (error) {
+        return null; // Handle any JSON parsing errors gracefully
+      }
+    })}</span>
           </p>
         </div>
       )}

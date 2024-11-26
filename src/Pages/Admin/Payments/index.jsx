@@ -9,25 +9,30 @@ import Searchbar from "../../../components/Searchbar/Searchbar";
 import { useNavigate } from "react-router-dom";
 import _ from 'lodash';
 import ConfirmationModal from "../../../components/Modal/ConfirmationModal";
+import { Notyf } from "notyf";
 
 const ManageBundle = () => {
   const navigate = useNavigate();
-  const { data: bundlesData, error, isLoading, refetch } = useGetAllBundlesQuery();
+  const notyf = new Notyf(); // For success/error notifications
+
+  const { data: bundlesData = [], error, isLoading, refetch } = useGetAllBundlesQuery();
   const [deleteBundle] = useDeleteBundleMutation();
 
   const [searchText, setSearchText] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [entriesPerPage, setEntriesPerPage] = useState(5);
-  
+
   const [showModal, setShowModal] = useState(false);
   const [bundleIdToDelete, setBundleIdToDelete] = useState(null);
 
   useEffect(() => {
     if (error) {
       console.error("Failed to fetch bundles", error);
+      notyf.error("Failed to load bundles. Please try again.");
     }
   }, [error]);
 
+  // Handle loading state and error
   if (isLoading) {
     return <div>Loading bundles...</div>;
   }
@@ -38,17 +43,15 @@ const ManageBundle = () => {
   };
 
   // Filter bundles based on search text
-  const filteredData = bundlesData?.filter((bundle) =>
-    _.includes(_.toLower(bundle.name), searchText) // Make sure you're using the correct field for comparison
+  const filteredData = bundlesData.filter((bundle) =>
+    _.includes(_.toLower(bundle.name), searchText) // Ensure you're using the correct field for comparison
   );
 
+  // Handle pagination for filtered data
   const indexOfLastBundle = currentPage * entriesPerPage;
   const indexOfFirstBundle = indexOfLastBundle - entriesPerPage;
-  const currentBundles = filteredData?.slice(
-    indexOfFirstBundle,
-    indexOfLastBundle
-  );
-  const totalPages = Math.ceil(filteredData?.length / entriesPerPage);
+  const currentBundles = filteredData.slice(indexOfFirstBundle, indexOfLastBundle);
+  const totalPages = Math.ceil(filteredData.length / entriesPerPage);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -56,11 +59,11 @@ const ManageBundle = () => {
 
   const handleEntriesChange = (newEntries) => {
     setEntriesPerPage(newEntries);
-    setCurrentPage(1);
+    setCurrentPage(1); // Reset to the first page when changing entries per page
   };
 
   const handleAddBundle = () => {
-    navigate('/admin/add-bundle-plan');
+    navigate("/admin/add-bundle-plan");
   };
 
   const handleShowModal = (bundleId) => {
@@ -70,25 +73,37 @@ const ManageBundle = () => {
 
   const handleDeleteBundle = async () => {
     if (bundleIdToDelete) {
-      await deleteBundle(bundleIdToDelete);
-      refetch(); // Refetch bundles after deletion
-      setBundleIdToDelete(null);
+      try {
+        await deleteBundle(bundleIdToDelete).unwrap();
+        notyf.success("Bundle deleted successfully!");
+        refetch(); // Refetch bundles after deletion
+        setBundleIdToDelete(null);
+      } catch (err) {
+        console.error("Error deleting bundle:", err);
+        notyf.error("Failed to delete bundle. Please try again.");
+      }
     }
     setShowModal(false);
   };
-const handleEditBundle=(bundle)=>{
-  navigate('/admin/add-bundle-plan',{ state: bundle });
-}
-  const tableHeaders = ["Label", "Price", "Coins", "Actions"];
-  const tableData = currentBundles?.map((bundle) => ({
+
+  const handleEditBundle = (bundle) => {
+    navigate("/admin/update-bundle-plan", { state: bundle });
+  };
+
+  // Updated headers with "Duration"
+  const tableHeaders = ["Label", "Price", "Coins", "Duration", "Actions"];
+
+  // Updated data mapping with "durationInDays"
+  const tableData = currentBundles.map((bundle) => ({
     label: bundle.name,
-    price: typeof bundle.price === 'number' ? `$${bundle.price.toFixed(2)}` : `$${parseFloat(bundle.price).toFixed(2)}`,
+    price: typeof bundle.price === "number" ? `$${bundle.price.toFixed(2)}` : `$${parseFloat(bundle.price).toFixed(2)}`,
     coins: bundle.coins,
+    duration: `${bundle.durationInDays} days`, // Map durationInDays
     actions: (
       <>
         <button
           className="btn btn-sm btn-outline-success me-2"
-          onClick={() => handleEditBundle(bundle)} // Assume handleEditBundle is defined
+          onClick={() => handleEditBundle(bundle)} // Navigate to edit bundle
         >
           <i className="fas fa-edit"></i>
         </button>
@@ -112,7 +127,7 @@ const handleEditBundle=(bundle)=>{
         onSearch={handleSearchChange} // Pass the handleSearchChange function
       />
 
-      <div className="manage-bundles text-light">
+      <div className="manage-arenas text-light">
         <CustomTable headers={tableHeaders} data={tableData} />
 
         <Pagination
@@ -125,8 +140,8 @@ const handleEditBundle=(bundle)=>{
       </div>
 
       <ConfirmationModal
-        title='Confirm Deletion'
-        body='Are you sure you want to delete this bundle?'
+        title="Confirm Deletion"
+        body="Are you sure you want to delete this bundle?"
         show={showModal}
         onClose={() => setShowModal(false)}
         onConfirm={handleDeleteBundle}
@@ -136,3 +151,6 @@ const handleEditBundle=(bundle)=>{
 };
 
 export default ManageBundle;
+
+
+

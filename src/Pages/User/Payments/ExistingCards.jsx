@@ -6,10 +6,10 @@ import { Notyf } from 'notyf'; // Import Notyf
 import 'notyf/notyf.min.css'; // Import Notyf styles
 import styled from 'styled-components';
 import { useGetUserByIdQuery } from '../../../features/api/userApi'; // Import the query hook
-
+import { useCreateSubscriptionMutation } from "../../../features/api/subscriptionApi";
 const ExistingCards = ({ onSelectCard }) => {
   const { state } = useLocation();
-  const { coins, price } = state || {}; // Destructure coins and price from state
+  const { coins, price,packageId } = state || {}; // Destructure coins and price from state
   const user = useSelector((state) => state.user.user);
 
   const userId = user?.id;
@@ -18,13 +18,18 @@ const ExistingCards = ({ onSelectCard }) => {
   const navigate = useNavigate();
   const { data: existingCards, isLoading: isCardsLoading, error } = useGetAllCardsQuery();
   const [selectCard] = useSelectCardMutation(); // use the selectCard mutation
+  const [createSubscription] = useCreateSubscriptionMutation();
   const notyf = new Notyf(); // Initialize Notyf
 
   // Loading state for the button
   const [isSelecting, setIsSelecting] = useState(false);
 
   useEffect(() => {
-    if (!isCardsLoading && existingCards?.length === 0) {
+
+    if (packageId && !isCardsLoading && existingCards?.length === 0) {
+      navigate('/create-card', { state: { coins, price,packageId } });
+    }
+    else if (!isCardsLoading && existingCards?.length === 0) {
       navigate('/create-card', { state: { coins, price } });
     }
   }, [isCardsLoading, existingCards, navigate, coins, price]);
@@ -33,10 +38,19 @@ const ExistingCards = ({ onSelectCard }) => {
     setIsSelecting(true); // Set loading state to true when selecting a card
     try {
       // Call the selectCard mutation with cardId, price, and coins
+      if(packageId){ 
+
+         await createSubscription({
+        cardId,
+        packageId,
+        
+      }).unwrap();}
+      else{
       await selectCard({ cardId, price, coins }).unwrap();
+    }
       notyf.success("Card payment successfully!"); // Show success notification
       refetch()
-      navigate("/purchase"); // Navigate to the purchase page after success
+      navigate("/dashboard"); // Navigate to the purchase page after success
     } catch (error) {
       notyf.error(error?.data?.message || "Error selecting card"); // Show error notification
       console.error("Error selecting card:", error);

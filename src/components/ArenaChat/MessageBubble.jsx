@@ -1,19 +1,8 @@
 import React from "react";
 
 function MessageBubble({ message }) {
-  console.log("-----------", message);
   const isUser = message.userType === "user";
   const isSender = message.sender === "You";
-
-  // Safely parse time to show only hours and minutes or show "Invalid Time"
-  const formattedTime = !isNaN(Date.parse(message.time))
-    ? new Date(message.time).toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      })
-    : "Invalid Time";
-
-  console.log("msg+++++++++++++++++", message?.message?.arenas);
 
   return (
     <div
@@ -23,13 +12,14 @@ function MessageBubble({ message }) {
     >
       <div
         style={{
-          maxWidth: "800px",
+          maxWidth: "800px", // Maximum width of the bubble
           padding: "1rem",
-
           borderRadius: isSender ? "20px 20px 0 20px" : "20px 20px 20px 0",
-          backgroundColor: isSender ? "#101010" : "#003300", // Gray for user, green for received
+          backgroundColor: isSender ? "#222222" : "#003300", // Gray for user, green for received
           color: "#fff", // White text for both backgrounds
           boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.4)",
+          wordWrap: "break-word", // Ensures long words will wrap inside the bubble
+          overflowWrap: "break-word", // Ensures content breaks at appropriate points
         }}
       >
         <div
@@ -41,12 +31,14 @@ function MessageBubble({ message }) {
           }}
         >
           {!isSender && (
-         <>  <strong className="sender-name ">{message.sender ?? "Default"}</strong> 
-                   {/* <strong className="sender-name  bg-success text-light  rounded p-2">{message?.message?.arenas?.userArenas[0]?.role ?? "Default"}</strong> */}
-                   </> 
+            <>
+              <strong className="sender-name fs-5">
+                {message.sender ?? "Default"}
+              </strong>
+            </>
           )}
         </div>
-        <p className="mb-1" style={{ marginBottom: "0.5rem" }}>
+        <p className="mb-1 fs-5 " style={{ marginBottom: "0.5rem" }}>
           {message?.content ?? message?.message?.content}
         </p>
         <div

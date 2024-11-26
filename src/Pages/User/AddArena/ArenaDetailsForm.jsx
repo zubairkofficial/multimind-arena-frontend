@@ -9,8 +9,9 @@ import Slider from "react-slick";
 import AIFigureCard from "./AIFigureCard";
 import "./../AiFigures/aifigures.css";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
+import Select from "react-select"; // Import Select from react-select
 
-const ArenaDetailsForm = () => {
+const ArenaDetailsForm = ({isPrivate,llmModels}) => {
   const navigate = useNavigate();
   // Arena and AI figure queries
   const {
@@ -39,6 +40,8 @@ const ArenaDetailsForm = () => {
     aiFigureRoles: {},
     description: "",
     maxParticipants: "",
+    isPrivate:false,
+    arenaModel:[]
   });
 
   // Filter state
@@ -59,15 +62,33 @@ const ArenaDetailsForm = () => {
   // Handle form input changes
   const handleChange = (e) => {
     const { id, value } = e.target;
-    setFormData({
-      ...formData,
-      [id]: value === "Unlimited" ? null : value,
-    });
-
-    const error = validateField(id, updatedValue);
-    setErrors({ ...errors, [id]: error });
+    
+    // Handle special case for "Unlimited" and "null" values for duration
+    if (id === "duration") {
+      setFormData({
+        ...formData,
+        [id]: value === "Unlimited" ? null : parseInt(value, 10),
+      });
+    }
+    
+    // Handle "maxParticipants" as a number (parse the value)
+    if (id === "maxParticipants") {
+      setFormData({
+        ...formData,
+        [id]: value === "" ? "" : parseInt(value, 10), // Parse as number, or empty string if no value
+      });
+    } else {
+      // For other fields, just store the value
+      setFormData({
+        ...formData,
+        [id]: value === "Unlimited" ? null : value,
+      });
+    }
   
+    const error = validateField(id, value);
+    setErrors({ ...errors, [id]: error });
   };
+  
   
   // Handle image file change and generate a preview
   const handleImageChange = (e) => {
@@ -87,28 +108,34 @@ const ArenaDetailsForm = () => {
         if (!value) error = "Arena type is required.";
         break;
       case "maxParticipants":
-        if (!value) error = "Max participants are required.";
-        else if (isNaN(value) || value <= 0) error = "Please enter a valid number.";
+        // Allow "0" as a valid number of participants and ensure it is a valid number
+        if (value === "" || value === null || isNaN(value) || value < 0) {
+          error = "Max participants are required and must be valid.";
+        }
         break;
-        case "duration":
-          if (!value) error = "Duration is required.";
-          else if (isNaN(value) && value !== "Unlimited") error = "Please select a valid duration.";
-          break;
+      case "duration":
+        console.log("unlimited",value)
+        // Null is valid for duration; ensure it is either null or a valid number
+        if (value === null || isNaN(value)) {
+      if(value==="null")return
+          error = "Duration is required.";
+        }
+        break;
       case "description":
         if (!value) error = "Description is required.";
         break;
-        case "image":
-          if (!value) error = "Image is required.";
-          else if (value && !["image/jpeg", "image/png"].includes(value.type)) {
-            error = "Only JPEG and PNG images are allowed.";
-          }
-          break;
+      case "image":
+        if (!value) error = "Image is required.";
+        else if (value && !["image/jpeg", "image/png"].includes(value.type)) {
+          error = "Only JPEG and PNG images are allowed.";
+        }
+        break;
       default:
         break;
     }
     return error;
   };
-
+  
   const validateForm = () => {
     const newErrors = {};
     let formIsValid = true;
@@ -166,50 +193,65 @@ const ArenaDetailsForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const notyf = new Notyf();
- if (!validateForm()) return
-    setIsSubmitting(true);
-    console.log("formData.duration", formData.duration);
-    // Calculate expiry time or set to empty string if duration is "Unlimited"
-    const expiryTime =
-      formData.duration === null
-        ? null
-        : calculateExpiryTime(Number(formData.duration));
-
-        if (!image) {
-          setImageError("Image is required");
-          hasError = true;
-        }
-    // Create FormData object
-    const dataToSend = new FormData();
-    dataToSend.append("name", formData.name);
-
-    dataToSend.append("arenaTypeId", formData.arenaTypeId);
-    formData.aiFigureId.forEach((id) => {
-      dataToSend.append("aiFigureId[]", id);
-      if (formData.aiFigureRoles[id]) {
-        dataToSend.append(`aiFigureRoles[${id}]`, formData.aiFigureRoles[id]);
-      }
-    });
-    dataToSend.append("description", formData.description);
-    dataToSend.append("maxParticipants", formData.maxParticipants);
-    dataToSend.append("expiryTime", expiryTime);
-
-    // Append the image file if it exists
-    if (image) {
-      dataToSend.append("file", image);
+  
+    // Validate the form
+    if (!validateForm()) {
+      return; // Stop submission if validation fails
     }
-    console.log("dataToSend", dataToSend);
+  
+    // Check if the image is uploaded
+    if (!image) {
+      setImageError("Image is required");
+      return; // Stop submission if the image is missing
+    }
+  
+    setIsSubmitting(true); // Set the submission state only after validation passes
+  
     try {
+      console.log("formData.duration", formData.duration);
+  
+      // Calculate expiry time or set to null if duration is "Unlimited"
+      const expiryTime =
+        formData.duration === 'null'
+          ? null
+          : await calculateExpiryTime(Number(formData.duration));
+  console.log("expiryTime",expiryTime,formData.arenaModel)
+      // Create FormData object
+      const dataToSend = new FormData();
+      dataToSend.append("name", formData.name);
+      dataToSend.append("arenaTypeId", formData.arenaTypeId);
+      formData.aiFigureId.forEach((id) => {
+        dataToSend.append("aiFigureId[]", id);
+        if (formData.aiFigureRoles[id]) {
+          dataToSend.append(`aiFigureRoles[${id}]`, formData.aiFigureRoles[id]);
+        }
+      });
+      dataToSend.append("description", formData.description);
+      dataToSend.append("maxParticipants", formData.maxParticipants);
+      dataToSend.append("expiryTime", expiryTime);
+      dataToSend.append("isPrivate", isPrivate??false);
+      dataToSend.append("arenaModel", JSON.stringify(formData.arenaModel));
+
+  
+      // Append the image file
+      if (image) {
+        dataToSend.append("file", image);
+      }
+  
+      console.log("dataToSend", dataToSend);
+  
+      // Submit the form
       await axios.post(`${Helpers.apiUrl}arenas`, dataToSend, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
+  
+      // Show success notification
       notyf.success("Arena created successfully.");
-
       setIsSubmitting(false);
-
+  
       // Clear form data after successful submission
       setFormData({
         name: "",
@@ -222,12 +264,14 @@ const ArenaDetailsForm = () => {
       });
       setImage(null);
       setImagePreview(null);
-      navigate('/dashboard')
+      navigate("/dashboard");
     } catch (err) {
+      // Show error notification
       notyf.error("Failed to create arena. Please try again.");
-      setIsSubmitting(false); // End loading
+      setIsSubmitting(false); // End loading state on error
     }
   };
+  ;
 
   if (isLoadingArenaTypes || isLoadingAIFigures) return <Preloader />;
   if (arenaTypesError)
@@ -249,7 +293,51 @@ const ArenaDetailsForm = () => {
             figure.type === filter ||
             (figure.tags && figure.tags.includes(filter))
         );
-
+        const customStyles = {
+          control: (provided, state) => ({
+            ...provided,
+            backgroundColor: "#101010", // Dark background for the control
+            borderColor: state.isFocused || state.menuIsOpen ? "#4caf50" : "#333333", // Green border when clicked (focus) or dropdown is open
+            boxShadow:
+              state.isFocused || state.menuIsOpen ? "0 0 0 2px #4caf50" : "none", // Optional: add green outline on focus
+            color: "white", // Text color for the control
+            minHeight: "36px",
+            "&:hover": {
+              borderColor: "#4caf50", // Ensures the border is black on hover as well
+            },
+          }),
+          menu: (provided) => ({
+            ...provided,
+            backgroundColor: "#101010", // Background color for the dropdown menu
+            color: "white", // Text color for the dropdown menu featureNames
+          }),
+          option: (provided, state) => ({
+            ...provided,
+            backgroundColor: state.isSelected ? "#333333" : "#101010", // Dark background for featureNames
+            color: state.isSelected ? "white" : "#bbb", // Text color for selected and non-selected featureNames
+            borderColor: "#4caf50",
+            "&:hover": {
+              backgroundColor: "#222222", // Hover effect color
+            },
+          }),
+          multiValue: (provided) => ({
+            ...provided,
+            backgroundColor: "#4caf50", // Background color for selected values
+            color: "white", // Text color for selected values
+          }),
+          multiValueLabel: (provided) => ({
+            ...provided,
+            color: "white", // Text color for selected value label
+          }),
+          multiValueRemove: (provided) => ({
+            ...provided,
+            color: "white", // Color for the remove button
+            "&:hover": {
+              backgroundColor: "#4caf50", // Hover color for remove button
+            },
+          }),
+        };
+        
   const sliderSettings = {
     dots: false,
     infinite: false,
@@ -273,6 +361,23 @@ const ArenaDetailsForm = () => {
       },
     ],
   };
+
+
+ const handleArenaModelChange = (selectedOptions) => {
+  setFormData({
+    ...formData,
+    arenaModel: selectedOptions.map((opt) => {
+      // Parse stringified JSON if needed
+      const parsedOpt = typeof opt === 'string' ? JSON.parse(opt) : opt;
+
+      return {
+        value: parsedOpt.value,
+        label: parsedOpt.label.replace(/_/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase()), // Format label
+      };
+    }),
+  });
+};
+
 
   return (
     <div
@@ -464,7 +569,7 @@ const ArenaDetailsForm = () => {
     <option value="30">30 minutes</option>
     <option value="60">60 minutes</option>
     <option value="90">90 minutes</option>
-    <option value="Unlimited">Unlimited</option>
+    <option value="null">Unlimited</option>
   </select>
   {errors.duration && <span className="error-text" style={{ fontSize: "12px" }}>{errors.duration}</span>} {/* Adjust error text font size */}
 </div>
@@ -487,7 +592,19 @@ const ArenaDetailsForm = () => {
            {errors.description && <span className="error-text">{errors.description}</span>}
       
         </div>
-
+        <div className="form-group mb-3">
+        <label>Choose LLM Model</label>
+        <Select
+          isMulti
+          options={llmModels?.map((model) => ({
+            value: model.id,
+            label: model.name,
+          }))}
+          styles={customStyles}
+          placeholder="Select LLM Model"
+          onChange={handleArenaModelChange}
+        />
+      </div>
         {/* Submit Button */}
         <div
           className="form-group grid-item grid-span-2 submit-section"

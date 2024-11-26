@@ -8,7 +8,9 @@ const Searchbar = ({
   placeholder,
   onSearch,
   style,
+  isPremium=false
 }) => {
+  console.log("isprem",isPremium)
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleInputChange = (event) => {
@@ -34,9 +36,22 @@ const Searchbar = ({
         <div className="col-md-6 col-12 text-md-end text-start mt-3">
           {title && (
             <div>
-              <button className="btn-small btn-default " onClick={onClick}>
+               <button className="btn-small btn-default" onClick={onClick} disabled={isPremium}>
+    <span className="p-2">
+      {isPremium ? (
+        <>
+        <i className="fas fa-lock"></i>  {/* Font Awesome lock icon */}
+        {title}
+      </>
+          // Show title if isPremium is true
+      ) : (
+        title
+      )}
+    </span>
+  </button>
+              {/* <button className="btn-small btn-default " onClick={onClick} disabled={isPremium}>
                 <span className="p-2">{title}</span>
-              </button>
+              </button> */}
             </div>
           )}
         </div>

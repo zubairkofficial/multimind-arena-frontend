@@ -4,14 +4,16 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import Helpers from "../../../Config/Helpers";
 
-const AIFigureDetailsForm = () => {
+const AIFigureDetailsForm = ({isPrivate}) => {
   const navigate = useNavigate(); // Initialize navigate
   const [formData, setFormData] = useState({
     name: "",
     description: "",
     prompt: "",
     type: "anime", // Default type
+    isAiPrivate: false,
   });
+  
   const [image, setImage] = useState(null); // Store the image file
   const [imagePreview, setImagePreview] = useState(null); // Store the image preview
   const [isSubmitting, setIsSubmitting] = useState(false); // Loading state
@@ -40,6 +42,7 @@ const AIFigureDetailsForm = () => {
     aiFigure.append("description", formData.description);
     aiFigure.append("prompt", formData.prompt);
     aiFigure.append("type", formData.type);
+    aiFigure.append("isAiPrivate", formData.isAiPrivate);
     if (image) {
       aiFigure.append("file", image);
     }

@@ -215,7 +215,7 @@ export default function AIChatPage() {
             <input
               type="text"
               className="form-control p-3 bg-color-black text-light pr-5"
-              style={{ borderRadius: "50px" }}
+              style={{ borderRadius: "50px",     fontSize: "1.2rem",  }}
               placeholder="Message..."
               value={message}
               onChange={(e) => setMessage(e.target.value)}

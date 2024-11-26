@@ -23,7 +23,7 @@ function AIFigureInfoCard({
   return (
     <div>
       <div className=" d-flex justify-content-between align-items-center p-3  ">
-        <div className="d-flex gap-3">
+        <div className="d-flex align-items-center gap-3">
           {/* Arena Name */}{" "}
           <img
             src={image||Logo}
@@ -37,7 +37,7 @@ function AIFigureInfoCard({
             onError={(e) => e.target.src = Logo} // Fallback to Logo if the image fails to load
 
           />
-          <h3 className="text-color-primary mb-0">{name}</h3>
+        <h3 className="text-color-primary mb-0 fs-5" style={{}}>{name}</h3>
         </div>
         {/* Actions Container */}
         <div className="d-flex align-items-center">

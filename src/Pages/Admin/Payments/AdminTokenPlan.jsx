@@ -1,204 +1,281 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
+import { useForm, Controller } from "react-hook-form";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { Notyf } from "notyf";
 import {
   useGetAllBundlesQuery,
   useAddBundleMutation,
   useUpdateBundleMutation,
-} from "../../../features/api/bundleApi"; // Import the necessary hooks
-import { useLocation, useNavigate } from "react-router-dom"; // Import useLocation for getting state
-import Select from "react-select"; // Import react-select
+} from "../../../features/api/bundleApi";
+import { useGetAllLlmModelsQuery } from "../../../features/api/LlmModelApi";
+import { useLocation, useNavigate } from "react-router-dom";
+import Select from "react-select"; // Import Select from react-select
+
+// Validation schema with Yup
+const schema = yup.object().shape({
+  name: yup.string().required("Name is required"),
+  price: yup
+    .number()
+    .required("Price is required")
+    .positive("Price must be positive"),
+  coins: yup
+    .number()
+    .required("Coins are required")
+    .positive("Coins must be positive")
+    .integer("Coins must be an integer"),
+  featureNames: yup
+    .array()
+    .of(yup.object().shape({ value: yup.string(), label: yup.string() }))
+    .min(1, "At least one bundle Feature must be selected"),
+  durationInDays: yup
+    .number()
+    .required("Duration is required")
+    .positive("Duration must be positive")
+    .integer("Duration must be an integer"),
+});
 
 const ManageBundlePlan = () => {
   const navigate = useNavigate();
-  const location = useLocation(); // Get location to check for state
+  const location = useLocation();
   const notyf = new Notyf();
-  const { refetch } = useGetAllBundlesQuery(); // Get the refetch function
-  const [addBundle] = useAddBundleMutation(); // Hook for adding a new bundle
-  const [updateBundle] = useUpdateBundleMutation(); // Hook for updating a bundle
 
-  // State for form inputs
-  const [label, setLabel] = useState("");
-  const [price, setPrice] = useState("");
-  const [coins, setCoins] = useState("");
-  const [selectedOptions, setSelectedOptions] = useState([]); // State for the multi-select dropdown
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { refetch } = useGetAllBundlesQuery();
+  const { data: getAllLlmModel } = useGetAllLlmModelsQuery();
 
-  // Predefined options array
-  const options = [
-    { value: "arena_full_access", label: "Arena Full Access" },
-    { value: "arena_limited_access", label: "Arena Limited Access" },
-    { value: "basic_llm_model", label: "Basic LLM Model" },
-    { value: "advanced_llm_model", label: "Advanced LLM Model" },
-    { value: "priority_support", label: "Priority Support" },
-    { value: "custom_integration", label: "Custom Integration" },
-    { value: "analytics_dashboard", label: "Analytics Dashboard" },
-  ];
+  const [addBundle] = useAddBundleMutation();
+  const [updateBundle] = useUpdateBundleMutation();
 
-  // Custom styles for react-select
-  const customStyles = {
-    control: (provided) => ({
-      ...provided,
-      backgroundColor: "#111111", // Dark gray background
-      borderColor: "#333333", // Dark border
-      color: "white",
-      minHeight: "36px",
-    }),
-    option: (provided, state) => ({
-      ...provided,
-      backgroundColor: state.isSelected ? "#333333" : "#111111",
-      color: state.isSelected ? "white" : "#bbb",
-      "&:hover": {
-        backgroundColor: "#222222",
-      },
-    }),
-    multiValue: (provided) => ({
-      ...provided,
-      backgroundColor: "#333333",
-      color: "white",
-    }),
-    multiValueLabel: (provided) => ({
-      ...provided,
-      color: "white",
-    }),
-    multiValueRemove: (provided) => ({
-      ...provided,
-      color: "white",
-      "&:hover": {
-        backgroundColor: "#f44336",
-      },
-    }),
-  };
+  // React Hook Form setup with validation
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    control,
+    formState: { errors, isSubmitting },
+    reset,
+  } = useForm({
+    resolver: yupResolver(schema),
+    defaultValues: {
+      name: "",
+      price: "",
+      coins: "",
+      featureNames: [], // Default empty array for featureNames
+      durationInDays: "", // Add default value for durationInDays
+    },
+  });
 
-  // Check if we are editing a bundle
+  // Prepare feature names for the select dropdown
+  const featureNames = getAllLlmModel?.map((feature) => ({
+    value: feature.id,
+    label: feature.name
+      .replace(/_/g, " ")
+      .replace(/\b\w/g, (char) => char.toUpperCase()), // Capitalize and replace underscores
+  }));
+
+  // UseEffect to prepopulate the form when editing
   useEffect(() => {
-    if (location.state) {
-      const { name, price, coins, options } = location.state; // Assuming the options are part of the state
-      setLabel(name);
-      setPrice(price);
-      setCoins(coins);
-      setSelectedOptions(
-        options.map((option) => ({ value: option, label: option }))
-      ); // Set the selected options if editing
+    
+      if (location.state) {
+        const { name, price, coins, featureNames: selectedFeatureNames = [], durationInDays } = location.state;
+        
+        // Parse and format the featureNames from stringified JSON
+        const formattedFeatures = selectedFeatureNames.map((opt) => {
+          // Parse stringified JSON if needed
+          const parsedOpt = typeof opt === 'string' ? JSON.parse(opt) : opt;
+          return {
+            value: parsedOpt.value,
+            label: parsedOpt.label.replace(/_/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase()),
+          };
+        });
+  
+      reset({
+        name,
+        price,
+        coins,
+        featureNames: formattedFeatures, // Prepopulate formatted features
+        durationInDays,
+      });
     }
-  }, [location.state]);
+  }, [location.state, reset]);
 
-  const handleAddBundle = async () => {
-    if (!label || !price || !coins || selectedOptions.length === 0) {
-      notyf.error("Please fill in all fields");
-      return;
-    }
-
-    setIsSubmitting(true);
-
-    const dataToSend = {
-      name: label,
-      price: parseFloat(price),
-      coins: parseInt(coins, 10),
-      options: selectedOptions.map((option) => option.value),
+  // Handle form submission
+  const onSubmit = async (data) => {
+    console.log("data?.featureNames",data?.featureNames)
+    const bundleData = {
+      name: data.name,
+      price: parseFloat(data.price),
+      coins: parseInt(data.coins, 10),
+      featureNames: data?.featureNames||[],
+      durationInDays: parseInt(data.durationInDays, 10), // Include durationInDays
     };
 
     try {
       if (location.state) {
         await updateBundle({
           bundleId: location.state.id,
-          updatedBundle: dataToSend,
+          updatedBundle: bundleData,
         }).unwrap();
         notyf.success("Bundle updated successfully!");
       } else {
-        await addBundle(dataToSend).unwrap();
+        await addBundle(bundleData).unwrap();
         notyf.success("Bundle added successfully!");
       }
 
-      setLabel("");
-      setPrice("");
-      setCoins("");
-      setSelectedOptions([]);
-
-      refetch(); // Trigger refetch of bundles
-      navigate("/admin/manage-transactions"); // Navigate to the bundle list
+      refetch();
+      navigate("/admin/bundles");
     } catch (err) {
       notyf.error("Failed to add or update bundle.");
       console.error("Error:", err);
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
-  return (
-    <div
-      className="manage-bundle-plan-container"
-      style={{ padding: "2rem", minWidth: "800px" }}
-    >
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          handleAddBundle();
-        }}
-        className="bundle-form fs-6"
-      >
-        <h6 className="fs-5">
-          {location.state ? "Edit Bundle" : "Add New Bundle"}
-        </h6>
+  // Custom styles for Select component to change background color to #101010
+  const customStyles = {
+    control: (provided, state) => ({
+      ...provided,
+      backgroundColor: "#101010", // Dark background for the control
+      borderColor: state.isFocused || state.menuIsOpen ? "#4caf50" : "#333333", // Green border when clicked (focus) or dropdown is open
+      boxShadow:
+        state.isFocused || state.menuIsOpen ? "0 0 0 2px #4caf50" : "none", // Optional: add green outline on focus
+      color: "white", // Text color for the control
+      minHeight: "36px",
+      "&:hover": {
+        borderColor: "#4caf50", // Ensures the border is black on hover as well
+      },
+    }),
+    menu: (provided) => ({
+      ...provided,
+      backgroundColor: "#101010", // Background color for the dropdown menu
+      color: "white", // Text color for the dropdown menu featureNames
+    }),
+    option: (provided, state) => ({
+      ...provided,
+      backgroundColor: state.isSelected ? "#333333" : "#101010", // Dark background for featureNames
+      color: state.isSelected ? "white" : "#bbb", // Text color for selected and non-selected featureNames
+      borderColor: "#4caf50",
+      "&:hover": {
+        backgroundColor: "#222222", // Hover effect color
+      },
+    }),
+    multiValue: (provided) => ({
+      ...provided,
+      backgroundColor: "#4caf50", // Background color for selected values
+      color: "white", // Text color for selected values
+    }),
+    multiValueLabel: (provided) => ({
+      ...provided,
+      color: "white", // Text color for selected value label
+    }),
+    multiValueRemove: (provided) => ({
+      ...provided,
+      color: "white", // Color for the remove button
+      "&:hover": {
+        backgroundColor: "#4caf50", // Hover color for remove button
+      },
+    }),
+  };
 
-        <div className="form-group">
-          <label>Name</label>
+  // Return JSX with added input field for durationInDays
+  return (
+    <div className="container mx-3">
+      <form onSubmit={handleSubmit(onSubmit)} className="form">
+        <h5 className="mb-5">
+          {location.state ? "Edit Bundle" : "Add New Bundle"}
+        </h5>
+
+        {/* Name Field */}
+        <div className="form-group mb-3">
+          <label className="form-label">Name:</label>
           <input
             type="text"
-            value={label}
-            onChange={(e) => setLabel(e.target.value)}
-            placeholder="Enter Package Name"
-            required
+            id="name"
+            {...register("name")}
+            placeholder="Enter model name"
+            className={` ${errors.name ? "is-invalid" : ""}`}
           />
+          {errors.name && <p className="text-danger">{errors.name.message}</p>}
         </div>
 
-        <div className="form-group">
-          <label>Price</label>
+        {/* Price Field */}
+        <div className="form-group mb-3">
+          <label className="form-label">Price:</label>
           <input
             type="number"
+            id="price"
             step="0.01"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-            placeholder="Enter Price"
-            required
+            {...register("price")}
+            placeholder="Enter price"
+            className={` ${errors.price ? "is-invalid" : ""}`}
           />
+          {errors.price && (
+            <p className="text-danger">{errors.price.message}</p>
+          )}
         </div>
 
-        <div className="form-group">
-          <label>Coins</label>
+        {/* Coins Field */}
+        <div className="form-group mb-3">
+          <label className="form-label">Coins:</label>
           <input
             type="number"
-            value={coins}
-            onChange={(e) => setCoins(e.target.value)}
-            placeholder="Enter Coins"
-            required
+            id="coins"
+            {...register("coins")}
+            placeholder="Enter coins"
+            className={` ${errors.coins ? "is-invalid" : ""}`}
           />
+          {errors.coins && (
+            <p className="text-danger">{errors.coins.message}</p>
+          )}
         </div>
 
-        <div className="form-group">
-          <label>Options</label>
-          <Select
-            isMulti
-            options={options}
-            value={selectedOptions}
-            onChange={setSelectedOptions}
-            styles={customStyles}
-            placeholder="Select Options"
+        {/* DurationInDays Field */}
+        <div className="form-group mb-3">
+          <label className="form-label">Duration (in Days):</label>
+          <input
+            type="number"
+            id="durationInDays"
+            {...register("durationInDays")}
+            placeholder="Enter duration in days"
+            className={` ${errors.durationInDays ? "is-invalid" : ""}`}
           />
+          {errors.durationInDays && (
+            <p className="text-danger">{errors.durationInDays.message}</p>
+          )}
         </div>
 
-        <div className="form-group">
+        {/* Options Field */}
+        <div className="form-group mb-3">
+          <label className="form-label">Features:</label>
+          <Controller
+            name="featureNames"
+            control={control}
+            render={({ field }) => (
+              <Select
+                {...field}
+                isMulti
+                options={featureNames}
+                styles={customStyles}
+                placeholder="Select features"
+              />
+            )}
+          />
+          {errors.featureNames && (
+            <p className="text-danger">{errors.featureNames.message}</p>
+          )}
+        </div>
+
+        {/* Submit Button */}
+        <div className="text-center">
           <button
             type="submit"
-            className="btn-default btn-small"
+            className="submit-btn btn-default"
             disabled={isSubmitting}
           >
-            <span className="fs-5">
-              {isSubmitting
-                ? "Processing..."
-                : location.state
-                ? "Update Bundle"
-                : "Add Bundle"}
-            </span>
+            {isSubmitting
+              ? "Processing..."
+              : location.state
+              ? "Update Bundle"
+              : "Add Bundle"}
           </button>
         </div>
       </form>

@@ -167,22 +167,24 @@ export default function UserListCard({ users, ai }) {
             />
             <h3 style={{ fontSize: "1rem" }}>{selectedUser.name}</h3>
             {isAi ? (
-              <>
+              <div>
                 <p style={{ fontSize: "0.9rem" }}>
                   <strong>Description:</strong>{" "}
                   {selectedUser.description || "N/A"}
                 </p>
                 <button
-                  className="btn-default btn-small"
+                  className="btn-default  d-flex align-items-center justify-content-center btn-small"
                   style={{
-                    fontSize: "0.8rem",
+                    fontSize: "1rem",
+                    width: '100px',
+                    justifySelf: 'center',
                     padding: "0.5rem 1rem",
                     borderRadius: "5px",
                   }}
                 >
                   Chat Now
                 </button>
-              </>
+              </div>
             ) : (
               <>
                 <p style={{ fontSize: "0.9rem" }}>

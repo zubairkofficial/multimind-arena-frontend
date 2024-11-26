@@ -129,7 +129,7 @@ const Header = () => {
                         </Link>
                       </li>
                       <li>
-                        <Link to="/purchase">
+                        <Link to="/deals">
                           <i className="fa-sharp fa-regular fa-briefcase" />
                           <span>Plans and Billing</span>
                         </Link>

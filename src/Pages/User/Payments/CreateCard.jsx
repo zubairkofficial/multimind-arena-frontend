@@ -5,6 +5,7 @@ import { Notyf } from 'notyf'; // Import Notyf
 import 'notyf/notyf.min.css'; // Import Notyf styles
 import { useSelector } from 'react-redux';
 import { useGetUserByIdQuery } from '../../../features/api/userApi'; // Import the query hook
+import { useCreateSubscriptionWithNewCardMutation } from "../../../features/api/subscriptionApi";
 
 export const theme = {
   primaryColor: '#4CAF50',
@@ -22,7 +23,7 @@ export const theme = {
 
 const CreateCard = () => {
   const { state } = useLocation();
-  const { coins, price } = state || {}; 
+  const { coins, price,packageId } = state || {}; 
   const navigate = useNavigate();
 
   const [cardDetails, setCardDetails] = useState({
@@ -40,6 +41,7 @@ const CreateCard = () => {
 
   const userId = user?.id;
   const { data: userData, isError, refetch:userRefetch } = useGetUserByIdQuery(userId);
+  const [createNewCardSubscription,{isLoading:isSubscription}] = useCreateSubscriptionWithNewCardMutation();
 
   const notyf = new Notyf(); // Initialize Notyf
 
@@ -90,15 +92,18 @@ const CreateCard = () => {
     }
 
     try {
+    
       const payload = {
         ...cardDetails,
         coins,
-        price,
+        price: Number(price),
       };
-
-      // Make the API call to create the card
-      await createCard(payload).unwrap(); 
-
+      if (packageId) {
+        payload.packageId = packageId;
+        await createNewCardSubscription(payload).unwrap()
+      }else  {
+        await createCard(payload).unwrap(); 
+}
       // On success, show a success notification
       notyf.success("Card created successfully! Redirecting...");
       userRefetch()
@@ -114,8 +119,11 @@ const CreateCard = () => {
       
     } catch (err) {
       // Show error notification
-      notyf.error("Failed to create the card. Please try again.");
-      console.error('Failed to create card:', err);
+      const errorMessage = err?.data?.message?.message || "Failed to create the card. Please try again.";
+      notyf.error(errorMessage);
+  
+      // Log error for debugging
+      console.error("Failed to create card:", err);
     }
   };
 
@@ -194,8 +202,8 @@ const CreateCard = () => {
         {error && <p style={styles.error}>{error?.data?.message || 'Something went wrong'}</p>}
         {isSuccess && <p style={styles.success}>Card created successfully! Redirecting...</p>}
 
-        <button type="submit" style={styles.submitButton} disabled={isLoading}>
-          {isLoading ? 'Creating Card...' : 'Create Card'}
+        <button type="submit" style={styles.submitButton} disabled={isLoading||isSubscription}>
+          {isLoading || isSubscription ? 'Creating Card...' : 'Create Card'}
         </button>
       </form>
     </div>

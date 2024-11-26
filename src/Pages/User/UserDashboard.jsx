@@ -8,7 +8,7 @@ import Preloader from "../../Pages/Landing/Preloader";
 import { useSelector } from "react-redux";
 import { getSocket, initiateSocketConnection } from "../../app/socket";
 import "./../../components/Arenas/arenas.css";
-import { ArenaRequestStatus } from '../../common'; // Ensure this is imported to check status
+import { ArenaRequestStatus, UserTier } from '../../common'; // Ensure this is imported to check status
 import {  useGetUserByIdQuery,useGetUserInfoCountQuery } from '../../features/api/userApi'; // Import the query hook
 import { FaUser } from "react-icons/fa6";
 import { FaUserCheck } from "react-icons/fa6";
@@ -199,11 +199,12 @@ export default function UserDashboard() {
       <div className="arena-dashboard">
         <div className="search-bar-section">
           <SearchBar
-            onClick={() => navigate(userData?.createArenaRequestStatus === ArenaRequestStatus.APPROVED ? "/add-arena" : "/request-arena")}
+            onClick={() => navigate(userData?.tier===UserTier.PREMIUM?"/add-arena": userData?.createArenaRequestStatus === ArenaRequestStatus.APPROVED ? "/add-arena" : "/request-arena")}
             heading={`Welcome to Arena1, ${userData?.name}`}
             title="Create Arena "
             placeholder="Search for arenas..."
             style={{fontSize:"2.4rem"}}
+            isPremium={userData.tier===UserTier.FREE}
           />
         </div>
         <div className="row mb-4">
