@@ -4,15 +4,18 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 const theme = {
-  primaryColor: '#4CAF50',
-  secondaryColor: '#f3f3f3',
-  textColor: '#fff',
-  buttonHoverColor: '#45a049',
-  inputBorderColor: '#ccc',
-  backgroundColor: ` var(--color-bg-1)`,
-  buttonDisabledColor: '#b0b0b0',
-  borderRadius: '8px',
-  padding: '20px',
+  primaryColor: '#0a3d0c',
+  secondaryColor: '#101010',
+  textColor: '#FFFFFF',
+  lightTextColor: '#9CA3AF',
+  backgroundColor: '#000000',
+  buttonHoverColor: '#0d4e0f',
+  inputBorderColor: '#1F1F1F',
+  buttonDisabledColor: '#1F1F1F',
+  cardBackgroundColor: '#101010',
+  borderRadius: '12px',
+  padding: '24px',
+  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.5)',
 };
 
 const Purchase = () => {
@@ -33,99 +36,220 @@ const Purchase = () => {
   };
 
   return (
-    <Container>
-      <Title>Purchase Coins</Title>
+    <PageWrapper>
+      <Container>
+        <CardHeader>
+          <Title>Purchase Coins</Title>
+          <Subtitle>Add credits to your account</Subtitle>
+        </CardHeader>
 
-      <CoinInfo>
-        <CoinText>{coinsPerPackage} coins for ${coinPrice.toFixed(2)}</CoinText>
+        <CoinInfo>
+          <PriceCard>
+            <PriceLabel>Current Rate</PriceLabel>
+            <PriceValue>{coinsPerPackage} coins</PriceValue>
+            <PriceAmount>${coinPrice.toFixed(2)}</PriceAmount>
+          </PriceCard>
 
-        <Input
-          type="number"
-          value={coins}
-          onChange={(e) => {
-            setCoins(e.target.value);
-            setError('');
-          }}
-          min="1000"
-          placeholder="Enter number of coins"
-        />
+          <InputWrapper>
+            <InputLabel>Amount of coins</InputLabel>
+            <Input
+              type="number"
+              value={coins}
+              onChange={(e) => {
+                setCoins(e.target.value);
+                setError('');
+              }}
+              min="1000"
+              placeholder="Enter number of coins (min. 1000)"
+            />
+            {error && <ErrorText>{error}</ErrorText>}
+          </InputWrapper>
 
-        {error && <ErrorText>{error}</ErrorText>}
+          {coins > 0 && !error && (
+            <TotalAmount>
+              Total: ${((coinPrice / coinsPerPackage) * coins).toFixed(2)}
+            </TotalAmount>
+          )}
 
-        <PurchaseButton onClick={handlePurchase} disabled={coins < 1000}>
-          {coins < 1000 || coins <= 0 ? 'Enter at least 1000 coins' : `Purchase ${coins} Coins`}
-        </PurchaseButton>
-      </CoinInfo>
-    </Container>
+          <PurchaseButton onClick={handlePurchase} disabled={coins < 1000}>
+            {coins < 1000 || coins <= 0 ? (
+              <>
+                <i className="fas fa-coins"></i>
+                Enter at least 1000 coins
+              </>
+            ) : (
+              <>
+                <i className="fas fa-shopping-cart"></i>
+                Purchase {coins.toLocaleString()} Coins
+              </>
+            )}
+          </PurchaseButton>
+        </CoinInfo>
+      </Container>
+    </PageWrapper>
   );
 };
 
-// Styled-components with green shadow styling
-const Container = styled.div`
-  padding: ${theme.padding};
-  max-width: 400px;
-  margin: 50px auto;
+// Updated styled-components
+const PageWrapper = styled.div`
+  min-height: 100vh;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background-color: ${theme.backgroundColor};
+`;
+
+const Container = styled.div`
+  width: 100%;
+  max-width: 480px;
+  padding: ${theme.padding};
+  background-color: ${theme.cardBackgroundColor};
   border-radius: ${theme.borderRadius};
-  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4); /* Green shadow */
+  box-shadow: ${theme.boxShadow};
+  border: 1px solid ${theme.inputBorderColor};
+
+  @media (max-width: 768px) {
+    max-width: 100%;
+    margin: 10px;
+  }
+`;
+
+const CardHeader = styled.div`
+  text-align: center;
+  margin-bottom: 32px;
 `;
 
 const Title = styled.h1`
-  text-align: center;
   font-size: 24px;
+  font-weight: 600;
   color: ${theme.textColor};
+  margin-bottom: 8px;
+`;
+
+const Subtitle = styled.p`
+  color: ${theme.lightTextColor};
+  font-size: 16px;
 `;
 
 const CoinInfo = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
+  gap: 24px;
 `;
 
-const CoinText = styled.p`
-  font-size: 18px;
-  margin-bottom: 10px;
+const PriceCard = styled.div`
+  background-color: ${theme.backgroundColor};
+  padding: 20px;
+  border-radius: ${theme.borderRadius};
+  text-align: center;
+  border: 1px solid ${theme.inputBorderColor};
+`;
+
+const PriceLabel = styled.div`
+  font-size: 14px;
+  color: ${theme.lightTextColor};
+  margin-bottom: 8px;
+`;
+
+const PriceValue = styled.div`
+  font-size: 24px;
+  font-weight: 600;
   color: ${theme.textColor};
+  margin-bottom: 4px;
+`;
+
+const PriceAmount = styled.div`
+  font-size: 20px;
+  color: ${theme.primaryColor};
+  font-weight: 500;
+`;
+
+const InputWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+`;
+
+const InputLabel = styled.label`
+  font-size: 14px;
+  color: ${theme.lightTextColor};
+  font-weight: 500;
 `;
 
 const Input = styled.input`
-  padding: 12px;
-  margin-bottom: 15px;
-  border-radius: 5px;
-  border: 1px solid ${theme.inputBorderColor};
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 2px solid ${theme.inputBorderColor};
   font-size: 16px;
   width: 100%;
   box-sizing: border-box;
   outline: none;
-  transition: border-color 0.3s ease;
+  transition: all 0.2s ease;
+  background-color: ${theme.backgroundColor};
+  color: ${theme.textColor};
+
+  &:focus {
+    border-color: ${theme.primaryColor};
+    box-shadow: 0 0 0 3px rgba(10, 61, 12, 0.2);
+  }
+
+  &::placeholder {
+    color: ${theme.lightTextColor};
+  }
 `;
 
 const PurchaseButton = styled.button`
   background-color: ${theme.primaryColor};
-  color: ${theme.textColor};
-  padding: 12px 0;
-  border-radius: 5px;
+  color: white;
+  padding: 14px;
+  border-radius: 8px;
   border: none;
   font-size: 16px;
+  font-weight: 500;
   cursor: pointer;
   width: 100%;
-  transition: background-color 0.3s ease;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 
-  &:hover {
+  i {
+    font-size: 18px;
+  }
+
+  &:hover:not(:disabled) {
     background-color: ${theme.buttonHoverColor};
+    transform: translateY(-1px);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
   }
 
   &:disabled {
     background-color: ${theme.buttonDisabledColor};
     cursor: not-allowed;
+    color: ${theme.lightTextColor};
   }
 `;
 
 const ErrorText = styled.p`
-  color: #e74c3c;
+  color: #EF4444;
   font-size: 14px;
-  margin-bottom: 10px;
+  margin-top: 4px;
+`;
+
+const TotalAmount = styled.div`
   text-align: center;
+  font-size: 18px;
+  font-weight: 600;
+  color: ${theme.textColor};
+  padding: 16px;
+  background-color: ${theme.backgroundColor};
+  border-radius: ${theme.borderRadius};
+  border: 1px solid ${theme.inputBorderColor};
 `;
 
 export default Purchase;

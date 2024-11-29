@@ -10,6 +10,8 @@ import "./../../../components/ArenaChat/arenachat.css";
 import { useGetAllArenasQuery } from "../../../features/api/arenaApi";
 import { useGetUserByIdQuery } from "../../../features/api/userApi";
 import Logo from '../../../../public/assets/images/logo/logo.png';
+import styled from 'styled-components';
+
 export default function ArenaChatPage() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -168,173 +170,260 @@ console.log("arena",arena)
     }));
 
   return (
-   <div
-  className="arena-chat-page"
-  style={{
-    fontSize: "calc(100% - 5px)", // Reduces font size globally by 5px
-    lineHeight: "1.2", // Optional: Adjusts line spacing for smaller fonts
-  }}
->
-  {/* Rest of your JSX structure */}
-  <div className="d-flex h-100 bg-transparent text-color-light">
-    <button
-      className="btn-default btn-small"
-      onClick={toggleParticipants}
-      style={{
-        position: "absolute",
-        top: "10px",
-        left: "10px",
-        backgroundColor: showParticipants ? "#45db34" : "#1c1c1c",
-        color: "#f8f9fa",
-        border: "none",
-        padding: "0.5rem",
-        borderRadius: "50%",
-        cursor: "pointer",
-        fontSize: "1rem", // Adjusted font size
-        transition: "transform 0.3s ease, background-color 0.3s ease",
-        transform: showParticipants ? "scale(1)" : "scale(1.1)",
-      }}
-    >
-      <i className={`fas ${showParticipants ? "fa-users" : "fa-times"}`} />
-    </button>
+    <ChatContainer>
+      <ChatLayout>
+        {/* Participants Toggle Button */}
+        {/* <ToggleButton 
+          onClick={toggleParticipants} 
+          isActive={showParticipants}
+          position="left"
+        > */}
+          {/* <i className={`fas ${showParticipants ? "fa-times" : "fa-users"}`} /> */}
+        {/* </ToggleButton> */}
 
-    <div
-      className={showParticipants ? "slide-in-left" : "slide-out-left"}
-      style={{
-        width: showParticipants ? (isMobile ? "50%" : "250px") : "0",
-        opacity: showParticipants ? 1 : 0,
-        overflow: "hidden",
-        position: isMobile ? "absolute" : "static",
-        top: isMobile ? "100px" : "0",
-        zIndex: isMobile ? 10 : "auto",
-      }}
-    ></div>
-
-    <div
-      className={`flex-grow-1 d-flex flex-column chat-message-area ${
-        showParticipants && !isMobile ? "" : "full-width"
-      } ${showUsers ? "slideIn" : "slideOut"}`}
-    >
-      <ArenaInfoCard
-        image={arena?.image}
-        name={arena?.name}
-        handleLeaveRoom={handleLeaveRoom}
-        toggleParticipants={toggleParticipants}
-        toggleUsers={toggleUsers}
-        setShowUsers={setShowUsers}
-        participantsCount={arena?.userArenas?.length || 0}
-        expiryTime={arena?.expiryTime}
-        arenaModel={arena?.arenaModel}
-      />
-
-      {notification && (
-        <div
-          className="notification-area text-center mt-3 p-4 bg-success text-light"
-          style={{ fontSize: "0.8rem" }} // Reduced font size
+        {/* Participants Panel */}
+        {/* <ParticipantsPanel 
+          isVisible={showParticipants} 
+          isMobile={isMobile}
         >
-          <span className="notification-text">{notification}</span>
-        </div>
-      )}
-
-      <div
-        ref={chatContainerRef}
-        className="flex-grow-1 pt-4 px-4 overflow-auto chat-message-container"
-      >
-        {sortedMessages.map((msg, index) => (
-          <div
-            key={index}
-            className={`d-flex align-items-center ${
-              msg.sender === "You" ? "justify-content-end" : ""
-            }`}
-            style={{
-              marginBottom: "1rem",
-              fontSize: "0.85rem", // Reduced font size for messages
-            }}
-          >
-            {msg.sender !== "You" && (
-              <img
-                src={msg?.user?.image || Logo}
-                alt={msg?.user?.name}
-                className="message-image"
-                style={{
-                  width: "40px",
-                  height: "40px",
-                  borderRadius: "50%",
-                  marginRight: "0.5rem",
-                }}
-                onError={(e) => (e.target.src = Logo)}
-              />
-            )}
-            <MessageBubble message={msg} />
-            {msg.sender === "You" && (
-              <img
-                src={userData?.image}
-                alt="You"
-                className="message-image"
-                style={{
-                  width: "40px",
-                  height: "40px",
-                  borderRadius: "50%",
-                  marginLeft: "0.5rem",
-                }}
-                onError={(e) => (e.target.src = Logo)}
-              />
-            )}
-          </div>
-        ))}
-      </div>
-
-      <div className="p-1 border-color-light chat-input-container">
-        <form
-          onSubmit={handleSubmit}
-          className="mt-5 d-flex align-items-center w-100 position-relative bg-transparent"
-        >
-          <input
-            type="text"
-            className="form-control p-3 bg-color-black text-light pr-5"
-            style={{
-              borderRadius: "50px",
-              fontSize: "1.2rem", // Reduced font size for input
-            }}
-            placeholder="Message..."
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
+          <ParticipantsCard
+            participants={arena?.userArenas || []}
+            arenaId={arena?.id}
           />
-          <button
-            type="submit"
-            className="btn btn-large rounded-circle position-absolute end-0 top-50 translate-middle-y me-5 btn-success text-white shadow"
-            style={{ fontSize: "0.8rem" }}
-          >
-            <i className="fas fa-send"></i>
-          </button>
-        </form>
-      </div>
-    </div>
+        </ParticipantsPanel> */}
 
-    {showUsers && (
-      <div
-        className={showUsers ? "slide-in-right" : "slide-out-right"}
-        style={{
-          width: "300px",
-          backgroundColor: "#101010",
-          color: "#fff",
-          padding: "1rem",
-          overflow: "auto",
-          fontSize: "0.9rem", // Reduced font size for users section
-        }}
-      >
-        <UserListCard
-          users={arena?.userArenas?.map((userArena) => userArena.user) || []}
-          ai={
-            arena?.arenaAIFigures?.map((userArena) => userArena.aiFigure) || [
-              "Ahsan",
-            ]
-          }
-        />
-      </div>
-    )}
-  </div>
-</div>
+        {/* Main Chat Area */}
+        <ChatMainArea 
+          showParticipants={showParticipants} 
+          isMobile={isMobile}
+          showUsers={showUsers}
+        >
+          {/* Arena Info Header */}
+          <ArenaInfoCard
+            image={arena?.image}
+            name={arena?.name}
+            handleLeaveRoom={handleLeaveRoom}
+            toggleParticipants={toggleParticipants}
+            toggleUsers={toggleUsers}
+            setShowUsers={setShowUsers}
+            participantsCount={arena?.userArenas?.length || 0}
+            expiryTime={arena?.expiryTime}
+            arenaModel={arena?.arenaModel}
+          />
 
+          {/* Notification Area */}
+          {notification && (
+            <NotificationBar>
+              {notification}
+            </NotificationBar>
+          )}
+
+          {/* Messages Container */}
+          <MessagesContainer ref={chatContainerRef}>
+            {sortedMessages.map((msg, index) => (
+              <MessageWrapper 
+                key={index}
+                isOwnMessage={msg.sender === "You"}
+              >
+                {msg.sender !== "You" && (
+                  <UserAvatar
+                    src={msg?.user?.image || Logo}
+                    alt={msg?.user?.name}
+                    onError={(e) => (e.target.src = Logo)}
+                  />
+                )}
+                
+                <MessageBubble message={msg} />
+                
+                {msg.sender === "You" && (
+                  <UserAvatar
+                    src={userData?.image}
+                    alt="You"
+                    onError={(e) => (e.target.src = Logo)}
+                  />
+                )}
+              </MessageWrapper>
+            ))}
+          </MessagesContainer>
+
+          {/* Chat Input Area */}
+          <ChatInputContainer>
+            <ChatForm onSubmit={handleSubmit}>
+              <ChatInput
+                type="text"
+                placeholder="Type your message..."
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+              />
+              <SendButton type="submit">
+                <i className="fas fa-paper-plane" />
+              </SendButton>
+            </ChatForm>
+          </ChatInputContainer>
+        </ChatMainArea>
+
+        {/* Users Panel */}
+        <UsersPanel isVisible={showUsers}>
+          <UserListCard
+            users={arena?.userArenas?.map((userArena) => userArena.user) || []}
+            ai={arena?.arenaAIFigures?.map((userArena) => userArena.aiFigure) || []}
+          />
+        </UsersPanel>
+      </ChatLayout>
+    </ChatContainer>
   );
 }
+
+// Styled Components
+const ChatContainer = styled.div`
+  height: 100vh;
+  background: linear-gradient(145deg, #101010, #0a3d0c20);
+  color: #ffffff;
+`;
+
+const ChatLayout = styled.div`
+  display: flex;
+  height: 100%;
+  position: relative;
+`;
+
+const ToggleButton = styled.button`
+  position: absolute;
+  top: 1rem;
+  ${props => props.position}: 1rem;
+  background: ${props => props.isActive ? '#17df14' : 'rgba(10, 61, 12, 0.8)'};
+  color: white;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 100;
+
+  &:hover {
+    transform: scale(1.1);
+    background: #17df14;
+  }
+`;
+
+const ParticipantsPanel = styled.div`
+  width: ${props => props.isVisible ? (props.isMobile ? '80%' : '300px') : '0'};
+  background: rgba(16, 16, 16, 0.95);
+  border-right: 1px solid #17df14;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  position: ${props => props.isMobile ? 'absolute' : 'relative'};
+  height: 100%;
+  z-index: 90;
+`;
+
+const ChatMainArea = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: rgba(16, 16, 16, 0.8);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+`;
+
+const NotificationBar = styled.div`
+  background: rgba(23, 223, 20, 0.1);
+  color: #17df14;
+  padding: 0.8rem;
+  text-align: center;
+  border-radius: 8px;
+  margin: 1rem;
+  animation: fadeIn 0.3s ease;
+`;
+
+const MessagesContainer = styled.div`
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+  scroll-behavior: smooth;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #17df14;
+    border-radius: 3px;
+  }
+`;
+
+const MessageWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: ${props => props.isOwnMessage ? 'flex-end' : 'flex-start'};
+  margin-bottom: 1rem;
+  gap: 0.5rem;
+`;
+
+const UserAvatar = styled.img`
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #17df14;
+  object-fit: cover;
+`;
+
+const ChatInputContainer = styled.div`
+  padding: 1rem;
+  background: rgba(16, 16, 16, 0.95);
+  border-top: 1px solid rgba(23, 223, 20, 0.1);
+`;
+
+const ChatForm = styled.form`
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+`;
+
+const ChatInput = styled.input`
+  flex: 1;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(23, 223, 20, 0.2);
+  border-radius: 25px;
+  padding: 1rem 1.5rem;
+  color: white;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+
+  &:focus {
+    outline: none;
+    border-color: #17df14;
+    box-shadow: 0 0 0 2px rgba(23, 223, 20, 0.1);
+  }
+`;
+
+const SendButton = styled.button`
+  background: linear-gradient(145deg, #0a3d0c, #17df14);
+  border: none;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(23, 223, 20, 0.3);
+  }
+`;
+
+const UsersPanel = styled.div`
+  width: ${props => props.isVisible ? '300px' : '0'};
+  background: rgba(16, 16, 16, 0.95);
+  border-left: 1px solid #17df14;
+  transition: all 0.3s ease;
+  overflow: hidden;
+`;

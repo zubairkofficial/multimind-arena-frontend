@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./arenachat.css"; // Import the CSS file for custom styles
 import Logo from "../../../public/assets/images/logo/logo.png";
 import Meta from "../../../public/assets/meta-black-icon.svg";
+import { ModelType } from '../../common';
 
 function ArenaInfoCard({
   image,
@@ -101,7 +102,7 @@ function ArenaInfoCard({
           className="details-section p-3 mt-2"
           style={{
             position: "absolute",
-            top: "25%",
+            top: "10%",
             right: "3%",
             backgroundColor: "#0a3d0c",
             color: "white",
@@ -141,6 +142,8 @@ function ArenaInfoCard({
                   height: "18px",
                   objectFit: "contain",
                 }}
+                onError={(e) => (e.target.src = Logo)} // Fallback to Logo if the image fails to load
+       
               />
             )}
           
@@ -155,9 +158,10 @@ function ArenaInfoCard({
   }}
 ></i>
 
-            Models: <span style={{fontWeight:'bold'}}> {arenaModel?.map((item, index) => {
+            Models: <span style={{fontWeight:'bold'}}> {arenaModel.length>0 ?
+            arenaModel?.map((item) => {
       try {
-        const parsedItem = JSON.parse(item); // Parse the stringified JSON
+        const parsedItem = JSON.parse(item,index); // Parse the stringified JSON
         return (
           <span key={index} style={{ marginRight: "8px" }}>
             {parsedItem.label}
@@ -166,7 +170,9 @@ function ArenaInfoCard({
       } catch (error) {
         return null; // Handle any JSON parsing errors gracefully
       }
-    })}</span>
+    }):<span  style={{ marginRight: "8px" }}>
+ {ModelType?.GPT_4o_Mini}
+  </span>}</span>
           </p>
         </div>
       )}

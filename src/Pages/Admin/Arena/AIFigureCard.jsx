@@ -1,5 +1,6 @@
 import React from "react";
 import "./../AiFigures/aifigures.css";
+import Logo from "../../../../public/assets/images/logo/logo.png";
 
 export default function AIFigureCard({ figure, onSelect, isSelected }) {
   return (
@@ -9,9 +10,11 @@ export default function AIFigureCard({ figure, onSelect, isSelected }) {
     >
       <div className="aifigure-card-image-wrapper">
         <img
-          alt={figure.name}
+          alt={Logo}
           className="aifigure-card-image"
-          src={figure.image}
+          src={figure.image||Logo}
+          onError={(e) => (e.target.src = Logo)} // Fallback to Logo if the image fails to load
+       
         />
         <span className="aifigure-card-creator">By: @{figure.creator}</span>
       </div>

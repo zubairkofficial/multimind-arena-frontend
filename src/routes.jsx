@@ -44,42 +44,45 @@ import CreateCard from './Pages/User/Payments/CreateCard'
 import Purchase from './Pages/User/Payments/Purchase'
 import ExistingCards from './Pages/User/Payments/ExistingCards'
 import ManageArenaAccess from './Pages/Admin/Arena/ManageArenaAccess'
-// import AuthRedirect from "./AuthRedirect";
+import ManageAIFigureAccess from './Pages/Admin/AiFigures/ManageAIFigureAccess'
+import AuthRedirect from "./AuthRedirect";
 import ManageAdminLlmModels from "./Pages/Admin/LlmModel/index";
 import CreateAdminLlmModel from "./Pages/Admin/LlmModel/CreateAdminLlmMoel";
+import { UserTier } from "./common";
+import ProtectedRoute from "./ProtectRoutes";
 // Define routes
 export const router = createBrowserRouter([
   // Default Routes
   {
     path: "/",
     element:  (
-    // <AuthRedirect>
+    <AuthRedirect>
        <Index />
-     //   </AuthRedirect>
+        </AuthRedirect>
         ),
   },
   {
     path: "/register",
     element: (
-      // <AuthRedirect>
+      <AuthRedirect>
         <Register />
-      // </AuthRedirect>
+       </AuthRedirect>
     ),
   },
   {
     path: "/login",
     element: (
-      // <AuthRedirect>
+      <AuthRedirect>
         <Login />
-      // </AuthRedirect>
+   </AuthRedirect>
     ),
   },
   {
     path: "/forgot-password",
     element: (
-      // <AuthRedirect>
+      <AuthRedirect>
         <ForgotPassword />
-      // </AuthRedirect>
+       </AuthRedirect>
     ),
   },
   {
@@ -139,6 +142,10 @@ export const router = createBrowserRouter([
       {
           path: "arena-access",
           element: <ManageArenaAccess />,
+        },
+      {
+          path: "ai-figure-access",
+          element: <ManageAIFigureAccess />,
         },
       {
         path: "bundles",
@@ -214,7 +221,10 @@ export const router = createBrowserRouter([
         element: <ArenaChatPage/>},
       {
         path: "add-arena",
-        element: <UserAddArena />,
+        element:
+        <ProtectedRoute>
+        <UserAddArena />
+        </ProtectedRoute>
       },
       {
         path: "ai-figure-gallery",
@@ -226,7 +236,10 @@ export const router = createBrowserRouter([
       },
       {
         path: "/add-ai-figure",
-        element: <UserAddAiFigure />,
+        element:
+        <ProtectedRoute>
+        <UserAddAiFigure />
+        </ProtectedRoute>
       },
       {
         path: "history/:id",

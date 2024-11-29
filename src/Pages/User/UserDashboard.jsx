@@ -14,6 +14,7 @@ import { FaUser } from "react-icons/fa6";
 import { FaUserCheck } from "react-icons/fa6";
 import { HiMiniCpuChip } from "react-icons/hi2";
 import { Link } from 'react-router-dom';
+import styled from 'styled-components';
 
 
 
@@ -57,13 +58,13 @@ export default function UserDashboard() {
       path: "/admin/manage-ai-figures",
       userIcon: <HiMiniCpuChip />,
     },
-    // {
-    //   title: "Total Coins",
-    //   count: 8,
-    //   className: "daily-active-users-card",
-    //   path: "/admin/users",
-    //   userIcon: <FaUser />,
-    // },
+    {
+      title: "Total AI Figures",
+      count: userTotalCountData?.totalAiFigureCount??0,
+      className: "daily-active-users-card",
+      path: "/admin/users",
+      userIcon: <FaRobot />
+    },
   ];
   useEffect(() => {
     isMounted.current = true;
@@ -194,98 +195,216 @@ export default function UserDashboard() {
   if (error) return <div>Error loading arenas: {error.message}</div>;
 
   return (
-    <div className="container">
-    
-      <div className="arena-dashboard">
-        <div className="search-bar-section">
+    <DashboardContainer>
+      <DashboardContent>
+        <WelcomeSection>
           <SearchBar
-            onClick={() => navigate(userData?.tier===UserTier.PREMIUM?"/add-arena": userData?.createArenaRequestStatus === ArenaRequestStatus.APPROVED ? "/add-arena" : "/request-arena")}
+            onClick={() => navigate(userData?.tier === UserTier.PREMIUM ? "/add-arena" : userData?.createArenaRequestStatus === ArenaRequestStatus.APPROVED ? "/add-arena" : "/request-arena")}
             heading={`Welcome to Arena1, ${userData?.name}`}
-            title="Create Arena "
+            title="Create Arena"
             placeholder="Search for arenas..."
-            style={{fontSize:"2.4rem"}}
-            isPremium={userData.tier===UserTier.FREE}
+            isPremium={userData?.createArenaRequestStatus === ArenaRequestStatus?.APPROVED ? false : userData?.tier === UserTier.FREE}
           />
-        </div>
-        <div className="row mb-4">
-     {cardsData.map((card, index) => (
-        <div className="col-md-3" key={index}>
-        <Link to={card.path}>
-          {/* admin-card card*/}
-          <div className={`text-white card-glass ${card.className}`}>
-            {/* card-body */}
-            <div className="card-body d-flex align-items-center">
-              <div className="ls">
-                {card.userIcon}
-              </div>
-              <div className="rs ms-3">
-                <h5 className="card-title">{card.title}</h5>
-                <h2 className="card-text text-center">{card.count}</h2>
-              </div>
-            </div>
-          </div>
-        </Link>
-      </div>
-      ))}
-     </div>
+        </WelcomeSection>
 
-        {arenas?.length > 0 ? (
-          <>
-            <ArenaCategory
-              title="All Arenas"
-              arenas={arenas}
-              handleJoin={handleJoinArena}
-            />
-            {sortedArenaCategories?.map(([type, arenasList]) => (
+        <StatsGrid>
+          {cardsData.map((card, index) => (
+            <StatsCard key={index} to={card.path}>
+              <CardContent className={card.className}>
+                <IconWrapper>{card.userIcon}</IconWrapper>
+                <CardInfo>
+                  <CardTitle>{card.title}</CardTitle>
+                  <CardCount>{card.count}</CardCount>
+                </CardInfo>
+              </CardContent>
+            </StatsCard>
+          ))}
+        </StatsGrid>
+
+        <ArenasSection>
+          {arenas?.length > 0 ? (
+            <>
               <ArenaCategory
-                key={type}
-                title={type}
-                arenas={arenasList}
+                title="All Arenas"
+                arenas={arenas}
                 handleJoin={handleJoinArena}
               />
-            ))}
-          </>
-        ) : (
-          <h3 className="d-flex align-items-center justify-content-center">
-            No arenas available
-          </h3>
-        )}
+              {sortedArenaCategories?.map(([type, arenasList]) => (
+                <ArenaCategory
+                  key={type}
+                  title={type}
+                  arenas={arenasList}
+                  handleJoin={handleJoinArena}
+                />
+              ))}
+            </>
+          ) : (
+            <NoArenasMessage>No arenas available</NoArenasMessage>
+          )}
+        </ArenasSection>
 
         {(isJoining || showOverlay) && (
-          <OverlayCard isJoining={isJoining} joinError={joinError} />
+          <StyledOverlay>
+            <OverlayContent>
+              {isJoining && !joinError && (
+                <LoadingWrapper>
+                  <Spinner animation="border" role="status" />
+                  <LoadingText>Joining the arena...</LoadingText>
+                </LoadingWrapper>
+              )}
+              {joinError && (
+                <ErrorMessage>{joinError}</ErrorMessage>
+              )}
+            </OverlayContent>
+          </StyledOverlay>
         )}
 
         {notification && (
-          <div className="notification">
+          <NotificationWrapper>
             <Alert variant="info">{notification}</Alert>
-          </div>
+          </NotificationWrapper>
         )}
-      </div>
-    </div>
+      </DashboardContent>
+    </DashboardContainer>
   );
 }
 
-const OverlayCard = ({ isJoining, joinError }) => (
-  <div className="overlay p-4 rounded">
-    <div className="overlay-card text-center p-4">
-      <div className="bg-dark text-white p-4">
-        {/* Show joining state only if isJoining is true and no joinError */}
-        {isJoining && !joinError && (
-          <>
-            <Spinner animation="border" role="status" className="mb-3">
-              <span className="visually-hidden">Loading...</span>
-            </Spinner>
-            <div>Joining the arena...</div>
-          </>
-        )}
+// Styled Components
+const DashboardContainer = styled.div`
+  min-height: 100vh;
+  background: #000000;
+  padding: 2rem;
 
-        {/* Show error state only if joinError exists */}
-        {joinError && (
-          <Alert variant="danger" className="mt-3">
-            {joinError}
-          </Alert>
-        )}
-      </div>
-    </div>
-  </div>
-);
+  @media (max-width: 768px) {
+    padding: 1rem;
+  }
+`;
+
+const DashboardContent = styled.div`
+  max-width: 1400px;
+  margin: 0 auto;
+`;
+
+const WelcomeSection = styled.div`
+  margin-bottom: 2rem;
+`;
+
+const StatsGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+`;
+
+const StatsCard = styled(Link)`
+  text-decoration: none;
+  color: inherit;
+`;
+
+const CardContent = styled.div`
+  background: #101010;
+  border: 1px solid #0a3d0c;
+  border-radius: 16px;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 24px rgba(23, 223, 20, 0.15);
+    border-color: #17df14;
+  }
+`;
+
+const IconWrapper = styled.div`
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(145deg, #0a3d0c, #17df14);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.5rem;
+`;
+
+const CardInfo = styled.div`
+  flex: 1;
+`;
+
+const CardTitle = styled.h5`
+  color: #17df14;
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+`;
+
+const CardCount = styled.h2`
+  color: white;
+  margin: 0.5rem 0 0;
+  font-size: 2rem;
+  font-weight: 700;
+`;
+
+const ArenasSection = styled.div`
+  background: #101010;
+  border-radius: 20px;
+  padding: 2rem;
+  border: 1px solid #0a3d0c;
+`;
+
+const NoArenasMessage = styled.h3`
+  text-align: center;
+  color: #17df14;
+  padding: 3rem;
+  font-weight: 600;
+`;
+
+const StyledOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+`;
+
+const OverlayContent = styled.div`
+  background: #101010;
+  border-radius: 16px;
+  padding: 2rem;
+  border: 2px solid #0a3d0c;
+  max-width: 400px;
+  width: 90%;
+`;
+
+const LoadingWrapper = styled.div`
+  text-align: center;
+  color: #17df14;
+`;
+
+const LoadingText = styled.div`
+  margin-top: 1rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+`;
+
+const ErrorMessage = styled(Alert)`
+  margin: 0;
+  background: rgba(220, 53, 69, 0.1);
+  border-color: #dc3545;
+  color: #dc3545;
+`;
+
+const NotificationWrapper = styled.div`
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 1000;
+`;

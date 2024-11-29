@@ -24,11 +24,12 @@ const UserDashboard = ({ children }) => {
           <Sidebar />
           <RightSidebar />
           <div
-            className={`table-container content-wrapper ${
+            className={` content-wrapper ${
               sidebarOpen ? "sidebar-open" : ""
             } ${rightSidebarOpen ? "right-sidebar-open" : ""} ${
               sidebarOpen || rightSidebarOpen ? "hide-on-mobile" : ""
             }`}
+            style={{marginTop:"8rem"}}
           >
             <Outlet />
           </div>

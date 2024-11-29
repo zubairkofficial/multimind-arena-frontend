@@ -33,19 +33,26 @@ console.log("userData",userData?.tier)
   // Sidebar menu items
   const mainMenuItems = [
     { path: "/dashboard", icon: "fa-home", label: "Playground" },
+    ...(userData?.tier === UserTier.FREE ? [
     {
-      path:
-      userData?.tier==UserTier.PREMIUM?"/add-arena":
-        userData?.createArenaRequestStatus === ArenaRequestStatus.APPROVED
-          ? "/add-arena"
-          : "/request-arena",
+      path: "/request-arena",
       icon: "fa-plus-circle",
-      label:
-      userData?.tier==UserTier.PREMIUM?"Add Arena":
-        userData?.createArenaRequestStatus === ArenaRequestStatus.APPROVED
-          ? "Add Arena"
-          : "Request",
-    },
+      label: "Request",
+    }
+  ] : []),
+    // {
+    //   path:
+    //   userData?.tier==UserTier.PREMIUM?"/add-arena":
+    //     userData?.createArenaRequestStatus === ArenaRequestStatus.APPROVED
+    //       ? "/add-arena"
+    //       : null,
+    //   icon: "fa-plus-circle",
+    //   label:
+    //   userData?.tier==UserTier.PREMIUM?"Add Arena":
+    //     userData?.createArenaRequestStatus === ArenaRequestStatus.APPROVED
+    //       ? "Add Arena"
+    //       : null,
+    // },
     {
       path: "/ai-figure-gallery",
       icon: "fa-images",

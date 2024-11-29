@@ -1,5 +1,6 @@
 import React from "react";
 import "./aifigures.css";
+import Logo from "../../../../public/assets/images/logo/logo.png";
 
 export default function AIFigureCard({ figure, onSelect }) {
 
@@ -10,7 +11,9 @@ export default function AIFigureCard({ figure, onSelect }) {
         <img
           alt={figure.name}
           className="aifigure-card-image"
-          src={figure.image}
+          src={figure.image||Logo}
+          onError={(e) => (e.target.src = Logo)} // Fallback to Logo if the image fails to load
+       
         />
       </div>
       <div className="aifigure-card-content">

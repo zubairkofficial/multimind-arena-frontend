@@ -134,9 +134,11 @@
     /* Centers items horizontally on mobile */
 }
 
-.error-text{
+.error-text {
     color: red;
 }
+
+
 /* Mobile screens (1 column, centered cards) */
 
 @media (max-width: 767px) {
@@ -224,4 +226,40 @@
     display: flex;
     color: #111111;
     /* Show only for selected cards */
+}
+
+.loading-spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+    color: #17df14;
+}
+
+.error-message {
+    text-align: center;
+    color: #ff4444;
+    padding: 2rem;
+    background: rgba(255, 68, 68, 0.1);
+    border-radius: 12px;
+    margin: 2rem;
+}
+
+
+/* Animations */
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.category-btn.active {
+    animation: pulse 2s infinite;
 }

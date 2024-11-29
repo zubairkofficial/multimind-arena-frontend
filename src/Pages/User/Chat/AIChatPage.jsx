@@ -2,13 +2,14 @@ import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useGetAIFigureByIdQuery } from "../../../features/api/aiFigureApi"; // Import the query hook
 import axios from "axios";
-import {  useSelector } from "react-redux";
-import {  useGetUserByIdQuery } from '../../../features/api/userApi'; // Import the query hook
+import { useSelector } from "react-redux";
+import { useGetUserByIdQuery } from '../../../features/api/userApi'; // Import the query hook
 
 import MessageBubble from "./MessageBubble";
 import AIFigureInfoCard from "./../../../components/Chat/AIFigureInfoCard";
 import Helpers from "../../../Config/Helpers";
 import Logo from '../../../../public/assets/images/logo/logo.png';
+import { ModelType } from "../../../common";
 
 export default function AIChatPage() {
   const navigate = useNavigate();
@@ -28,11 +29,22 @@ export default function AIChatPage() {
   const userId = useSelector((state) => state.user.user?.id); // Assuming user ID is stored in Redux
 
   // Fetch user details by ID
-  const { data: user,  isError,refetch:userRefetch } = useGetUserByIdQuery(userId);
+  const { data: user, isError, refetch: userRefetch } = useGetUserByIdQuery(userId);
 
   // Log the figure for debugging
   console.log("figure", aiFigure);  // Ensure it's correctly passed
 
+  // Extract the model name
+  const modelNames = aiFigure?.llmModel?.map((modelString) => {
+    try {
+      const model = JSON.parse(modelString); // Parse the JSON string into an object
+      return model.name || "Unnamed Model";  // Return the name if available
+    } catch (error) {
+      console.error("Error parsing model string:", error);
+      return "Invalid Model";  // Fallback if JSON parsing fails
+    }
+  }) || [ModelType.GPT_4o_Mini];  // Fallback in case llmModel is undefined
+  
   // Fetch chat messages logic (same as before)
   useEffect(() => {
     if (aiFigure) {
@@ -108,7 +120,7 @@ export default function AIChatPage() {
         const response = await axios.post(`${Helpers.apiUrl}ai-figures/chat/${figureId}`, { message: userMessage.content }, {
           headers: { "Content-Type": "application/json", Authorization: `Bearer ${localStorage.getItem("token")}` },
         });
-        userRefetch()
+        userRefetch();
         const aiResponse = {
           sender: aiFigure?.name || "AI Figure",
           content: response.data || "This is an automated response.",
@@ -145,13 +157,14 @@ export default function AIChatPage() {
 
   return (
     <div className="d-flex h-100 bg-transparent text-color-light">
-      {/* Your other JSX */}
       <div className="flex-grow-1 d-flex flex-column chat-message-area full-width">
         <AIFigureInfoCard
           name={aiFigure?.name ?? "Chat Arena"}
           image={aiImage}
           handleLeaveRoom={handleLeaveRoom}
+          modelNames={modelNames}
         />
+      
         <div ref={chatContainerRef} className="flex-grow-1 pt-4 px-4 overflow-auto chat-message-container">
           {chatMessages?.map((msg, index) => (
             <div key={index} className={`d-flex ${msg.isUser ? "flex-row-reverse" : ""}`}>

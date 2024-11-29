@@ -1,33 +1,16 @@
-import React, { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import React from "react";
 import { Navigate } from "react-router-dom";
-import { setToken } from "./features/api/authSlice";
+import { useSelector } from "react-redux";
 
-const AuthRedirect = ({ children, redirectPath = "/dashboard" }) => {
-  const token = useSelector((state) => state.auth.token); // Get token from Redux
-  const dispatch = useDispatch();
-  const [shouldRedirect, setShouldRedirect] = useState(false); // State to control redirection
+const AuthRedirect = ({ children }) => {
+  const user = useSelector((state) => state.user.user); // Assuming user data is in Redux store
 
-  useEffect(() => {
-    const localStorageToken = localStorage.getItem("token");
-
-    if (token || localStorageToken) {
-      // If token exists in Redux or localStorage, ensure Redux state is synced
-      if (!token && localStorageToken) {
-        dispatch(setToken(localStorageToken));
-      }
-      setShouldRedirect(true); // Trigger redirection
-    } else {
-      setShouldRedirect(false); // Prevent redirect if no token
-    }
-  }, [token, dispatch]);
-
-  // Redirect if token is valid
-  if (shouldRedirect) {
-    return <Navigate to={redirectPath} replace />;
+  // If the user is logged in, redirect to the dashboard (or another protected route)
+  if (user) {
+    return <Navigate to="/dashboard" />;
   }
 
-  // Render children if not redirecting
+  // If the user is not logged in, show the children (the login/register form)
   return <>{children}</>;
 };
 

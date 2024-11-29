@@ -1,58 +1,70 @@
 import React from "react";
+import styled from "styled-components";
 
 function MessageBubble({ message }) {
-  const isUser = message.userType === "user";
   const isSender = message.sender === "You";
 
   return (
-    <div
-      className={`mb-3 d-flex ${
-        isSender ? "justify-content-end" : "justify-content-start"
-      }`}
-    >
-      <div
-        style={{
-          maxWidth: "800px", // Maximum width of the bubble
-          padding: "1rem",
-          borderRadius: isSender ? "20px 20px 0 20px" : "20px 20px 20px 0",
-          backgroundColor: isSender ? "#222222" : "#003300", // Gray for user, green for received
-          color: "#fff", // White text for both backgrounds
-          boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.4)",
-          wordWrap: "break-word", // Ensures long words will wrap inside the bubble
-          overflowWrap: "break-word", // Ensures content breaks at appropriate points
-        }}
-      >
-        <div
-          style={{
-            textAlign: isSender ? "right" : "left",
-            marginBottom: "0.25rem",
-            fontWeight: "bold",
-            color: isSender ? "#fff" : "#fff", // Subtle text color for sender name
-          }}
-        >
-          {!isSender && (
-            <>
-              <strong className="sender-name fs-5">
-                {message.sender ?? "Default"}
-              </strong>
-            </>
-          )}
-        </div>
-        <p className="mb-1 fs-5 " style={{ marginBottom: "0.5rem" }}>
-          {message?.content ?? message?.message?.content}
-        </p>
-        <div
-          style={{
-            fontSize: "1rem", // Increased font size for time
-            textAlign: isSender ? "right" : "left",
-            color: "#aaa", // Subtle color for time display
-          }}
-        >
-          {message.time}
-        </div>
-      </div>
-    </div>
+    <BubbleWrapper isSender={isSender}>
+      <MessageContent isSender={isSender}>
+        {!isSender && (
+          <SenderName>
+            <strong>{message.sender ?? "Default"}</strong>
+          </SenderName>
+        )}
+        <MessageText>{message?.content ?? message?.message?.content}</MessageText>
+        <TimeStamp isSender={isSender}>{message.time}</TimeStamp>
+      </MessageContent>
+    </BubbleWrapper>
   );
 }
+
+const BubbleWrapper = styled.div`
+  display: flex;
+  justify-content: ${props => props.isSender ? 'flex-end' : 'flex-start'};
+  margin-bottom: 1rem;
+  padding: 0 1rem;
+  max-width: 85%;
+  margin-left: ${props => props.isSender ? 'auto' : '0'};
+`;
+
+const MessageContent = styled.div`
+  background: ${props => props.isSender ? 
+    'linear-gradient(145deg, #222222, #1a1a1a)' : 
+    'linear-gradient(145deg, #003300, #002200)'};
+  padding: 1rem;
+  border-radius: ${props => props.isSender ? 
+    '20px 20px 0 20px' : 
+    '20px 20px 20px 0'};
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  max-width: 100%;
+  position: relative;
+  
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  }
+`;
+
+const SenderName = styled.div`
+  margin-bottom: 0.25rem;
+  font-size: 0.9rem;
+  color: #17df14;
+`;
+
+const MessageText = styled.p`
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #ffffff;
+  word-wrap: break-word;
+`;
+
+const TimeStamp = styled.div`
+  font-size: 0.75rem;
+  color: #888;
+  margin-top: 0.5rem;
+  text-align: ${props => props.isSender ? 'right' : 'left'};
+`;
 
 export default MessageBubble;

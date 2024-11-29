@@ -1,9 +1,10 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { toggleSidebar, toggleRightSidebar } from "./../../../features/sidebarSlice";
+import styled from 'styled-components';
+import { toggleSidebar, toggleRightSidebar } from "../../../features/sidebarSlice";
 import { clearUser } from "../../../features/userSlice";
-import { useGetUserByIdQuery } from "../../../features/api/userApi"; // Import the query hook
+import { useGetUserByIdQuery } from "../../../features/api/userApi";
 import Logo from '../../../../public/assets/images/logo/logo.png';
 
 const Header = () => {
@@ -30,149 +31,307 @@ const Header = () => {
   };
 
   return (
-    <header className="rbt-dashboard-header rainbow-header header-default header-left-align rbt-fluid-header">
-      <div className="container-fluid position-relative">
-        <div className="row align-items-center justify-content-between">
-          <div className="col-lg-3 col-md-6 col-6">
-            <div className="header-left d-flex">
-              <div className="expand-btn-grp">
-                <button
-                  onClick={handleSidebar}
-                  className={`bg-solid-primary popup-dashboardleft-btn ${sidebarOpen ? "" : "collapsed"}`}
-                >
-                  <i className="fa-sharp fa-regular fa-sidebar" />
-                </button>
-              </div>
-              <div className="logo">
-                <Link to="/dashboard">
-                  <img
-                    className="logo-light"
-                    src="/assets/images/logo/logo.png"
-                    alt="ChatBot Logo"
-                  />
-                </Link>
-              </div>
-            </div>
-          </div>
-          <div className="col-lg-6 d-none d-lg-block text-center"></div>
-          <div className="col-lg-3 col-md-6 col-6">
-            <div className="header-right">
-              <div className="mobile-menu-bar ml--10 d-block d-lg-none">
-                <div className="hamberger"></div>
-              </div>
-              <div className="rbt-admin-panel account-access rbt-user-wrapper right-align-dropdown">
-                <div className="rbt-admin-card grid-style rounded-4" style={{background:"#0a3d0c"}}>
-                  <Link className="d-flex align-items-center" to="#">
-                    <div className="inner d-flex align-items-center">
-                      <div className="">
-                        <img
-                          src={user?.image || Logo}
-                          alt="not found"
-                          className="img-fluid rounded-circle"
-                          style={{
-                            width: "40px",
-                            height: "40px",
-                            borderRadius: "50%",
-                            objectFit: "cover",
-                            marginRight: "10px",
-                            border: "2px solid #00ff00",
-                          }}
-                          onError={(e) => (e.target.src = Logo)}
-                        />
-                      </div>
-                      <div className="content">
-                        <span className="title fs-4 font-bold">{user?.name || "Loading..." }</span>
-                       
-                      </div>
-                    </div>
-                    <div className="icon">
-                      <i className="fa-sharp fa-solid fa-chevron-down" />
-                    </div>
-                  </Link>
-                </div>
-                <div className="rbt-user-menu-list-wrapper" style={{ background:"#0a3d0c"}}>
-                  <div className="inner">
-                    <div className="rbt-admin-profile">
-                      <div className="me-2" >
-                        <img
-                          src={user?.image || Logo}
-                          className="img-fluid rounded-circle"
-                          style={{
-                            width: "4rem",
-                            height: "3.4rem",
-                            borderRadius: "50%",
-                            objectFit: "cover",
-                            marginRight: "10px",
-                            border: "2px solid #00ff00",
-                            padding:"1px"
-                            
-                           
-                          }}
-                          onError={(e) => (e.target.src = Logo)}
-                        />
-                      </div>
-                      <div className="admin-info ps-3">
-                        <span className="name fs-5 font-bold">{user?.name || "Loading..." }</span>
-                      <span className="name fs-6">{user?.availableCoins} Coins</span>
-                        <Link className="rbt-btn-link color-primary" to="/view-profile">
-                          View Profile
-                        </Link>
-                      </div>
-                     
-                    </div>
-                    <hr style={{ borderTop: "4px solid #00ff00" }} className="mt-0" />
-                    <ul className="user-list-wrapper user-nav">
-                      <li>
-                        <Link to="/edit-profile">
-                          <i className="fa-sharp fa-regular fa-user" />
-                          <span>Edit Profile</span>
-                        </Link>
-                      </li>
-                      <li>
-                        <Link to="/deals">
-                          <i className="fa-sharp fa-regular fa-briefcase" />
-                          <span>Plans and Billing</span>
-                        </Link>
-                      </li>
-                      <li>
-                        <Link to="/dashboard">
-                          <i className="fa-sharp fa-regular fa-users" />
-                          <span>History</span>
-                        </Link>
-                      </li>
-                    </ul>
+    <HeaderWrapper>
+      <HeaderContainer>
+        <HeaderContent>
+          <LeftSection>
+            <SidebarToggle onClick={handleSidebar} isOpen={sidebarOpen}>
+              <i className="fa-sharp fa-regular fa-sidebar" />
+            </SidebarToggle>
+            
+            <LogoLink to="/dashboard">
+              <LogoImage src="/assets/images/logo/logo.png" alt="ChatBot Logo" />
+            </LogoLink>
+          </LeftSection>
 
-                    <hr className="mt--10 mb--10" />
-                    <ul className="user-list-wrapper">
-                      <li>
-                        <Link  onClick={handleLogout}>
-                          <i className="fa-sharp fa-solid fa-right-to-bracket" />
-                          <span>Logout</span>
-                        </Link>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-              <div className="expand-btn-grp d-none">
-                <button className="bg-solid-primary popup-dashboardright-btn">
-                  <i className="fa-sharp fa-regular fa-sidebar-flip" />
-                </button>
-              </div>
-              <div className="expand-btn-grp">
-                <button
-                  onClick={handleRightSidebar}
-                  className={`bg-solid-primary popup-dashboardright-btn ${rightSidebarOpen ? "" : "collapsed"}`}
-                >
-                  <i className="fa-sharp fa-regular fa-sidebar-flip"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </header>
+          <RightSection>
+            <UserPanel>
+              <UserCard>
+                <UserInfo>
+                  <UserAvatar
+                    src={user?.image || Logo}
+                    alt={user?.name}
+                    onError={(e) => (e.target.src = Logo)}
+                  />
+                  <UserName>{user?.name || "Loading..."}</UserName>
+                  <DropdownIcon>
+                    <i className="fa-sharp fa-solid fa-chevron-down" />
+                  </DropdownIcon>
+                </UserInfo>
+              </UserCard>
+
+              <DropdownMenu>
+                <UserProfileSection>
+                  <UserAvatarLarge
+                    src={user?.image || Logo}
+                    alt={user?.name}
+                    onError={(e) => (e.target.src = Logo)}
+                  />
+                  <UserDetails>
+                    <UserFullName>{user?.name || "Loading..."}</UserFullName>
+                    <UserCoins>{user?.availableCoins} Coins</UserCoins>
+                    <ViewProfileLink to="/view-profile">
+                      View Profile
+                    </ViewProfileLink>
+                  </UserDetails>
+                </UserProfileSection>
+
+                <Divider />
+
+                <MenuList>
+                  <MenuItem>
+                    <MenuLink to="/edit-profile">
+                      <i className="fa-sharp fa-regular fa-user" />
+                      <span>Edit Profile</span>
+                    </MenuLink>
+                  </MenuItem>
+                  <MenuItem>
+                    <MenuLink to="/deals">
+                      <i className="fa-sharp fa-regular fa-briefcase" />
+                      <span>Plans and Billing</span>
+                    </MenuLink>
+                  </MenuItem>
+                  <MenuItem>
+                    <MenuLink to="/dashboard">
+                      <i className="fa-sharp fa-regular fa-users" />
+                      <span>History</span>
+                    </MenuLink>
+                  </MenuItem>
+                </MenuList>
+
+                <Divider />
+
+                <MenuList>
+                  <MenuItem>
+                    <LogoutButton onClick={handleLogout}>
+                      <i className="fa-sharp fa-solid fa-right-to-bracket" />
+                      <span>Logout</span>
+                    </LogoutButton>
+                  </MenuItem>
+                </MenuList>
+              </DropdownMenu>
+            </UserPanel>
+
+            <SidebarToggle onClick={handleRightSidebar} isOpen={rightSidebarOpen}>
+              <i className="fa-sharp fa-regular fa-sidebar-flip" />
+            </SidebarToggle>
+          </RightSection>
+        </HeaderContent>
+      </HeaderContainer>
+    </HeaderWrapper>
   );
 };
+
+// Styled Components
+const HeaderWrapper = styled.header`
+  background: #101010;
+  border-bottom: 1px solid #0a3d0c;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+`;
+
+const HeaderContainer = styled.div`
+  padding: 0.8rem 2rem;
+  
+  @media (max-width: 768px) {
+    padding: 0.8rem 1rem;
+  }
+`;
+
+const HeaderContent = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1400px;
+  margin: 0 auto;
+`;
+
+const LeftSection = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+`;
+const DropdownMenu = styled.div`
+  position: absolute;
+  top: 100%;
+  right: 0;
+  width: 280px;
+  background: #101010;
+  border: 1px solid #0a3d0c;
+  border-radius: 12px;
+  padding: 1rem;
+  margin-top: 0.5rem;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+`;
+
+const RightSection = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+`;
+
+const SidebarToggle = styled.button`
+  background: #0a3d0c;
+  border: none;
+  color: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: #17df14;
+    transform: translateY(-2px);
+  }
+`;
+
+const LogoLink = styled(Link)`
+  display: flex;
+  align-items: center;
+`;
+
+const LogoImage = styled.img`
+  height: 40px;
+  
+  @media (max-width: 768px) {
+    height: 32px;
+  }
+`;
+
+const UserPanel = styled.div`
+  position: relative;
+  
+  &:hover ${DropdownMenu} {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+`;
+
+const UserCard = styled.div`
+  background: linear-gradient(145deg, #0a3d0c, #17df14);
+  padding: 0.5rem 1rem;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(23, 223, 20, 0.2);
+  }
+`;
+
+
+
+const UserInfo = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+`;
+
+const UserAvatar = styled.img`
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #00ff00;
+`;
+
+const UserName = styled.span`
+  font-size: 1.2rem;
+  font-weight: bold;
+`;
+
+const DropdownIcon = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const UserProfileSection = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+`;
+
+const UserAvatarLarge = styled.img`
+  width: 4rem;
+  height: 3.4rem;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #00ff00;
+`;
+
+const UserDetails = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const UserFullName = styled.span`
+  font-size: 1.2rem;
+  font-weight: bold;
+`;
+
+const UserCoins = styled.span`
+  font-size: 1rem;
+  color: #808080;
+`;
+
+const ViewProfileLink = styled(Link)`
+  color: #00ff00;
+  text-decoration: none;
+  transition: all 0.3s ease;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
+const Divider = styled.hr`
+  border-top: 4px solid #00ff00;
+  margin: 0.5rem 0;
+`;
+
+const MenuList = styled.ul`
+  list-style: none;
+  padding: 0;
+`;
+
+const MenuItem = styled.li`
+  padding: 0.5rem 0;
+`;
+
+const MenuLink = styled(Link)`
+  color: white;
+  text-decoration: none;
+  transition: all 0.3s ease;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
+const LogoutButton = styled.button`
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`;
 
 export default Header;

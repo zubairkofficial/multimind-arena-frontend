@@ -1,0 +1,72 @@
+.status-arena-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2rem;
+}
+
+.status-arena-card {
+  width: 300px;
+  border-radius: 8px;
+  background-color: #202020;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  transition: transform 0.2s ease-in-out;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.status-arena-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.status-message,
+.request-message {
+  text-align: center;
+}
+
+.fs-5 {
+  font-size: 1.1rem;
+}
+
+.fs-6 {
+  font-size: 0.95rem;
+}
+
+.btn-default {
+  background-color: #28a745;
+  color: white;
+  padding: 0.5rem 1.2rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.btn-default:disabled {
+  background-color: #aaa;
+  cursor: not-allowed;
+}
+
+.btn-default:hover {
+  background-color: #218838;
+  transform: scale(1.05);
+}
+
+.message-feedback {
+  margin-top: 1rem;
+  font-size: 1rem;
+  color: #ffffff;
+}
+
+.message-feedback.error {
+  color: red;
+}
+
+.message-feedback.success {
+  color: green;
+}

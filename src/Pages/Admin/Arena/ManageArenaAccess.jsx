@@ -73,10 +73,9 @@ const ManageArenaAccess = () => {
     setCurrentPage(1);
   };
 
-  const tableHeaders = ["User ID", "User Name", "Name", "Arena Request Status", "Actions"];
+  const tableHeaders = ["User ID",  "Name", " Status", "Actions"];
   const tableData = currentUsers.map(user => ({
     "User ID": user.id,
-    "User Name": user.userName,
     "Name": user.name,
     "Arena Request Status": user.status === ArenaRequestStatus.PENDING
       ? "Pending Approval"
@@ -89,11 +88,15 @@ const ManageArenaAccess = () => {
       <select
         value={user.status}
         onChange={(e) => handleStatusChange(user.id, e.target.value)}
-        className="form-select"
+        className=""
         style={{
-          backgroundColor: "var(--select-bg-color)", 
+          borderRadius:"8px",
+          
+          border:"1px solid #0a3d0c",
+          paddingRight:"4px",
+          backgroundColor: "#0a3d0c", 
           color: "var(--select-text-color)", 
-          borderColor: "var(--select-border-color)"
+         
         }}
       >
         <option value={ArenaRequestStatus.PENDING}>Pending Approval</option>
@@ -110,7 +113,7 @@ const ManageArenaAccess = () => {
         placeholder="Search by User Name or Name..."
         onSearch={handleSearchChange}
       />
-      <div className='manage-arenas'>
+      <div className='manage-arenas overflow-auto'>
       <CustomTable
         headers={tableHeaders}
         data={tableData}

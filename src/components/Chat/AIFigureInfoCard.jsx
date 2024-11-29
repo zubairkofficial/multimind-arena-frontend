@@ -6,7 +6,7 @@ function AIFigureInfoCard({
   image,
   name,
   handleLeaveRoom,
- 
+  modelNames
 }) {
   const [showModal, setShowModal] = useState(false);
 
@@ -21,43 +21,41 @@ function AIFigureInfoCard({
   };
 
   return (
-    <div>
-      <div className=" d-flex justify-content-between align-items-center p-3  ">
+    <div className="ai-figure-card shadow-sm">
+      <div className="d-flex justify-content-between align-items-center p-4 ">
         <div className="d-flex align-items-center gap-3">
-          {/* Arena Name */}{" "}
-          <img
-            src={image||Logo}
-            alt=""
-            style={{
-              borderRadius: "50px",
-              width: "50px",
-              backgroundColor: "white",
-              border: "3px solid #00ff00",
-            }}
-            onError={(e) => e.target.src = Logo} // Fallback to Logo if the image fails to load
-
-          />
-        <h3 className="text-color-primary mb-0 fs-5" style={{}}>{name}</h3>
+          <div className="ai-avatar-container">
+            <img
+              className="ai-avatar"
+              src={image || Logo}
+              alt={`${name} avatar`}
+              onError={(e) => e.target.src = Logo}
+            />
+          </div>
+          
+          <div className="ai-info">
+            <h3 className="ai-name mb-1">{name}</h3>
+            <div className="model-badges">
+              {modelNames.map((modelName, index) => (
+                <span 
+                  key={index}
+                  className="model-badge"
+                >
+                  {modelName}
+                </span>
+              ))}
+            </div>
+          </div>
         </div>
-        {/* Actions Container */}
-        <div className="d-flex align-items-center">
-          {/* Leave Icon Button */}
-          <button
-            className="btn p-2 me-3"
-            onClick={confirmLeave}
-            title="Leave"
-          >
-            <i className="fas fa-sign-out-alt text-danger fa-2xl"></i>
-          </button>
-        
 
-          {/* Three Dot Menu */}
-         
-        </div>
+        <button
+          className="leave-button"
+          onClick={confirmLeave}
+          title="Leave Chat"
+        >
+          <i className="fas fa-sign-out-alt"></i>
+        </button>
       </div>
-
-      {/* Confirmation Modal */}
-     
     </div>
   );
 }

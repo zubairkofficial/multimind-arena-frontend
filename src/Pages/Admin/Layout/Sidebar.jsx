@@ -64,6 +64,11 @@ const Sidebar = () => {
       label: "Manage Arena Access",
     },
     {
+      path: "/admin/ai-figure-access",
+      icon: "fa-solid fa-shield-check",
+      label: "Manage AI Figure Access",
+    },
+    {
       path: "/admin/llm-dashboard",
       icon: "fa-solid fa-brain",
       label: "LLM Model",

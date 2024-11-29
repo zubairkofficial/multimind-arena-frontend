@@ -88,6 +88,20 @@ export const userApi = apiSlice.injectEndpoints({
                 }),
                 providesTags: ["User"], // Tag for caching pending status users
             }),
+
+            getUsersWithAiFigurePendingStatus: builder.query({
+                query: () => ({
+                  url: "user/aifigure/pending-status", // Endpoint to fetch AI figure pending status users
+                  method: "POST", // Assuming the backend expects a POST request
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${Helpers.getItem("token")}`, // Assuming token is stored in Helpers
+                  },
+                }),
+                providesTags: ["User"], // Provide a tag for caching the users with pending status
+              }),
+           
+
             getUserInfoCount: builder.query({
                 query: (userId) => ({
                   url: `user/userInfo-count/${userId}`, // Backend endpoint
@@ -98,10 +112,35 @@ export const userApi = apiSlice.injectEndpoints({
                   },
                 }),
                   }),
+                  createAiFigureRequest: builder.mutation({
+                    query: (userId) => ({
+                      url: "user/request-aifigure", // Endpoint for requesting AI figure
+                      method: "POST",
+                      body: { userId },
+                      headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${Helpers.getItem("token")}`,
+                      },
+                    }),
+                  }),
+                  updateAiFigureRequestStatus: builder.mutation({
+                    query: ({ userId, status }) => ({
+                      url: `user/update-aifigure-request/${userId}`, // Endpoint to update AI figure request status
+                      method: "PUT",
+                      body: { status }, // Send the new status in the body
+                      headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${Helpers.getItem("token")}`, // Get the token from Helpers
+                      },
+                    }),
+                  }),
+                 
+                  
     }),
   
     
-    
+  
+
     
 });
 
@@ -114,5 +153,8 @@ export const {
     useGetUserTransactionHistoryQuery, // Export the hook for user transaction history
     useUpdateArenaRequestStatusMutation,
     useGetUsersWithPendingStatusQuery,
-    useGetUserInfoCountQuery
+    useGetUserInfoCountQuery,
+    useGetUsersWithAiFigurePendingStatusQuery,
+    useUpdateAiFigureRequestStatusMutation,
+    useCreateAiFigureRequestMutation
 } = userApi;

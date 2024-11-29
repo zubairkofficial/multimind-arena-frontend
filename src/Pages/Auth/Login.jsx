@@ -47,13 +47,12 @@ const Login = () => {
     notyf.success("Logged In Successfully");
 
     // Save user in Redux store
-    dispatch(setUser({ user: userData.user, token: userData.token }));
+    dispatch(setUser({ user: userData?.user, token: userData.token }));
 
     // Save user data in localStorage
     Helpers.setItem("user", JSON.stringify(userData.user));
     Helpers.setItem("type", userData.user.isAdmin);
     Helpers.setItem("token", userData.token);
-
     // Redirect based on user role
     navigate(userData?.user?.isAdmin ? "/admin/dashboard" : "/dashboard");
   };

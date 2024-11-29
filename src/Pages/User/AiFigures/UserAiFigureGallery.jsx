@@ -8,8 +8,10 @@ import { useLocation } from "react-router-dom";
 import Preloader from "../../Landing/Preloader";
 import SearchBar from "../../../components/Searchbar/Searchbar";
 import { useSelector } from "react-redux";
-import { UserTier } from "../../../common";
+import { AIFigureStatus, UserTier } from "../../../common";
 import {useGetUserByIdQuery } from "../../../features/api/userApi"
+import styled from "styled-components";
+
 const AIFigureGallery = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -57,66 +59,171 @@ const AIFigureGallery = () => {
       : aiFigures.filter(
           (figure) => figure.type === filter || (figure.tags && figure.tags.includes(filter))
         );
-
   return (
-    <div className="ai-figure-gallery" aria-label="AI Figure Gallery" role="region">
-      <div className="search-bar-section">
-    
-        <SearchBar
-          title="+ AI Figure"
-          onClick={handleCreateFigure}
-          placeholder="Search AI Figures..."
-          aria-labelledby="gallery-heading"
-          heading="AI Figure Gallery"
-          isPremium={userData.tier===UserTier.FREE}
-        />
-      </div>
-
-      <div className="category-menu d-flex mb-3" role="navigation" aria-label="Category Filter">
-        {categories?.map((category) => (
-          <button
-            key={category}
-            className={`category-btn fs-5 font-bold text-capitalize ${filter === category ? "active" : ""}`}
-            onClick={() => setFilter(category)}
-            aria-pressed={filter === category}
-            aria-label={`Filter by ${category}`}
-          >
-            {category}
-          </button>
-        ))}
-      </div>
-
-      {/* <div className="gallery-grid" aria-labelledby="gallery-heading" role="grid"> */}
-        <div className="container">
-        <div className="row ">
-        {filteredFigures?.map((figure) => (
-          <>
-          <div className= {sidebarOpen && rightSidebarOpen?'col-12 col-md-6 col-lg-6 ':sidebarOpen | rightSidebarOpen?'col-12 col-md-4 col-lg-4': "col-12 col-md-3 col-lg-3"}>
-          <div className="m-4  ">
-          <AIFigureCard
-            key={figure.id}
-            figure={figure}
-            role="gridcell"
-            onSelect={() => handleFigureClick(figure)}
+    <GalleryContainer>
+      <GalleryHeader>
+        <SearchSection>
+          <SearchBar
+            title="+ AI Figure"
+            onClick={handleCreateFigure}
+            placeholder="Search AI Figures..."
+            aria-labelledby="gallery-heading"
+            heading="AI Figure Gallery"
+            isPremium={userData?.aiFigureRequestStatus === AIFigureStatus?.APPROVED ? false : userData?.tier === UserTier.FREE}
           />
-          </div>
-          </div>
-          
-          </>
-        ))}
-        </div>
-        </div>
-      {/* </div> */}
+        </SearchSection>
 
-      {/* CustomModal for AI Figure Details */}
+        <CategoryMenu role="navigation" aria-label="Category Filter">
+          {categories?.map((category) => (
+            <CategoryButton
+              key={category}
+              isActive={filter === category}
+              onClick={() => setFilter(category)}
+              aria-pressed={filter === category}
+              aria-label={`Filter by ${category}`}
+            >
+              {category}
+            </CategoryButton>
+          ))}
+        </CategoryMenu>
+      </GalleryHeader>
+
+      <GalleryGrid
+        sidebarOpen={sidebarOpen}
+        rightSidebarOpen={rightSidebarOpen}
+      >
+        {filteredFigures?.map((figure) => (
+          <GalleryItem
+            key={figure.id}
+            sidebarOpen={sidebarOpen}
+            rightSidebarOpen={rightSidebarOpen}
+          >
+            <AIFigureCard
+              figure={figure}
+              role="gridcell"
+              onSelect={() => handleFigureClick(figure)}
+            />
+          </GalleryItem>
+        ))}
+      </GalleryGrid>
+
       <CustomModal
         show={showModal}
         onClose={() => setShowModal(false)}
         figure={selectedFigure}
         onChatNow={handleChatNow}
       />
-    </div>
+    </GalleryContainer>
   );
 };
+
+// Styled Components
+const GalleryContainer = styled.div`
+  padding: 2rem;
+  background: #000000;
+  min-height: 100vh;
+
+  @media (max-width: 768px) {
+    padding: 1rem;
+  }
+`;
+
+const GalleryHeader = styled.div`
+  margin-bottom: 2rem;
+`;
+
+const SearchSection = styled.div`
+  margin-bottom: 2rem;
+  background: #101010;
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid #0a3d0c;
+`;
+
+const CategoryMenu = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1rem;
+  background: #101010;
+  border-radius: 12px;
+  border: 1px solid #0a3d0c;
+
+  @media (max-width: 576px) {
+    gap: 0.5rem;
+  }
+`;
+
+const CategoryButton = styled.button`
+  background: ${props => props.isActive ? '#0a3d0c' : 'transparent'};
+  color: ${props => props.isActive ? '#ffffff' : '#17df14'};
+  border: 2px solid #0a3d0c;
+  padding: 0.8rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  text-transform: capitalize;
+
+  &:hover {
+    background: #0a3d0c;
+    color: #ffffff;
+    transform: translateY(-2px);
+  }
+
+  @media (max-width: 576px) {
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+  }
+`;
+
+const GalleryGrid = styled.div`
+  display: grid;
+  grid-template-columns: ${props => {
+    if (props.sidebarOpen && props.rightSidebarOpen) return 'repeat(1, 1fr)';
+    if (props.sidebarOpen || props.rightSidebarOpen) return 'repeat(2, 1fr)';
+    return 'repeat(4, 1fr)';
+  }};
+  gap: 2rem;
+  padding: 1rem;
+  background: #101010;
+  border-radius: 12px;
+  border: 1px solid #0a3d0c;
+
+  @media (max-width: 1200px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media (max-width: 992px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 576px) {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+`;
+
+const GalleryItem = styled.div`
+  transition: transform 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-5px);
+  }
+
+  /* Add animation for new items */
+  animation: fadeIn 0.5s ease-in-out;
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+`;
 
 export default AIFigureGallery;

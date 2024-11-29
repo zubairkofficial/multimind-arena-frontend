@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useAddArenaTypeMutation } from "../../../../features/api/arenaApi";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -63,7 +63,12 @@ const AddArenaType = () => {
               <input
                 id="name"
                 {...register("name")}
-                className={`form-control ${errors.name ? "is-invalid" : ""}`}
+                style={{
+                  borderColor: errors.name ? "red" : "", // Apply red border if there's an error
+                  borderWidth: "1px", // Ensure the border is visible
+                  outline: "none", // Remove default focus outline
+                }}
+                className={` ${errors.name ? "is-invalid" : ""}`}
                 placeholder="Enter Arena Type Name"
               />
               {errors.name && (
@@ -80,9 +85,7 @@ const AddArenaType = () => {
               <textarea
                 id="description"
                 {...register("description")}
-                className={`form-control ${
-                  errors.description ? "is-invalid" : ""
-                }`}
+                className={` ${errors.description ? "is-invalid" : ""}`}
                 placeholder="Enter a description for the arena type"
                 rows="2"
               ></textarea>
@@ -102,7 +105,7 @@ const AddArenaType = () => {
               <textarea
                 id="prompt"
                 {...register("prompt")}
-                className={`form-control ${errors.prompt ? "is-invalid" : ""}`}
+                className={` ${errors.prompt ? "is-invalid" : ""}`}
                 placeholder="Enter a prompt for the arena type"
                 rows="4"
               ></textarea>

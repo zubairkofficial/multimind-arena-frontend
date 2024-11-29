@@ -38,11 +38,8 @@ const Auth = ({ children, isAuth = true, isAdmin = false }) => {
     }
 
     // Ensure admins cannot access user routes
-    if (!isAdmin && (user.isAdmin) === true) {
-      Helpers.toast(
-        "error",
-        "Access denied. Admins cannot access user routes."
-      );
+    if (!isAdmin && user.isAdmin === true) {
+      // Admin users should be redirected to the dashboard if they try to access user routes
       return <Navigate to="/admin/dashboard" />;
     }
 

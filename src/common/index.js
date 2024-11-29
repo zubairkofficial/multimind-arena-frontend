@@ -11,7 +11,7 @@ export const ArenaRequestStatus= {
 
 // Enum for model types
 export const ModelType = {
-  GPT_3: 'gpt-3',
+  GPT_4o_Mini: 'gpt-4o-mini',
   GPT_4o: 'gpt-4o',
   LLAMA: 'llama3',
   
@@ -21,4 +21,13 @@ export const UserTier={
   FREE: 'FREE',
   PREMIUM: 'PREMIUM',
 }
+
+
+export const AIFigureStatus= {
+  IN_PROGRESS :'IN_PROGRESS',  // Represents a figure being processed or under review
+  PENDING :'PENDING',          // Figure is pending approval or action
+  APPROVED :'APPROVED',        // Figure has been approved
+  REJECTED :'REJECTED',        // Figure has been rejected
+}
+
 
