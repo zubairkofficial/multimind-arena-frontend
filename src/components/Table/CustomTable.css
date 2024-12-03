@@ -1,70 +1,54 @@
 :root {
     --color-dark-bg: #121212;
     --color-dark-card: #101010;
-    --color-dark-border: #111111;
-    --color-focus-green: #00ff00;
-    --btn-hover-color: #00cc00;
+    --color-dark-border: rgba(76, 175, 80, 0.1);
+    --color-focus-green: #4caf50;
+    --color-hover-green: rgba(76, 175, 80, 0.08);
+    --color-text-primary: rgba(255, 255, 255, 0.9);
+    --color-text-secondary: rgba(255, 255, 255, 0.7);
+    --shadow-elevation: 0 8px 32px rgba(0, 0, 0, 0.2);
 }
 
-table {
-    color: #ffffff;
+.table-hover tbody tr {
+    position: relative;
+    isolation: isolate;
 }
 
 .table-hover tbody tr:hover {
-    background-image: linear-gradient(135deg, rgba(0, 255, 0, 0.2), rgba(0, 204, 0, 0.2));
-    /* Subtle green gradient */
-    color: #ffffff;
-    transition: background-color 0.3s ease, background-image 0.3s ease;
-    /* Smooth transition effect */
+    background: var(--color-hover-green);
+    transform: translateY(-1px);
+    transition: all 0.3s ease;
 }
 
-.table-bordered {}
-
-.table-bordered th,
-.table-bordered td {
-    padding: 15px 10px;
-    /* Increased padding on y-axis */
+.table-hover tbody tr:hover::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient( 135deg, rgba(76, 175, 80, 0.1), rgba(76, 175, 80, 0.05));
+    pointer-events: none;
+    z-index: -1;
 }
 
 .badge {
-    font-size: 1em;
-    padding: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 500;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
 }
 
-.pagination button {
-    margin: 0.25rem;
-    color: #ffffff;
-    border: 1px solid var(--color-focus-green);
+@media (max-width: 768px) {
+    .table-responsive {
+        margin: 0 -1rem;
+        padding: 0 1rem;
+    }
+    .badge {
+        padding: 0.35rem 0.75rem;
+        font-size: 0.75rem;
+    }
 }
-
-.pagination button.active {
-    background-color: var(--color-focus-green);
-    color: #000000;
-}
-
-.pagination button[disabled] {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-.custom-table-container {
-    width: 100%;
-}
-
-.table-responsive {
-    overflow-x: auto;
-    /* Enables horizontal scrolling */
-}
-
-.table-hover {
-    width: 100%;
-    /* Ensure the table takes full width */
-}
-
-
-/* Optional: style the table for better appearance */
-
-.table-bordered {}
-
-.table-bordered th,
-.table-bordered td {}

@@ -1,29 +1,41 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { Notyf } from "notyf";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Helpers from "../../../Config/Helpers";
 import styled from 'styled-components';
-
+import {useGetAllAIFiguresQuery, useUpdateAIFigureMutation} from "../../../features/api/aiFigureApi"
 const AIFigureDetailsForm = () => {
+  const location=useLocation()
+  const aiFigureData=location?.state
   const navigate = useNavigate(); // Initialize navigate
   const [formData, setFormData] = useState({
-    name: "",
+    name:  "",
     description: "",
     prompt: "",
     type: "anime", // Default type
   });
-  const [image, setImage] = useState(null); // Store the image file
-  const [imagePreview, setImagePreview] = useState(null); // Store the image preview
+  const [image, setImage] = useState(aiFigureData?.image??null); // Store the image file
+  const [imagePreview, setImagePreview] = useState(aiFigureData?.image??null); // Store the image preview
   const [isSubmitting, setIsSubmitting] = useState(false); // Loading state
-
+const [updateAIFigure]=useUpdateAIFigureMutation()
+const {aiFigureRefetch}=useGetAllAIFiguresQuery()
   const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.id]: e.target.value,
     });
   };
-
+useEffect(()=>{
+  setFormData({
+    name:aiFigureData?.name??"",
+    description:aiFigureData?.description?? "",
+    prompt: aiFigureData?.prompt ??"",
+    type: aiFigureData?.type ??"anime",
+  }
+  )
+  
+},[aiFigureData])
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     setImage(file);
@@ -34,7 +46,6 @@ const AIFigureDetailsForm = () => {
     e.preventDefault();
     const notyf = new Notyf();
     setIsSubmitting(true); // Start loading
-
     // Prepare FormData payload
     const aiFigure = new FormData();
     aiFigure.append("name", formData.name);
@@ -44,8 +55,22 @@ const AIFigureDetailsForm = () => {
     if (image) {
       aiFigure.append("file", image);
     }
-
+console.log("aiFigure",aiFigure)
     try {
+      if (aiFigureData) {
+        try {
+          // Trigger the mutation to update the AI Figure
+          await updateAIFigure({
+            figureId: aiFigureData.id,
+            updatedAIFigure: aiFigure
+          }).unwrap();
+          notyf.success("AI Figure updated successfully.");
+        } catch (error) {
+          console.error("Error updating AI figure:", error);
+          notyf.error("Failed to update AI Figure.");
+        }
+      }
+      else{
       const response = await axios.post(
         `${Helpers.apiUrl}ai-figures`,
         aiFigure,
@@ -56,10 +81,10 @@ const AIFigureDetailsForm = () => {
           },
         }
       );
-
       notyf.success("AI Figure created successfully.");
+
+    }
       setIsSubmitting(false); // End loading
-      navigate("/ai-figure-gallery"); // Navigate to gallery
 
       setFormData({
         name: "",
@@ -69,18 +94,23 @@ const AIFigureDetailsForm = () => {
       });
       setImage(null);
       setImagePreview(null);
+      navigate("/admin/manage-ai-figures"); // Navigate to gallery
+      // aiFigureRefetch()
+     
     } catch (error) {
       notyf.error("Failed to create AI Figure.");
       setIsSubmitting(false); // End loading
     }
   };
 
+  
+
   return (
     <FormContainer>
       <FormWrapper onSubmit={handleSubmit}>
         <HeaderSection>
-          <Title>Add AI Figure</Title>
-          <SubTitle>Create a new AI figure with custom properties</SubTitle>
+          <Title>{aiFigureData?"Update AI Figure":"Add AI Figure"}</Title>
+          <SubTitle>{aiFigureData?"Update AI Figure with custom properties":"Create a new AI figure with custom properties"}</SubTitle>
         </HeaderSection>
 
         <FormGrid>
@@ -166,7 +196,7 @@ const AIFigureDetailsForm = () => {
                 <Spinner /> Creating...
               </>
             ) : (
-              'Create AI Figure'
+             `${aiFigureData ? 'Update AI Figure': 'Create AI Figure'}`
             )}
           </SubmitButton>
         </ButtonContainer>
@@ -178,7 +208,6 @@ const AIFigureDetailsForm = () => {
 // Styled Components
 const FormContainer = styled.div`
   min-height: 100vh;
-  background: #000000;
   padding: 2rem;
 
   @media (max-width: 768px) {

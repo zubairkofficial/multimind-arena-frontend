@@ -30,6 +30,19 @@ export const arenaApi = apiSlice.injectEndpoints({
             }),
         }),
 
+
+        updateArena: builder.mutation({
+            query: ({ id, updatedArena }) => ({
+              url: `arenas/${id}`,
+              method: "PUT",
+              body: updatedArena,
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${Helpers.getItem("token")}`,
+              },
+            }),
+          }),
+
         // Delete an arena
         deleteArena: builder.mutation({
             query: (arenaId) => ({
@@ -78,7 +91,17 @@ export const arenaApi = apiSlice.injectEndpoints({
                 },
             }),
         }),
-
+        getArenaById: builder.query({
+            query: (id) => ({
+              url: `arenas/${id}`,
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${Helpers.getItem("token")}`,
+              },
+            }),
+          }),
+      
         // Join an arena by sending the ID
         joinArena: builder.mutation({
             query: (arenaId) => ({
@@ -103,4 +126,6 @@ export const {
     useAddArenaTypeMutation,
     useDeleteArenaTypeMutation,
     useJoinArenaMutation, // Export the joinArena mutation hook
+    useUpdateArenaMutation,
+    useGetArenaByIdQuery
 } = arenaApi;

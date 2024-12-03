@@ -1,5 +1,105 @@
 import React from "react";
-import "./CustomTable.css"; // Import the CSS for pagination
+import styled from 'styled-components';
+
+const PaginationContainer = styled.div`
+  padding: 1rem 1.5rem;
+  background: rgba(16, 16, 16, 0.98);
+  border-top: 1px solid rgba(76, 175, 80, 0.1);
+
+  @media (max-width: 768px) {
+    padding: 1rem;
+  }
+`;
+
+const PaginationWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 1rem;
+  }
+`;
+
+const ButtonGroup = styled.div`
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  
+  @media (max-width: 576px) {
+    justify-content: center;
+  }
+`;
+
+const PaginationButton = styled.button`
+  padding: 0.5rem 1rem;
+  background: ${props => props.active ? 'rgba(76, 175, 80, 0.2)' : 'transparent'};
+  border: 1px solid ${props => props.active ? '#4caf50' : 'rgba(76, 175, 80, 0.2)'};
+  border-radius: 8px;
+  color: ${props => props.active ? '#4caf50' : 'rgba(255, 255, 255, 0.8)'};
+  font-size: 0.9rem;
+  cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
+  opacity: ${props => props.disabled ? '0.5' : '1'};
+  transition: all 0.3s ease;
+
+  &:hover:not(:disabled) {
+    background: rgba(76, 175, 80, 0.1);
+    border-color: #4caf50;
+    transform: translateY(-1px);
+  }
+
+  @media (max-width: 576px) {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+  }
+`;
+
+const EntriesPerPage = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: rgba(255, 255, 255, 0.8);
+  
+  @media (max-width: 768px) {
+    width: 100%;
+    justify-content: center;
+  }
+`;
+
+const Label = styled.label`
+  font-size: 0.9rem;
+  white-space: nowrap;
+`;
+
+const Select = styled.select`
+  padding: 0.5rem 2rem 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(76, 175, 80, 0.2);
+  border-radius: 8px;
+  color: white;
+  font-size: 0.9rem;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,...");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 0.75rem;
+  transition: all 0.3s ease;
+
+  &:focus {
+    outline: none;
+    border-color: #4caf50;
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.15);
+  }
+
+  option {
+    background: #1a1a1a;
+    color: white;
+    padding: 0.5rem;
+  }
+`;
 
 export default function Pagination({
   totalPages,
@@ -8,22 +108,15 @@ export default function Pagination({
   entriesPerPage,
   onEntriesChange,
 }) {
-  const pageRange = 3; // Number of pages to show around the current page
-
-  // Helper to determine if we need to show ellipsis
+  const pageRange = 3;
   const hasLeftEllipsis = currentPage > pageRange + 1;
   const hasRightEllipsis = currentPage < totalPages - pageRange;
 
   const getPagesToDisplay = () => {
     const pages = [];
-
-    // Add the first page
     pages.push(1);
-
-    // Add ellipsis if needed
     if (hasLeftEllipsis) pages.push("...");
-
-    // Add pages around the current page
+    
     const startPage = Math.max(2, currentPage - pageRange);
     const endPage = Math.min(totalPages - 1, currentPage + pageRange);
 
@@ -31,90 +124,68 @@ export default function Pagination({
       pages.push(i);
     }
 
-    // Add ellipsis if needed
     if (hasRightEllipsis) pages.push("...");
-
-    // Add the last page
-    pages.push(totalPages);
+    if (totalPages > 1) pages.push(totalPages);
 
     return pages;
   };
 
-  const pages = getPagesToDisplay();
-
   return (
-    <div className="pagination-container mt-4">
-      
-        {" "}
-        <div className="d-flex justify-content-between pagination">
-        <div className="d-flex justify-content-between">
-          {/* First Page and Previous Page Arrows */}
-          <div className="">
-          <button
-            className="btn btn-outline-light me-2"
+    <PaginationContainer>
+      <PaginationWrapper>
+        <ButtonGroup>
+          <PaginationButton
             onClick={() => onPageChange(1)}
             disabled={currentPage === 1}
           >
             &laquo; First
-          </button>
-          <button
-            className="btn btn-outline-light me-2"
+          </PaginationButton>
+          <PaginationButton
             onClick={() => onPageChange(currentPage - 1)}
             disabled={currentPage === 1}
           >
             &lsaquo; Prev
-          </button>
+          </PaginationButton>
 
-          {/* Page numbers */}
-          {pages?.map((page, index) => (
-            <button
+          {getPagesToDisplay().map((page, index) => (
+            <PaginationButton
               key={index}
-              className={`btn btn-outline-light me-2 ${
-                currentPage === page ? "active" : ""
-              }`}
+              active={currentPage === page}
+              disabled={typeof page !== "number"}
               onClick={() => typeof page === "number" && onPageChange(page)}
-              disabled={typeof page !== "number"} // Disable ellipsis
             >
               {page}
-            </button>
+            </PaginationButton>
           ))}
 
-          {/* Next Page and Last Page Arrows */}
-          <button
-            className="btn btn-outline-light me-2"
+          <PaginationButton
             onClick={() => onPageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
           >
             Next &rsaquo;
-          </button>
-          <button
-            className="btn btn-outline-light me-2"
+          </PaginationButton>
+          <PaginationButton
             onClick={() => onPageChange(totalPages)}
             disabled={currentPage === totalPages}
           >
             Last &raquo;
-          </button>
-          </div>
-        </div>
-        <div className="d-flex align-items-center mx-4 h-1">
-            <label htmlFor="entries-select" className="me-2">
-              Entries per page:
-            </label>
-            <select
-              id="entries-select"
-              value={entriesPerPage}
-              onChange={(e) => onEntriesChange(parseInt(e.target.value))}
-              className=" w-auto h-auto"
-            >
-              <option value="5">5</option>
-              <option value="10">10</option>
-              <option value="20">20</option>
-              <option value="30">30</option>
-            </select>
-          </div>
-      </div>
+          </PaginationButton>
+        </ButtonGroup>
 
-      {/* Entries per page selection */}
-    </div>
+        <EntriesPerPage>
+          <Label htmlFor="entries-select">Entries per page:</Label>
+          <Select
+            id="entries-select"
+            value={entriesPerPage}
+            onChange={(e) => onEntriesChange(parseInt(e.target.value))}
+          >
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="30">30</option>
+          </Select>
+        </EntriesPerPage>
+      </PaginationWrapper>
+    </PaginationContainer>
   );
 }

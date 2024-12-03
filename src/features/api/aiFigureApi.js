@@ -45,15 +45,15 @@ export const aiFigureApi = apiSlice.injectEndpoints({
         // Update AI figure
         updateAIFigure: builder.mutation({
             query: ({ figureId, updatedAIFigure }) => ({
-                url: `ai-figures/${figureId}`,
-                method: "PUT",
-                body: updatedAIFigure,
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                    Authorization: `Bearer ${Helpers.getItem("token")}`,
-                },
+              url: `ai-figures/${figureId}`,
+              method: "PUT",
+              body: updatedAIFigure, // Pass FormData directly
+              headers: {
+                Authorization: `Bearer ${Helpers.getItem("token")}`,
+                // Do not manually set Content-Type here
+              },
             }),
-        }),
+          }),
         getAIFigureById: builder.query({
             query: (id) => ({
               url: `ai-figures/${id}`,

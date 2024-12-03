@@ -10,7 +10,7 @@ import { getSocket, initiateSocketConnection } from "../../app/socket";
 import "./../../components/Arenas/arenas.css";
 import { ArenaRequestStatus, UserTier } from '../../common'; // Ensure this is imported to check status
 import {  useGetUserByIdQuery,useGetUserInfoCountQuery } from '../../features/api/userApi'; // Import the query hook
-import { FaUser } from "react-icons/fa6";
+import { FaUser,FaRobot  } from "react-icons/fa6";
 import { FaUserCheck } from "react-icons/fa6";
 import { HiMiniCpuChip } from "react-icons/hi2";
 import { Link } from 'react-router-dom';

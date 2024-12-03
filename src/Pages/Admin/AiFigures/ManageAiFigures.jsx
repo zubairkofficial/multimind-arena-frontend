@@ -66,9 +66,10 @@ const ManageAiFigures = () => {
   };
 
   const handleEditFigure = (figure) => {
-    setModalType("edit");
-    setSelectedFigure(figure);
-    setShowModal(true);
+   
+    navigate("/admin/update-ai-figure",{state:figure})
+    
+ 
   };
 
   const handleDeleteFigure = async (figureId) => {
@@ -103,7 +104,7 @@ const ManageAiFigures = () => {
       <>
         <button
           className="btn btn-sm btn-outline-success me-2"
-          // onClick={() => handleEditFigure(figure)}
+          onClick={() => handleEditFigure(figure)}
         >
           <i className="fas fa-edit"></i>
         </button>

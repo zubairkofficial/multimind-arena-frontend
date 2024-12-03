@@ -8,8 +8,169 @@ import Helpers from "../../../Config/Helpers";
 import Slider from "react-slick";
 import AIFigureCard from "./AIFigureCard";
 import "./../AiFigures/aifigures.css";
+import styled from 'styled-components';
+import { FaEdit, FaUsers, FaClock, FaImage, FaRobot, FaLayerGroup, FaAlignLeft } from 'react-icons/fa';
 
-const ArenaDetailsForm = () => {
+// Styled Components
+const FormWrapper = styled.div`
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+
+  @media (max-width: 768px) {
+    padding: 1rem;
+  }
+`;
+
+const FormGrid = styled.form`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const FormSection = styled.div`
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 1px solid rgba(23, 223, 20, 0.1);
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: rgba(23, 223, 20, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  &.full-width {
+    grid-column: 1 / -1;
+  }
+`;
+
+const SectionTitle = styled.h3`
+  color: #17df14;
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+`;
+
+const FormGroup = styled.div`
+  margin-bottom: 1.5rem;
+`;
+
+const Label = styled.label`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #17df14;
+  margin-bottom: 0.75rem;
+  font-weight: 500;
+
+  svg {
+    font-size: 1.1rem;
+  }
+`;
+
+const Input = styled.input`
+  width: 100%;
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(23, 223, 20, 0.2);
+  border-radius: 8px;
+  color: #fff;
+  transition: all 0.3s ease;
+
+  &:focus {
+    outline: none;
+    border-color: #17df14;
+    box-shadow: 0 0 0 2px rgba(23, 223, 20, 0.1);
+  }
+`;
+
+const Select = styled.select`
+  ${Input}
+  cursor: pointer;
+
+  option {
+    background: #1a1a1a;
+    color: #fff;
+    padding: 8px;
+  }
+`;
+
+const TextArea = styled.textarea`
+  ${Input}
+  resize: vertical;
+  min-height: 120px;
+`;
+
+const ImageUploadContainer = styled.div`
+  position: relative;
+  border: 2px dashed rgba(23, 223, 20, 0.2);
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: #17df14;
+  }
+`;
+
+const ImagePreview = styled.div`
+  position: relative;
+  display: inline-block;
+
+  img {
+    width: 120px;
+    height: 120px;
+    border-radius: 8px;
+    object-fit: cover;
+  }
+
+  .remove-image {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #ff4444;
+    color: white;
+    border-radius: 50%;
+    padding: 4px;
+    cursor: pointer;
+  }
+`;
+
+const SubmitButton = styled.button`
+  width: 100%;
+  padding: 1rem;
+  background: #17df14;
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: #15c912;
+  }
+
+  &:disabled {
+    background: rgba(23, 223, 20, 0.5);
+    cursor: not-allowed;
+  }
+`;
+
+const ArenaDetailsForm = ({arena}) => {
+  console.log("AddArena",arena)
   // Arena and AI figure queries
   const {
     data: arenaTypesData,
@@ -25,16 +186,16 @@ const ArenaDetailsForm = () => {
   // Form data state
   const [roles, setRoles] = useState([]);
   const [image, setImage] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null);
+  const [imagePreview, setImagePreview] = useState(arena?.image?? null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
-    name: "",
-    duration: "60",
-    arenaTypeId: "",
-    aiFigureId: [],
-    aiFigureRoles: {},
-    description: "",
-    maxParticipants: "",
+    name:arena?.name?? "",
+    duration: arena?.expiryTime?? "60",
+    arenaTypeId: arena?.arenaType?.id??"",
+    aiFigureId:arena?.arenaAIFigures ?? [],
+    aiFigureRoles:  {},
+    description:arena?.description?? "",
+    maxParticipants:arena?.maxParticipants?? "",
   });
 
   useEffect(() => {
@@ -195,98 +356,71 @@ const ArenaDetailsForm = () => {
   };
 
   return (
-    <div
-      className="arena-details-form-container"
-      style={{ padding: "0.9rem", margin: "0 auto", maxWidth: "800px" }}
-    >
-      <form onSubmit={handleSubmit} className="arena-form grid-container">
-        {/* Arena Topic */}
-        <div
-          className="form-group grid-item"
-          style={{ display: "inline-block", width: "48%", marginRight: "2%" }}
-        >
-          <label htmlFor="name">Topic</label>
-          <input
-            id="name"
-            type="text"
-            value={formData.name}
-            onChange={handleChange}
-            placeholder="Enter Topic"
-          />
-        </div>
+    <FormWrapper>
+      <FormGrid onSubmit={handleSubmit}>
+        {/* Basic Info Section */}
+        <FormSection>
+          <SectionTitle>
+            <FaEdit /> Basic Information
+          </SectionTitle>
+          <FormGroup>
+            <Label>
+              <FaEdit /> Topic Name
+            </Label>
+            <Input
+              id="name"
+              type="text"
+              value={formData.name}
+              onChange={handleChange}
+              placeholder="Enter Topic"
+            />
+          </FormGroup>
 
-        {/* Arena Type */}
-        <div
-          className="form-group grid-item"
-          style={{ display: "inline-block", width: "48%" }}
-        >
-          <label htmlFor="arenaTypeId">Arena Type</label>
-          <select
-            id="arenaTypeId"
-            value={formData.arenaTypeId}
-            onChange={handleChange}
-            
-          >
-            <option value="">Select Arena Type</option>
-            {arenaTypesData?.map((type) => (
-              <option key={type.id} value={type.id}>
-                {type.name}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* AI Figure Selection */}
-        <div
-          style={{
-            // width: "100%",
-            marginBottom: "2rem",
-            // display: "grid",
-            // gridTemplateColumns: "1fr",
-            // gridGap: "1rem",
-          }}
-        >
-          <label htmlFor="aiFigureId" >
-            Select AI Figures (max 3)
-          </label>
-          <div>
-            {/* AI Figure Selection */}
-
-            <Slider {...sliderSettings}>
-              {aiFiguresData?.map((figure) => (
-                <div key={figure.id} className="slider-item">
-                  <AIFigureCard
-                    figure={figure}
-                    onSelect={() => handleAIFigureSelect(figure.id)}
-                    isSelected={formData.aiFigureId.includes(figure.id)}
-                  />
-                </div>
-              ))}
-            </Slider>
-          </div>
-          {formData.aiFigureId?.map((figureId) => (
-            <div
-              key={figureId}
-              style={{
-                marginTop: "0.5rem",
-                display: "grid",
-                gridTemplateColumns: "1fr",
-                gridGap: "0.5rem",
-              }}
+          <FormGroup>
+            <Label>
+              <FaLayerGroup /> Arena Type
+            </Label>
+            <Select
+              id="arenaTypeId"
+              value={formData.arenaTypeId}
+              onChange={handleChange}
             >
-              <label>
-                Assign Role for{" "}
-                {aiFiguresData.find((f) => f.id === figureId)?.name}
-              </label>
-              <select
+              <option value="">Select Arena Type</option>
+              {arenaTypesData?.map((type) => (
+                <option key={type.id} value={type.id}>
+                  {type.name}
+                </option>
+              ))}
+            </Select>
+          </FormGroup>
+        </FormSection>
+
+        {/* AI Figures Section */}
+        <FormSection className="full-width">
+          <SectionTitle>
+            <FaRobot /> AI Figures
+          </SectionTitle>
+          <Slider {...sliderSettings}>
+            {aiFiguresData?.map((figure) => (
+              <div key={figure.id}>
+                <AIFigureCard
+                  figure={figure}
+                  onSelect={() => handleAIFigureSelect(figure.id)}
+                  isSelected={formData.aiFigureId.includes(figure.id)}
+                />
+              </div>
+            ))}
+          </Slider>
+
+          {/* Role Selection */}
+          {formData.aiFigureId?.map((figureId) => (
+            <FormGroup key={figureId}>
+              <Label>
+                Role for {aiFiguresData.find((f) => f.id === figureId)?.name}
+              </Label>
+              <Select
                 value={formData.aiFigureRoles[figureId] || ""}
                 onChange={(e) => handleRoleChange(figureId, e.target.value)}
-                
-                style={{
-                  width: "100%",
-                  padding: "0.5rem",
-                  fontSize: "1rem",
-                }}
               >
                 <option value="">Select Role</option>
                 {roles?.map((role) => (
@@ -294,104 +428,71 @@ const ArenaDetailsForm = () => {
                     {role.roleName}
                   </option>
                 ))}
-              </select>
-            </div>
+              </Select>
+            </FormGroup>
           ))}
-        </div>
+        </FormSection>
 
-        {/* Image Upload Section */}
-        <div
-          className="form-group grid-item"
-          style={{ width: "48%", display: "inline-block", marginRight: "2%" }}
-        >
-          <label htmlFor="image">Upload Image</label>
-          <div className="custom-file-upload">
-            {imagePreview && (
-              <div className="image-preview">
-                <img
-                  src={imagePreview}
-                  alt="Arena Preview"
-                  style={{ width: "100px", height: "100px" }}
-               
-                />
-              </div>
-            )}
-            <div className="upload-section">
-              <input
-                id="image"
-                type="file"
-                onChange={handleImageChange}
-                accept="image/*"
-                style={{ display: "none" }} // Hide default file input styling
-              />
-              <label htmlFor="image" className="upload-button ">
-              <span className="fs-6">Choose Image</span>
-              </label>
-            </div>
-          </div>
-        </div>
+        {/* Configuration Section */}
+        <FormSection>
+          <SectionTitle>
+            <FaUsers /> Configuration
+          </SectionTitle>
+          
+          <FormGroup>
+            <Label>
+              <FaUsers /> Max Participants
+            </Label>
+            <Input
+              id="maxParticipants"
+              type="number"
+              min="1"
+              value={formData.maxParticipants === 0 ? "" : formData.maxParticipants}
+              onChange={handleChange}
+              placeholder="Enter number (0 for unlimited)"
+            />
+          </FormGroup>
 
-        {/* Max Participants */}
-        <div
-          className="form-group grid-item"
-          style={{ width: "48%", display: "inline-block" }}
-        >
-          <label htmlFor="maxParticipants">Max Participants</label>
-          <input
-            id="maxParticipants"
-            type="number"
-            min="1"
-            value={formData.maxParticipants}
-            onChange={handleChange}
-            placeholder="Enter Max Number"
-            
-          />
-        </div>
+          <FormGroup>
+            <Label>
+              <FaClock /> Duration (minutes)
+            </Label>
+            <Input
+              id="duration"
+              type="number"
+              min="1"
+              value={formData.duration === null ? "" : formData.duration}
+              onChange={handleChange}
+              placeholder="Enter minutes (empty for unlimited)"
+            />
+          </FormGroup>
+        </FormSection>
 
-        {/* Duration */}
-        <div
-          className="form-group grid-item"
-          style={{ width: "48%", display: "inline-block", marginTop: "1rem" }}
-        >
-          <label htmlFor="duration">Duration (minutes)</label>
-          <input
-            id="duration"
-            type="number"
-            min="1"
-            value={formData.duration}
-            onChange={handleChange}
-            placeholder="Enter Duration"
-            
-          />
-        </div>
-
-        {/* Description */}
-        <div
-          className="form-group grid-item grid-span-2"
-          style={{ width: "100%", marginTop: "1rem" }}
-        >
-          <label htmlFor="description">Description</label>
-          <textarea
+        {/* Description Section */}
+        <FormSection className="full-width">
+          <SectionTitle>
+            <FaAlignLeft /> Description
+          </SectionTitle>
+          <TextArea
             id="description"
             value={formData.description}
             onChange={handleChange}
             placeholder="Enter a description of the arena"
             rows="4"
-            
-          ></textarea>
-        </div>
+          />
+        </FormSection>
 
         {/* Submit Button */}
-        <div
-          className="form-group grid-item grid-span-2 submit-section"
-          style={{ width: "100%", textAlign: "center", marginTop: "1rem" }}
-        >
-          <button type="submit" className="btn-default" disabled={isSubmitting}>
-            {isSubmitting ? "Creating Arena..." : "Add Arena"}
-          </button>
-        </div>
-      </form>
-    </div>
+        <FormSection className="full-width">
+          <SubmitButton type="submit" disabled={isSubmitting}>
+            {arena 
+              ? (isSubmitting ? "Updating Arena..." : "Update Arena")
+              : (isSubmitting ? "Creating Arena..." : "Create Arena")
+            }
+          </SubmitButton>
+        </FormSection>
+      </FormGrid>
+    </FormWrapper>
   );
 };
 

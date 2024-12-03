@@ -11,6 +11,7 @@ import ForgotPassword from "./Pages/Auth/ForgotPassword";
 // Admin components and layouts
 import AdminLayout from "./Pages/Admin/Layout/Index";
 import AdminUsers from "./Pages/Admin/ManageUsers/AdminUsers";
+import UpdateAdminUser from "./Pages/Admin/ManageUsers/UpdateAdminUsers";
 import ManageArenas from "./Pages/Admin/Arena/ManageArenas";
 import AddArena from "./Pages/Admin/Arena/AddArena";
 import RecentActivity from "./Pages/Admin/RecentActivity";
@@ -119,6 +120,11 @@ export const router = createBrowserRouter([
         path: "users",
         element: <AdminUsers />,
       },
+     
+      {
+        path: "users/update",
+        element: <UpdateAdminUser />,
+      },
       {
         path: "llm-dashboard",
         element: <ManageAdminLlmModels />,
@@ -131,6 +137,7 @@ export const router = createBrowserRouter([
         path: "manage-arenas",
         element: <ManageArenas />,
       },
+     
       {
         path: "arena-types",
         element: <ManageArenaType />,
@@ -167,6 +174,10 @@ export const router = createBrowserRouter([
         path: "add-arena",
         element: <AddArena />,
       },
+      {
+        path: "update-arena",
+        element: <AddArena />,
+      },
     
       {
         path: "recent-activity",
@@ -182,6 +193,10 @@ export const router = createBrowserRouter([
       },
       {
         path: "add-ai-figure",
+        element: <AddAIFigure />,
+      },
+      {
+        path: "update-ai-figure",
         element: <AddAIFigure />,
       },
       {

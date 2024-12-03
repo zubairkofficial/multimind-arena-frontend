@@ -1,7 +1,7 @@
 import React from "react";
 import './ConfirmationModal.css'; // Ensure your CSS file is named correctly
 
-const ConfirmationModal = ({title,body,show, onClose, onConfirm }) => {
+const ConfirmationModal = ({title,body,show, onClose, onConfirm,isDeleteArena=false }) => {
   // Only render the modal if show is true
   if (!show) return null;
 
@@ -17,7 +17,7 @@ const ConfirmationModal = ({title,body,show, onClose, onConfirm }) => {
         </div>
         <div className="modal-footer">
           <button className="btn-custom" onClick={onClose}>Cancel</button>
-          <button className="btn-custom" onClick={onConfirm}>Delete</button>
+          <button className="btn-custom" onClick={onConfirm}>{isDeleteArena?"Deleting...": "Delete"}</button>
         </div>
       </div>
     </div>
