@@ -32,7 +32,6 @@ export default function ArenaChatPage() {
 
   // Helper function to generate a unique localStorage key for each arena
   const getArenaMessageKey = (arenaId) => `arenaMessages_${arenaId}`;
-console.log("arena",arena)
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
     window.addEventListener("resize", handleResize);
@@ -68,7 +67,6 @@ console.log("arena",arena)
       });
 
       socket.on("userRejoined", (data) => {
-        console.log("rejoined", data);
         refetch();
         const latestUser = data.joinArena?.userArenas?.at(-1)?.user;
 
@@ -80,7 +78,6 @@ console.log("arena",arena)
       });
 
       socket.on("userJoined", (data) => {
-        console.log("joined", data);
         refetch();
         const latestUser = data.joinArena?.userArenas?.at(-1)?.user;
 
@@ -92,7 +89,6 @@ console.log("arena",arena)
       });
 
       socket.on("userLeft", (data) => {
-        console.log("left", data);
         refetch();
         const latestUser = data.leftArena?.userArenas?.at(-1)?.user;
 

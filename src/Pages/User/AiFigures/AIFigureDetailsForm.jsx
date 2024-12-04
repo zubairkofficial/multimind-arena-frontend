@@ -119,7 +119,6 @@ const AIFigureDetailsForm = () => {
       aiFigure.append("file", image);
     }
 
-    console.log("Sending llmModel:", formData.llmModel);
 
     try {
       const response = await axios.post(

@@ -74,14 +74,12 @@ const AdminUsers = () => {
   }, [allUsers]);
 
   const handleEdit = (user) => {
-    console.log("Edit user:", user);
     navigate("/admin/users/update",{ state: user })
   };
 
   const handleDelete = (user) => {
     setShowModal(true);
    
-    console.log("Delete user:", user);
   };
 
   const filteredUsers = usersData.filter((user) => {

@@ -35,7 +35,6 @@ export default function UserDashboard() {
   const { data: userData, isLoading: userLoading, error: userError } = useGetUserByIdQuery(user?.id);
  
   const { data: userTotalCountData } = useGetUserInfoCountQuery(userId); // Fetch API data
-  console.log("userData-+++++++++++++++++",userTotalCountData)
 
   const cardsData = [
     {
@@ -97,8 +96,6 @@ export default function UserDashboard() {
       handleArenaNavigation(response.joinArena, "userJoined")
     );
     socket.on("error", (response) => {
-      console.log("Error", response);
-      console.log(typeof response);
       setJoinError(response.errorLogService.response.message);
     });
     socket.on("userRejoined", (response) =>
@@ -116,7 +113,6 @@ export default function UserDashboard() {
       setShowOverlay(false);
       setIsJoining(false);
     }
-    console.log("Response", response);
 
     // Introduce a small delay before navigation
     setTimeout(() => {
@@ -125,7 +121,6 @@ export default function UserDashboard() {
   };
 
   const handleUserLeft = (response) => {
-    console.log("userLeft:", response.leftArena);
     refetch();
     setNotification(
       `User ${response.leftArena.userName || response.userId} has left.`
@@ -174,7 +169,6 @@ export default function UserDashboard() {
       setIsJoining(false);
     }
   };
-  console.log("No join", joinError);
   const arenasByType = arenas?.reduce((acc, arena) => {
     const type = arena?.arenaType?.name;
     if (!acc[type]) acc[type] = [];

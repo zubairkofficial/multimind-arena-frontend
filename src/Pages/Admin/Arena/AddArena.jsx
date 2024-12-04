@@ -10,7 +10,6 @@ const AddArena = () => {
 const location=useLocation()
   // Fetch the arena details by ID using the custom query hook
   const { data: arenaData, isLoading, isError, error } = useGetArenaByIdQuery(location?.state?.id); // Fetch arena by ID
-console.log("arenaData",location.state)
   useEffect(() => {
     if (isError) {
       console.error("Error fetching arena:", error);

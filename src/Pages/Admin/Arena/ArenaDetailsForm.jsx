@@ -437,7 +437,6 @@ const ArenaDetailsForm = ({ arena }) => {
 
 
   const handleArenaModelChange = (selectedOption) => {
-    console.log("selectedOption",selectedOption)
     setFormData({
       ...formData,
       arenaModel: selectedOption ? [{
@@ -515,7 +514,6 @@ const ArenaDetailsForm = ({ arena }) => {
           formDataToSend.append(`aiFigureRoles[${id}]`, formData.aiFigureRoles[id]);
         }
       });
-console.log("formData",formData)
       if (formData?.arenaModel && formData?.arenaModel?.length > 0) {
         formDataToSend.append("arenaModel", JSON.stringify(formData.arenaModel));
       }
@@ -534,7 +532,6 @@ console.log("formData",formData)
         notfy.success("Arena updated successfully");
       
       } else {
-        console.log("formDataToSend",formDataToSend)
         await axios.post(`${Helpers.apiUrl}arenas`, formDataToSend, {
           headers: {
             "Content-Type": "multipart/form-data",

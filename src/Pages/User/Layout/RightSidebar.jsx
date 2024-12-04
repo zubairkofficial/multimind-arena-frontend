@@ -11,7 +11,6 @@ const RightSidebar = () => {
   const [error, setError] = useState(null);
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
-console.log("aiFigures",aiFigures)
   useEffect(() => {
     const fetchHistoryData = async () => {
       try {
@@ -68,7 +67,6 @@ console.log("aiFigures",aiFigures)
   }, [token]);
   // Handle figure click to navigate to the chat page
   const handleFigureClick = (id,figure) => {
-    console.log("figure++++++++++++++++++++++",figure)
     navigate(`/chat/${id}`,{ state: figure});
   };
 

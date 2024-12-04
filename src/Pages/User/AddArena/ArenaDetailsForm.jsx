@@ -471,7 +471,6 @@ const ArenaDetailsForm = ({isPrivate,llmModels}) => {
         }
         break;
       case "duration":
-        console.log("unlimited",value)
         // Null is valid for duration; ensure it is either null or a valid number
         if (value === null || isNaN(value)) {
       if(value==="null")return
@@ -595,14 +594,12 @@ const ArenaDetailsForm = ({isPrivate,llmModels}) => {
     setIsSubmitting(true); // Set the submission state only after validation passes
   
     try {
-      console.log("formData.duration", formData.duration);
   
       // Calculate expiry time or set to null if duration is "Unlimited"
       const expiryTime =
         formData.duration === 'null'
           ? null
           : await calculateExpiryTime(Number(formData.duration));
-  console.log("expiryTime",expiryTime,formData.arenaModel)
       // Create FormData object
       const dataToSend = new FormData();
       dataToSend.append("name", formData.name);
@@ -629,7 +626,6 @@ const ArenaDetailsForm = ({isPrivate,llmModels}) => {
         dataToSend.append("file", image);
       }
   
-      console.log("dataToSend", dataToSend);
   
       // Submit the form
       await axios.post(`${Helpers.apiUrl}arenas`, dataToSend, {

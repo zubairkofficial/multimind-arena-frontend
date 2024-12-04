@@ -14,7 +14,6 @@ const Sidebar = () => {
     error: userError,
     refetch,
   } = useGetUserByIdQuery(user.id);
-console.log("userData",userData?.tier)
   const [userDetails, setUserDetails] = useState({
     name: "User", // default value
     email: "user@example.com", // default value
@@ -72,7 +71,6 @@ console.log("userData",userData?.tier)
   const isActive = (path) => {
     return location.pathname === path ? "active" : ""; // Return 'active' class if the path matches
   };
-  console.log("isActive", isActive);
   return (
     <>
       <div className="popup-mobile-menu">

@@ -46,7 +46,6 @@ export const bundleApi = apiSlice.injectEndpoints({
         // Update bundle
         updateBundle: builder.mutation({
             query: ({ bundleId, updatedBundle }) => {
-                console.log("Updating bundle ID:", bundleId, "with data:", updatedBundle); // Log the update
                 return {
                     url: `package-bundles/${bundleId}`,
                     method: "PUT",

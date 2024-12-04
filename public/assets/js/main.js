@@ -870,7 +870,6 @@ function generateAutoReply() {
     editable.contentEditable = 'false';
 
     // Save the edited message (you can send it to a server, etc.)
-    console.log("Saved message:", editedMessage);
 
     // Regenerate a new message
     const regeneratedMessage = generateAutoReply();

@@ -194,7 +194,6 @@ const UpdateAdminUsers = () => {
     aiFigureRequestStatus: user.aiFigureRequestStatus || 'IN_PROGRESS',
     image: user.image || '',
   });
-console.log("formData,",user)
   // Get the updateUser mutation hook
   const [updateUser, { isLoading, isSuccess, isError, error }] = useUpdateUserMutation();
   const { refetch:userRefetch, data: allUsers, error: userError, isLoading: isLoadingUsers } = useGetAllUsersQuery();
@@ -214,7 +213,6 @@ console.log("formData,",user)
 
     try {
       const response = await updateUser(formData).unwrap(); // Trigger the mutation and handle the response
-      console.log('User updated:', response); // Log the success response
       userRefetch()
       navigate('/admin/users'); // Redirect to users list or another page
     } catch (err) {

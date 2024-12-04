@@ -104,7 +104,6 @@ const ManageBundlePlan = () => {
 
   // Handle form submission
   const onSubmit = async (data) => {
-    console.log("data?.featureNames",data?.featureNames)
     const bundleData = {
       name: data.name,
       description: data.description,

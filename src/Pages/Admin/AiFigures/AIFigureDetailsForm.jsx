@@ -55,7 +55,6 @@ useEffect(()=>{
     if (image) {
       aiFigure.append("file", image);
     }
-console.log("aiFigure",aiFigure)
     try {
       if (aiFigureData) {
         try {

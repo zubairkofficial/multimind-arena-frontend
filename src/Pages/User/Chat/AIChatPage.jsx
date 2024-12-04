@@ -32,7 +32,6 @@ export default function AIChatPage() {
   const { data: user, isError, refetch: userRefetch } = useGetUserByIdQuery(userId);
 
   // Log the figure for debugging
-  console.log("figure", aiFigure);  // Ensure it's correctly passed
 
   // Extract the model name
   const modelNames = aiFigure?.llmModel?.map((modelString) => {

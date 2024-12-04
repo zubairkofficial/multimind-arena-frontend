@@ -5,7 +5,6 @@ import { ArenaType } from "../../../common";
 import { FaUser, FaLock, FaGlobe } from 'react-icons/fa';
 
 export default function AIFigureCard({ figure, onSelect }) {
-  console.log("figure.isAiPrivate",figure.isAiPrivate)
   return (
     <div className="aifigure-card" onClick={() => onSelect(figure)}>
       <div className="aifigure-card-image-wrapper">
