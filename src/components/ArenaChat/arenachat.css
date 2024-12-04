@@ -414,3 +414,243 @@
     color: #dc2626;
     font-size: 1.25rem;
 }
+
+.arena-info-container {
+    position: relative;
+    background: linear-gradient(145deg, rgba(13, 138, 13, 0.95) 0%, rgba(18, 22, 33, 0.95) 100%);
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+}
+
+.arena-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.arena-main-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.arena-avatar img {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    object-fit: cover;
+    border: 2px solid #17df14;
+    transition: all 0.3s ease;
+}
+
+.arena-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.arena-name {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #fff;
+    margin: 0;
+    text-transform: capitalize;
+}
+
+.arena-type {
+    font-size: 0.875rem;
+    color: #17df14;
+    font-weight: 500;
+}
+
+.arena-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.action-button {
+    background: rgba(255, 255, 255, 0.05);
+    border: none;
+    border-radius: 8px;
+    padding: 0.75rem;
+    color: #17df14;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.action-button:hover {
+    background: rgba(23, 223, 20, 0.1);
+    transform: translateY(-2px);
+}
+
+.action-button.danger {
+    color: #ff4444;
+}
+
+.action-button.danger:hover {
+    background: rgba(255, 68, 68, 0.1);
+}
+
+.details-panel {
+    padding: 1.5rem;
+    background: rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.detail-icon {
+    font-size: 1.25rem;
+    color: #17df14;
+}
+
+.detail-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.detail-label {
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.detail-value {
+    font-size: 1rem;
+    color: #fff;
+    font-weight: 500;
+}
+
+.models-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.model-badge {
+    background: rgba(23, 223, 20, 0.1);
+    color: #17df14;
+    padding: 0.25rem 0.75rem;
+    border-radius: 16px;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.meta-icon {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+}
+
+
+/* Modal Styles */
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: #1a1f2c;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 400px;
+    animation: modalSlideIn 0.3s ease;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-body {
+    padding: 1.5rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.modal-footer {
+    padding: 1.5rem;
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+}
+
+.modal-button {
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    border: none;
+}
+
+.modal-button.secondary {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+.modal-button.danger {
+    background: #ff4444;
+    color: #fff;
+}
+
+
+/* Responsive Design */
+
+@media (max-width: 768px) {
+    .arena-header {
+        padding: 1rem;
+    }
+    .arena-name {
+        font-size: 1.1rem;
+    }
+    .action-button {
+        padding: 0.5rem;
+    }
+    .details-panel {
+        padding: 1rem;
+    }
+    .detail-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    .models-list {
+        flex-direction: column;
+    }
+    .modal-content {
+        margin: 1rem;
+    }
+}

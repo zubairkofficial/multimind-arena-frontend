@@ -185,7 +185,7 @@ console.log("arena",arena)
           {/* Arena Info Header */}
           <ArenaInfoCard
             image={arena?.image}
-            name={arena?.name}
+            arena={arena}
             handleLeaveRoom={handleLeaveRoom}
             toggleParticipants={toggleParticipants}
             toggleUsers={toggleUsers}

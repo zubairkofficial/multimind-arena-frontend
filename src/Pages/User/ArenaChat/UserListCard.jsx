@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import Logo from "../../../../public/assets/images/logo/logo.png";
-
+import { useNavigate  } from "react-router-dom";
 export default function UserListCard({ users, ai }) {
+  const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [isAi, setIsAi] = useState(false);
@@ -18,7 +19,10 @@ export default function UserListCard({ users, ai }) {
     setSelectedUser(null);
     setIsAi(false);
   };
+const handleChatAiFigure=(ai)=>{
+  navigate(`/chat/${ai.id}`,{state:ai})
 
+}
   return (
     <CardContainer>
       <SectionTitle>Participants</SectionTitle>
@@ -60,23 +64,14 @@ export default function UserListCard({ users, ai }) {
               onError={(e) => (e.target.src = Logo)}
             />
             <UserTitle>{selectedUser.name}</UserTitle>
-            {isAi ? (
+            {isAi && (
               <AiContent>
                 <Description>
                   <strong>Description:</strong> {selectedUser.description || "N/A"}
                 </Description>
-                <ChatButton>Chat Now</ChatButton>
+                <ChatButton onClick={()=>handleChatAiFigure(selectedUser)}>Chat Now</ChatButton>
               </AiContent>
-            ) : (
-              <UserDetails>
-                <DetailItem>
-                  <strong>Email:</strong> {selectedUser.email || "N/A"}
-                </DetailItem>
-                <DetailItem>
-                  <strong>Phone:</strong> {selectedUser.phoneNumber || "N/A"}
-                </DetailItem>
-              </UserDetails>
-            )}
+            ) }
           </ModalContent>
         </Modal>
       )}

@@ -40,6 +40,7 @@ const PackagePlan = () => {
       <div className="packages-grid">
         {bundlesData?.map((item) => {
           const isSubscribed = subscribedPackageIds?.includes(item.id);
+          const period = item.durationInDays >= 30 ? "/Month" : `/ ${item.durationInDays} Days`;
 
           return (
             <div className="package-card" key={item.id}>
@@ -48,7 +49,7 @@ const PackagePlan = () => {
                 <div className="package-price">
                   <span className="currency">$</span>
                   <span className="amount">{parseFloat(item.price).toFixed(2)}</span>
-                  <span className="period">/Month</span>
+                  <span className="period">{period}</span>
                 </div>
               </div>
 
@@ -73,6 +74,10 @@ const PackagePlan = () => {
                     </div>
                   );
                 })}
+              </div>
+
+              <div className="package-description">
+                <p className="fs-6">{item.description}</p>
               </div>
 
               <button

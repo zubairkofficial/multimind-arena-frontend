@@ -189,7 +189,7 @@ const UpdateAdminUsers = () => {
     isActive: user.isActive || false,
     isAdmin: user.isAdmin || false,
     tier: user.tier || 'FREE',
-    availableCoins: user.availableCoins || 100,
+    availableCoins: user?.availableCoins || 100,
     createArenaRequestStatus: user.createArenaRequestStatus || 'STATUS',
     aiFigureRequestStatus: user.aiFigureRequestStatus || 'IN_PROGRESS',
     image: user.image || '',
@@ -319,7 +319,7 @@ console.log("formData,",user)
             <Input
               type="number"
               name="availableCoins"
-              value={formData.availableCoins}
+              value={formData?.availableCoins}
               onChange={handleChange}
             />
           </div>

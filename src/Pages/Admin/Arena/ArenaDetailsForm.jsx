@@ -3,14 +3,15 @@ import axios from "axios";
 import { Notyf } from "notyf";
 import { useGetAllArenaTypesQuery } from "../../../features/api/arenaApi";
 import { useGetAllAIFiguresQuery } from "../../../features/api/aiFigureApi";
+import { useGetAllLlmModelsQuery, } from '../../../features/api/llmModelApi'; 
 import Preloader from "../../Landing/Preloader";
 import Helpers from "../../../Config/Helpers";
 import Slider from "react-slick";
 import AIFigureCard from "./AIFigureCard";
 import "./../AiFigures/aifigures.css";
 import styled from 'styled-components';
-import { FaEdit, FaUsers, FaClock, FaImage, FaRobot, FaLayerGroup, FaAlignLeft } from 'react-icons/fa';
-
+import { FaEdit, FaUsers, FaClock, FaImage, FaRobot, FaLayerGroup, FaAlignLeft, FaCloudUploadAlt, FaTrash, FaLock, FaGlobe } from 'react-icons/fa';
+import Select from 'react-select'
 // Styled Components
 const FormWrapper = styled.div`
   max-width: 1200px;
@@ -94,7 +95,7 @@ const Input = styled.input`
   }
 `;
 
-const Select = styled.select`
+const SelectStyle = styled.select`
   ${Input}
   cursor: pointer;
 
@@ -169,9 +170,228 @@ const SubmitButton = styled.button`
   }
 `;
 
-const ArenaDetailsForm = ({arena}) => {
-  console.log("AddArena",arena)
-  // Arena and AI figure queries
+const PrivacySection = styled(FormSection)`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  margin-bottom: 2rem;
+`;
+
+const PrivacyInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+`;
+
+const PrivacyTitle = styled.h4`
+  color: #17df14;
+  font-size: 1.1rem;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+`;
+
+const PrivacyDescription = styled.p`
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+  margin: 0;
+`;
+
+const ToggleContainer = styled.label`
+  position: relative;
+  display: inline-block;
+  width: 56px;
+  height: 30px;
+  cursor: pointer;
+`;
+
+const ToggleInput = styled.input`
+  opacity: 0;
+  width: 0;
+  height: 0;
+
+  &:checked + span {
+    background-color: #17df14;
+  }
+
+  &:checked + span:before {
+    transform: translateX(26px);
+  }
+
+  &:focus + span {
+    box-shadow: 0 0 1px #17df14;
+  }
+`;
+
+const ToggleSlider = styled.span`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.1);
+  transition: 0.4s;
+  border-radius: 34px;
+
+  &:before {
+    position: absolute;
+    content: "";
+    height: 22px;
+    width: 22px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+  }
+`;
+
+const PrivacyStatus = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: ${props => props.isPrivate ? '#17df14' : 'rgba(255, 255, 255, 0.7)'};
+`;
+
+const customSelectStyles = {
+  control: (base, state) => ({
+    ...base,
+    background: 'rgba(255, 255, 255, 0.05)',
+    borderColor: state.isFocused ? '#17df14' : 'rgba(23, 223, 20, 0.2)',
+    borderWidth: '2px',
+    borderRadius: '12px',
+    minHeight: '50px',
+    padding: '4px 8px',
+    boxShadow: state.isFocused ? '0 0 0 3px rgba(23, 223, 20, 0.15)' : 'none',
+    transition: 'all 0.3s ease',
+    cursor: 'pointer',
+    '&:hover': {
+      borderColor: '#17df14',
+      background: 'rgba(255, 255, 255, 0.08)'
+    },
+    '@media (max-width: 768px)': {
+      minHeight: '45px',
+      padding: '2px 6px'
+    }
+  }),
+  menu: (base) => ({
+    ...base,
+    background: 'rgba(26, 26, 26, 0.95)',
+    backdropFilter: 'blur(10px)',
+    border: '2px solid rgba(23, 223, 20, 0.2)',
+    borderRadius: '12px',
+    padding: '8px',
+    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)',
+    animation: 'slideDown 0.2s ease',
+    '@keyframes slideDown': {
+      from: { opacity: 0, transform: 'translateY(-10px)' },
+      to: { opacity: 1, transform: 'translateY(0)' }
+    },
+    zIndex: 1000
+  }),
+  menuList: (base) => ({
+    ...base,
+    padding: '4px',
+    '::-webkit-scrollbar': {
+      width: '8px',
+      height: '0px',
+    },
+    '::-webkit-scrollbar-track': {
+      background: 'transparent'
+    },
+    '::-webkit-scrollbar-thumb': {
+      background: 'rgba(23, 223, 20, 0.3)',
+      borderRadius: '4px',
+      '&:hover': {
+        background: 'rgba(23, 223, 20, 0.5)'
+      }
+    }
+  }),
+  option: (base, state) => ({
+    ...base,
+    background: state.isSelected 
+      ? 'linear-gradient(135deg, #17df14 0%, #13b510 100%)' 
+      : state.isFocused 
+        ? 'rgba(23, 223, 20, 0.1)' 
+        : 'transparent',
+    color: state.isSelected ? '#000' : '#fff',
+    padding: '12px 16px',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    transition: 'all 0.2s ease',
+    fontSize: '0.95rem',
+    fontWeight: state.isSelected ? '600' : '400',
+    '&:hover': {
+      background: state.isSelected 
+        ? 'linear-gradient(135deg, #17df14 0%, #13b510 100%)'
+        : 'rgba(23, 223, 20, 0.15)'
+    },
+    '@media (max-width: 768px)': {
+      padding: '10px 12px',
+      fontSize: '0.9rem'
+    }
+  }),
+  input: (base) => ({
+    ...base,
+    color: '#fff',
+    margin: '0',
+    padding: '0',
+    fontSize: '0.95rem',
+    '@media (max-width: 768px)': {
+      fontSize: '0.9rem'
+    }
+  }),
+  placeholder: (base) => ({
+    ...base,
+    color: 'rgba(255, 255, 255, 0.5)',
+    fontSize: '0.95rem',
+    '@media (max-width: 768px)': {
+      fontSize: '0.9rem'
+    }
+  }),
+  singleValue: (base) => ({
+    ...base,
+    color: '#fff',
+    fontSize: '0.95rem',
+    '@media (max-width: 768px)': {
+      fontSize: '0.9rem'
+    }
+  }),
+  dropdownIndicator: (base, state) => ({
+    ...base,
+    color: 'rgba(23, 223, 20, 0.5)',
+    padding: '8px',
+    transition: 'all 0.2s ease',
+    transform: state.selectProps.menuIsOpen ? 'rotate(180deg)' : null,
+    '&:hover': {
+      color: '#17df14'
+    }
+  }),
+  clearIndicator: (base) => ({
+    ...base,
+    color: 'rgba(23, 223, 20, 0.5)',
+    padding: '8px',
+    transition: 'all 0.2s ease',
+    '&:hover': {
+      color: '#ff4444'
+    }
+  }),
+  valueContainer: (base) => ({
+    ...base,
+    padding: '4px 8px',
+    gap: '8px'
+  }),
+  indicatorSeparator: (base) => ({
+    ...base,
+    backgroundColor: 'rgba(23, 223, 20, 0.2)'
+  })
+};
+
+const ArenaDetailsForm = ({ arena }) => {
   const {
     data: arenaTypesData,
     isLoading: isLoadingArenaTypes,
@@ -183,19 +403,24 @@ const ArenaDetailsForm = ({arena}) => {
     error: aiFiguresError,
   } = useGetAllAIFiguresQuery();
 
-  // Form data state
+
+  const { data: llmModels, error, isLoading } = useGetAllLlmModelsQuery();
+  const notfy=new Notyf()
+
   const [roles, setRoles] = useState([]);
   const [image, setImage] = useState(null);
-  const [imagePreview, setImagePreview] = useState(arena?.image?? null);
+  const [imagePreview, setImagePreview] = useState(arena?.image ?? null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
-    name:arena?.name?? "",
-    duration: arena?.expiryTime?? "60",
-    arenaTypeId: arena?.arenaType?.id??"",
-    aiFigureId:arena?.arenaAIFigures ?? [],
-    aiFigureRoles:  {},
-    description:arena?.description?? "",
-    maxParticipants:arena?.maxParticipants?? "",
+    name: arena?.name ?? "",
+    duration: arena?.expiryTime ?? "60",
+    arenaTypeId: arena?.arenaType?.id ?? "",
+    aiFigureId: arena?.arenaAIFigures ?? [],
+    aiFigureRoles: {},
+    description: arena?.description ?? "",
+    maxParticipants: arena?.maxParticipants ?? 0,
+    isPrivate: arena?.arena.isPrivate ?? false,
+    arenaModel:arena?.arenaModel?? []
   });
 
   useEffect(() => {
@@ -209,7 +434,20 @@ const ArenaDetailsForm = ({arena}) => {
     };
     fetchRoles();
   }, []);
-  // Handle form input changes
+
+
+  const handleArenaModelChange = (selectedOption) => {
+    console.log("selectedOption",selectedOption)
+    setFormData({
+      ...formData,
+      arenaModel: selectedOption ? [{
+        value: selectedOption.value,
+        label: selectedOption.label
+      }] : []
+    });
+  };
+  
+
   const handleChange = (e) => {
     const { id, value } = e.target;
     setFormData({
@@ -218,7 +456,6 @@ const ArenaDetailsForm = ({arena}) => {
     });
   };
 
-  // Handle image file change and generate a preview
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     setImage(file);
@@ -252,101 +489,102 @@ const ArenaDetailsForm = ({arena}) => {
     });
   };
 
-  const calculateExpiryTime = (durationInMinutes) => {
-    const now = new Date();
-    const expiryTime = new Date(now.getTime() + durationInMinutes * 60000);
+  const handleToggleChange = () => {
+    setFormData({
+      ...formData,
+      isPrivate: !formData.isPrivate,
+    });
+  };
 
-    // Convert expiryTime to UTC (Z) and format as ISO string
-    const utcTimeString = expiryTime.toISOString(); // This will give you the ISO string in UTC
-
-    return utcTimeString; // Returns the expiration time in UTC (Z) format
-};
-
-
-
-  // Form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const notyf = new Notyf();
-
     setIsSubmitting(true);
 
-    // Calculate expiry time
-    const expiryTime = calculateExpiryTime(Number(formData.duration));
-
-    // Create FormData object
-    const dataToSend = new FormData();
-    dataToSend.append("name", formData.name);
-    dataToSend.append("duration", formData.duration);
-    dataToSend.append("arenaTypeId", formData.arenaTypeId);
-    formData.aiFigureId.forEach((id) => {
-      dataToSend.append("aiFigureId[]", id);
-      if (formData.aiFigureRoles[id]) {
-        dataToSend.append(`aiFigureRoles[${id}]`, formData.aiFigureRoles[id]);
-      }
-    });
-    dataToSend.append("description", formData.description);
-    dataToSend.append("maxParticipants", formData.maxParticipants);
-    dataToSend.append("expiryTime", expiryTime);
-
-    // Append the image file if it exists
-    if (image) {
-      dataToSend.append("file", image);
-    }
-
     try {
-      await axios.post(`${Helpers.apiUrl}arenas`, dataToSend, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
+      const formDataToSend = new FormData();
+      formDataToSend.append("name", formData.name);
+      formDataToSend.append("arenaTypeId", formData.arenaTypeId);
+      formDataToSend.append("description", formData.description);
+      formDataToSend.append("maxParticipants", formData.maxParticipants || "0");
+      formDataToSend.append("duration", formData.duration || "null");
+      formDataToSend.append("isPrivate", formData.isPrivate);
+
+      formData.aiFigureId.forEach((id) => {
+        formDataToSend.append("aiFigureId[]", id);
+        if (formData.aiFigureRoles[id]) {
+          formDataToSend.append(`aiFigureRoles[${id}]`, formData.aiFigureRoles[id]);
+        }
       });
-      notyf.success("Arena created successfully.");
+console.log("formData",formData)
+      if (formData?.arenaModel && formData?.arenaModel?.length > 0) {
+        formDataToSend.append("arenaModel", JSON.stringify(formData.arenaModel));
+      }
+      if (image) {
+        formDataToSend.append("file", image);
+      }
 
-      // Navigate to dashboard if necessary
-      // navigate("/dashboard");
-      setIsSubmitting(false);
-
-      // Clear form data after successful submission
+      if (arena?.id) {
+        await axios.put(`${Helpers.apiUrl}arenas/${arena.id}`, formDataToSend, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+      
+        notfy.success("Arena updated successfully");
+      
+      } else {
+        console.log("formDataToSend",formDataToSend)
+        await axios.post(`${Helpers.apiUrl}arenas`, formDataToSend, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+        setIsSubmitting(false)
+       
+        notfy.success("Arena created successfully");
+      }
       setFormData({
-        name: "",
-        duration: "",
-        arenaTypeId: "",
-        aiFigureId: [],
+        name:  "",
+        duration:  "60",
+        arenaTypeId:  "",
+        aiFigureId:  [],
         aiFigureRoles: {},
-        description: "",
+        description:  "",
         maxParticipants: "",
-      });
-      setImage(null);
-      setImagePreview(null);
-    } catch (err) {
-      notyf.error("Failed to create arena. Please try again.");
-      setIsSubmitting(false); // End loading
+        isPrivate:  false,  
+        arenaModel:[]
+      })
+      setImage(null)
+      setImagePreview(null)
+      setIsSubmitting(false);
+    } catch (error) {
+      notfy.error("Failed to submit form. Please try again.");
+      setIsSubmitting(false);
     }
   };
 
   if (isLoadingArenaTypes || isLoadingAIFigures) return <Preloader />;
-  if (arenaTypesError)
-    return <div>Error loading arena types: {arenaTypesError.message}</div>;
-  if (aiFiguresError)
-    return <div>Error loading AI figures: {aiFiguresError.message}</div>;
+  if (arenaTypesError) return <div>Error loading arena types: {arenaTypesError.message}</div>;
+  if (aiFiguresError) return <div>Error loading AI figures: {aiFiguresError.message}</div>;
 
   const sliderSettings = {
     dots: false,
     infinite: false,
     speed: 500,
-    slidesToShow: 3, // Default for large screens
+    slidesToShow: 3,
     slidesToScroll: 1,
     responsive: [
       {
-        breakpoint: 1200, // Larger tablets and small laptops
+        breakpoint: 1200,
         settings: {
           slidesToShow: 2,
           slidesToScroll: 1,
         },
       },
       {
-        breakpoint: 768, // Small screens (like mobile devices)
+        breakpoint: 768,
         settings: {
           slidesToShow: 1,
           slidesToScroll: 1,
@@ -358,6 +596,43 @@ const ArenaDetailsForm = ({arena}) => {
   return (
     <FormWrapper>
       <FormGrid onSubmit={handleSubmit}>
+        {/* Privacy Toggle Section */}
+        <PrivacySection className="full-width">
+          <PrivacyInfo>
+            <PrivacyTitle>
+              <FaLock /> Arena Privacy
+            </PrivacyTitle>
+            <PrivacyDescription>
+              {formData.isPrivate 
+                ? "Only invited participants can join this arena"
+                : "Anyone can join this arena"}
+            </PrivacyDescription>
+          </PrivacyInfo>
+          
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <PrivacyStatus isPrivate={formData.isPrivate}>
+              {formData.isPrivate ? (
+                <>
+                  <FaLock /> Private
+                </>
+              ) : (
+                <>
+                  <FaGlobe /> Public
+                </>
+              )}
+            </PrivacyStatus>
+            
+            <ToggleContainer>
+              <ToggleInput
+                type="checkbox"
+                checked={formData.isPrivate}
+                onChange={handleToggleChange}
+              />
+              <ToggleSlider />
+            </ToggleContainer>
+          </div>
+        </PrivacySection>
+
         {/* Basic Info Section */}
         <FormSection>
           <SectionTitle>
@@ -380,7 +655,7 @@ const ArenaDetailsForm = ({arena}) => {
             <Label>
               <FaLayerGroup /> Arena Type
             </Label>
-            <Select
+            <SelectStyle
               id="arenaTypeId"
               value={formData.arenaTypeId}
               onChange={handleChange}
@@ -391,7 +666,7 @@ const ArenaDetailsForm = ({arena}) => {
                   {type.name}
                 </option>
               ))}
-            </Select>
+            </SelectStyle>
           </FormGroup>
         </FormSection>
 
@@ -418,7 +693,7 @@ const ArenaDetailsForm = ({arena}) => {
               <Label>
                 Role for {aiFiguresData.find((f) => f.id === figureId)?.name}
               </Label>
-              <Select
+              <SelectStyle
                 value={formData.aiFigureRoles[figureId] || ""}
                 onChange={(e) => handleRoleChange(figureId, e.target.value)}
               >
@@ -428,7 +703,7 @@ const ArenaDetailsForm = ({arena}) => {
                     {role.roleName}
                   </option>
                 ))}
-              </Select>
+              </SelectStyle>
             </FormGroup>
           ))}
         </FormSection>
@@ -446,7 +721,7 @@ const ArenaDetailsForm = ({arena}) => {
             <Input
               id="maxParticipants"
               type="number"
-              min="1"
+              min="0"
               value={formData.maxParticipants === 0 ? "" : formData.maxParticipants}
               onChange={handleChange}
               placeholder="Enter number (0 for unlimited)"
@@ -482,6 +757,62 @@ const ArenaDetailsForm = ({arena}) => {
           />
         </FormSection>
 
+        {/* Image Upload Section */}
+        <FormSection>
+          <SectionTitle>
+            <FaImage /> Arena Image
+          </SectionTitle>
+          <ImageUploadContainer>
+            <input
+              type="file"
+              id="image"
+              onChange={handleImageChange}
+              accept="image/*"
+              style={{ display: 'none' }}
+            />
+            {!imagePreview ? (
+              <Label htmlFor="image">
+                <FaCloudUploadAlt size={40} color="#17df14" />
+                <div>
+                  <strong>Click to upload</strong> or drag and drop
+                  <small>PNG, JPG (max. 5MB)</small>
+                </div>
+              </Label>
+            ) : (
+              <ImagePreview>
+                <img src={imagePreview} alt="Preview" />
+                <div className="remove-image" onClick={() => {
+                  setImage(null);
+                  setImagePreview(null);
+                }}>
+                  <FaTrash />
+                </div>
+              </ImagePreview>
+            )}
+          </ImageUploadContainer>
+        </FormSection>
+        <FormSection>
+          <SectionTitle>
+            <FaRobot /> AI Model
+          </SectionTitle>
+        <Select
+              value={formData?.arenaModel?.length > 0 ? {
+                value: formData?.arenaModel[0].value,
+                label: formData?.arenaModel[0].label
+              } : null}
+              onChange={handleArenaModelChange}
+              options={llmModels?.map((model) => ({
+                value: model.id,
+                label: model.name
+              }))}
+              placeholder="Select AI Model"
+              isClearable={false}
+              isMulti={false}
+              styles={customSelectStyles}
+              className="react-select-container"
+              classNamePrefix="react-select"
+            />
+            </FormSection>
         {/* Submit Button */}
         <FormSection className="full-width">
           <SubmitButton type="submit" disabled={isSubmitting}>

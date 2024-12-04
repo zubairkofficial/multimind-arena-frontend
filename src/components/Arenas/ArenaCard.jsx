@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Clock, Info, Users } from "lucide-react";
 import styled from 'styled-components';
 import Logo from '../../../public/assets/images/logo/logo.png';
+import { ArenaType } from "../../common";
 
 export default function ArenaCard({ arena, onJoin }) {
   const [isInfoHovered, setIsInfoHovered] = useState(false);
@@ -78,6 +79,9 @@ export default function ArenaCard({ arena, onJoin }) {
           <StatusContainer>
             <StatusBadge type={arena.arenaType.name.toLowerCase()}>
               {arena.arenaType.name}
+            </StatusBadge>
+            <StatusBadge status={arena?.isPrivate?ArenaType.PRIVATE:ArenaType.PUBLIC}>
+              {arena?.isPrivate?ArenaType.PRIVATE:ArenaType.PUBLIC}
             </StatusBadge>
             <StatusBadge status={arena.status}>
               {arena.status}
@@ -251,7 +255,7 @@ const StatusContainer = styled.div`
 `;
 
 const StatusBadge = styled.span`
-  padding: 0.4rem 0.8rem;
+  padding: 0.4rem 0.4rem;
   border-radius: 6px;
   font-size: 0.8rem;
   font-weight: 600;

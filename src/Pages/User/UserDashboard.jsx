@@ -35,34 +35,29 @@ export default function UserDashboard() {
   const { data: userData, isLoading: userLoading, error: userError } = useGetUserByIdQuery(user?.id);
  
   const { data: userTotalCountData } = useGetUserInfoCountQuery(userId); // Fetch API data
+  console.log("userData-+++++++++++++++++",userTotalCountData)
 
   const cardsData = [
     {
-      title: "Remaning Coins",
-      count: userData?.availableCoins??0,
+      title: "Active Users",
+      count: userTotalCountData?.totalActiveUsers??0,
       className: "total-users-card",
-      path: "/admin/users",
+      path: "/",
       userIcon: <FaUser />,
     },
     {
       title: "Total Arenas",
       count: userTotalCountData?.arenasCount??0,
       className: "active-arenas-card",
-      path: "/admin/manage-arenas",
+      path: "/",
       userIcon: <FaUserCheck />,
     },
-    {
-      title: "AI Figures",
-      count: userTotalCountData?.aifiguresCount??0,
-      className: "ai-figures-card",
-      path: "/admin/manage-ai-figures",
-      userIcon: <HiMiniCpuChip />,
-    },
+   
     {
       title: "Total AI Figures",
       count: userTotalCountData?.totalAiFigureCount??0,
       className: "daily-active-users-card",
-      path: "/admin/users",
+      path: "/",
       userIcon: <FaRobot />
     },
   ];

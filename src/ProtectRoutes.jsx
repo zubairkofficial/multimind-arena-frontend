@@ -8,7 +8,6 @@ const ProtectedRoute = ({ children, fallbackPath = "/dashboard" }) => {
   const user = useSelector((state) => state.user.user); // Get user info from Redux store
 
   const { data: userData, isLoading, error } = useGetUserByIdQuery(user?.id);
-
   if (isLoading) {
     return <div>Loading...</div>;  // You can replace this with a spinner or loader
   }

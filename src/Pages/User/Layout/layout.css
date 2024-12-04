@@ -44,15 +44,20 @@
 
 
 /* Apply the background color when the link is active */
+
 .active {
-    background-color: #0a3d0c;  /* Set background color to the specified green */
-    color: #4caf50;  /* Change text color to white for contrast */
-border-radius: 8px; 
+    background-color: #0a3d0c;
+    /* Set background color to the specified green */
+    color: #4caf50;
+    /* Change text color to white for contrast */
+    border-radius: 8px;
 }
-  
-  /* Optional: Add hover effect for active link */
-  .active:hover {
-    background-color: #084d09; /* Darker shade of green on hover */
-      color: #fff; 
+
+
+/* Optional: Add hover effect for active link */
+
+.active:hover {
+    background-color: #084d09;
+    /* Darker shade of green on hover */
+    color: #fff;
 }
-  

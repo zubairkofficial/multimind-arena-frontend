@@ -195,7 +195,13 @@ console.log("userData",userData?.tier)
                   <h6>{userDetails.name}</h6>
                 </div>
               </Link>
-              <div className="btn-part">
+              <p className="badge rounded-pill p-3" style={{ background: "#0a3d0c", color: "#17df14" }}>
+  <i className="fas fa-coins" style={{ marginRight: '8px' }}></i>
+  {` ${userData?.availableCoins} `}
+  <span style={{ color: "#17df14" }}>Coins</span>
+</p>
+
+<div className="btn-part">
                 <Link to="/deals" className="btn-default btn-border" style={{background:"#0a3d0c",color:"#00ff00"}}>
                   Upgrade
                 </Link>

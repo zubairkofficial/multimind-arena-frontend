@@ -21,6 +21,10 @@ export const UserTier={
   FREE: 'FREE',
   PREMIUM: 'PREMIUM',
 }
+export const ArenaType={
+  PUBLIC: 'Public',
+  PRIVATE: 'Private',
+}
 
 
 export const AIFigureStatus= {

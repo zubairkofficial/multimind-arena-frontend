@@ -15,6 +15,7 @@ import Select from "react-select"; // Import Select from react-select
 // Validation schema with Yup
 const schema = yup.object().shape({
   name: yup.string().required("Name is required"),
+  description: yup.string().required("Description is required"),
   price: yup
     .number()
     .required("Price is required")
@@ -58,6 +59,7 @@ const ManageBundlePlan = () => {
     resolver: yupResolver(schema),
     defaultValues: {
       name: "",
+      description: "",
       price: "",
       coins: "",
       featureNames: [], // Default empty array for featureNames
@@ -77,7 +79,7 @@ const ManageBundlePlan = () => {
   useEffect(() => {
     
       if (location.state) {
-        const { name, price, coins, featureNames: selectedFeatureNames = [], durationInDays } = location.state;
+        const { name,description, price, coins, featureNames: selectedFeatureNames = [], durationInDays } = location.state;
         
         // Parse and format the featureNames from stringified JSON
         const formattedFeatures = selectedFeatureNames.map((opt) => {
@@ -91,6 +93,7 @@ const ManageBundlePlan = () => {
   
       reset({
         name,
+        description,
         price,
         coins,
         featureNames: formattedFeatures, // Prepopulate formatted features
@@ -104,6 +107,7 @@ const ManageBundlePlan = () => {
     console.log("data?.featureNames",data?.featureNames)
     const bundleData = {
       name: data.name,
+      description: data.description,
       price: parseFloat(data.price),
       coins: parseInt(data.coins, 10),
       featureNames: data?.featureNames||[],
@@ -260,6 +264,19 @@ const ManageBundlePlan = () => {
             )}
           />
           {errors.featureNames && (
+            <p className="text-danger">{errors.featureNames.message}</p>
+          )}
+        </div>
+        <div className="form-group mb-3">
+          <label className="form-label">Description:</label>
+          <textarea
+            type="text"
+            id="description"
+            {...register("description")}
+            placeholder="Enter model description"
+            className={` ${errors.description ? "is-invalid" : ""}`}
+          />
+          {errors.description && (
             <p className="text-danger">{errors.featureNames.message}</p>
           )}
         </div>

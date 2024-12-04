@@ -716,8 +716,8 @@ const ArenaDetailsForm = ({isPrivate,llmModels}) => {
   setFormData({
     ...formData,
     arenaModel: selectedOption ? [{
-      id: selectedOption.value,
-      name: selectedOption.label
+      value: selectedOption.value,
+      label: selectedOption.label
     }] : []
   });
 };
@@ -875,8 +875,8 @@ const ArenaDetailsForm = ({isPrivate,llmModels}) => {
             </Label>
             <Select
               value={formData.arenaModel.length > 0 ? {
-                value: formData.arenaModel[0].id,
-                label: formData.arenaModel[0].name
+                value: formData.arenaModel[0].value,
+                label: formData.arenaModel[0].label
               } : null}
               onChange={handleArenaModelChange}
               options={llmModels?.map((model) => ({
@@ -985,6 +985,7 @@ const ArenaDetailsForm = ({isPrivate,llmModels}) => {
           <SliderContainer>
             <Slider {...sliderSettings}>
               {filteredFigures.map((figure) => (
+             
                 <AIFigureCard
                   key={figure.id}
                   figure={figure}
