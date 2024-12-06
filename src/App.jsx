@@ -5,6 +5,7 @@ import { Provider, useDispatch } from "react-redux";
 import { store } from "./app/store";
 import { router } from "./routes";
 import { setToken } from "./features/api/authSlice";
+import EditArenaType from "./Pages/Admin/Arena/ArenaType/EditArenaType";
 
 function AppInitializer() {
   const dispatch = useDispatch();

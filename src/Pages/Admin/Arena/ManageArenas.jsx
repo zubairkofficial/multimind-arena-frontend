@@ -191,7 +191,7 @@ export default function ManageArenas() {
     status: <Badge status={arena.status}>{arena.status}</Badge>,
     actions: (
       <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
-        <ActionButton variant="edit" onClick={()=>{handleUpdateArena(arena)}}>
+        <ActionButton variant="edit" onClick={()=>handleUpdateArena(arena)}>
           <i className="fas fa-edit"></i>
         </ActionButton>
         <ActionButton variant="delete" onClick={() => { setArenaIdToDelete(arena.id); setShowDeleteModal(true); }}>

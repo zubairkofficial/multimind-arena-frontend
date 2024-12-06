@@ -4,12 +4,199 @@ import { useGetAIFigureByIdQuery } from "../../../features/api/aiFigureApi"; // 
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { useGetUserByIdQuery } from '../../../features/api/userApi'; // Import the query hook
+import styled from "styled-components";
 
 import MessageBubble from "./MessageBubble";
 import AIFigureInfoCard from "./../../../components/Chat/AIFigureInfoCard";
 import Helpers from "../../../Config/Helpers";
 import Logo from '../../../../public/assets/images/logo/logo.png';
 import { ModelType } from "../../../common";
+
+const Header = styled.div`
+  background: linear-gradient(135deg, #0a3d0c 0%, #17df14 100%);
+  padding: 1rem 1.5rem;
+  border-radius: 16px 16px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+`;
+
+const HeaderInfo = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+`;
+
+const AvatarContainer = styled.div`
+  position: relative;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    width: 10px;
+    height: 10px;
+    background: #4CAF50;
+    border-radius: 50%;
+    border: 2px solid #fff;
+  }
+`;
+
+const HeaderAvatar = styled.img`
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+`;
+
+const HeaderText = styled.div`
+  h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    color: #fff;
+    font-weight: 600;
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.7);
+  }
+`;
+
+const LeaveButton = styled.button`
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-1px);
+  }
+
+  i {
+    font-size: 0.875rem;
+  }
+`;
+
+const ChatInputWrapper = styled.div`
+  padding: 1.5rem;
+  background: rgba(10, 61, 12, 0.1);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(23, 223, 20, 0.1);
+  position: relative;
+  
+  @media (max-width: 768px) {
+    padding: 1rem;
+  }
+`;
+
+const ChatForm = styled.form`
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 0.5rem;
+  border-radius: 30px;
+  border: 1px solid rgba(23, 223, 20, 0.2);
+  
+  @media (max-width: 768px) {
+    padding: 0.3rem;
+  }
+`;
+
+const ChatInput = styled.input`
+  flex: 1;
+  padding: 1rem 3.5rem 1rem 1.5rem;
+  border: none;
+  border-radius: 25px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+  }
+  
+  &:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 0 2px rgba(23, 223, 20, 0.2);
+  }
+  
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+  
+  @media (max-width: 768px) {
+    padding: 0.8rem 3rem 0.8rem 1.2rem;
+    font-size: 0.9rem;
+  }
+`;
+
+const SendButton = styled.button`
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0a3d0c, #17df14);
+  border: none;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  &:hover:not(:disabled) {
+    transform: translateY(-50%) scale(1.05);
+    box-shadow: 0 0 15px rgba(23, 223, 20, 0.4);
+  }
+  
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    background: linear-gradient(135deg, #0a3d0c80, #17df1480);
+  }
+  
+  i {
+    font-size: 1rem;
+    transition: transform 0.3s ease;
+  }
+  
+  &:hover:not(:disabled) i {
+    transform: translateX(2px);
+  }
+  
+  @media (max-width: 768px) {
+    width: 36px;
+    height: 36px;
+    right: 6px;
+    
+    i {
+      font-size: 0.9rem;
+    }
+  }
+`;
 
 export default function AIChatPage() {
   const navigate = useNavigate();
@@ -222,26 +409,24 @@ export default function AIChatPage() {
           )}
         </div>
 
-        <div className="p-1 border-color-light chat-input-container">
-          <form onSubmit={handleSubmit} className="mt-5 d-flex align-items-center w-100 position-relative bg-transparent">
-            <input
+        <ChatInputWrapper>
+          <ChatForm onSubmit={handleSubmit}>
+            <ChatInput
               type="text"
-              className="form-control p-3 bg-color-black text-light pr-5"
-              style={{ borderRadius: "50px",     fontSize: "1.2rem",  }}
-              placeholder="Message..."
+              placeholder="Type your message..."
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               disabled={isLoadingMessage}
             />
-            <button
-              type="submit"
-              className="btn btn-large rounded-circle position-absolute end-0 top-50 translate-middle-y me-5 btn-success text-white shadow"
+            <SendButton 
+              type="submit" 
               disabled={isLoadingMessage}
+              title="Send message"
             >
-              <i className="fas fa-send"></i>
-            </button>
-          </form>
-        </div>
+              <i className="fas fa-paper-plane"></i>
+            </SendButton>
+          </ChatForm>
+        </ChatInputWrapper>
       </div>
     </div>
   );

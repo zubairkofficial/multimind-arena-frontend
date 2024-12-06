@@ -33,15 +33,15 @@ export const arenaApi = apiSlice.injectEndpoints({
 
         updateArena: builder.mutation({
             query: ({ id, updatedArena }) => ({
-              url: `arenas/${id}`,
-              method: "PUT",
-              body: updatedArena,
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${Helpers.getItem("token")}`,
-              },
+                url: `arenas/${id}`,
+                method: "PUT",
+                body: updatedArena,
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${Helpers.getItem("token")}`,
+                },
             }),
-          }),
+        }),
 
         // Delete an arena
         deleteArena: builder.mutation({
@@ -80,6 +80,19 @@ export const arenaApi = apiSlice.injectEndpoints({
             }),
         }),
 
+        // Update arena type
+        updateArenaType: builder.mutation({
+            query: ({ id, updatedArenaType }) => ({
+                url: `arena-types/${id}`,
+                method: "PUT",
+                body: updatedArenaType,
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${Helpers.getItem("token")}`,
+                },
+            }),
+        }),
+
         // Delete an arena type
         deleteArenaType: builder.mutation({
             query: (arenaTypeId) => ({
@@ -93,15 +106,27 @@ export const arenaApi = apiSlice.injectEndpoints({
         }),
         getArenaById: builder.query({
             query: (id) => ({
-              url: `arenas/${id}`,
-              method: "GET",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${Helpers.getItem("token")}`,
-              },
+                url: `arenas/${id}`,
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${Helpers.getItem("token")}`,
+                },
             }),
-          }),
-      
+        }),
+
+
+        getArenaTypeById: builder.query({
+            query: (id) => ({
+                url: `arena-types/${id}`,
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${Helpers.getItem("token")}`,
+                },
+            }),
+        }),
+
         // Join an arena by sending the ID
         joinArena: builder.mutation({
             query: (arenaId) => ({
@@ -127,5 +152,7 @@ export const {
     useDeleteArenaTypeMutation,
     useJoinArenaMutation, // Export the joinArena mutation hook
     useUpdateArenaMutation,
-    useGetArenaByIdQuery
+    useGetArenaByIdQuery,
+    useUpdateArenaTypeMutation, // Add this export
+    useGetArenaTypeByIdQuery // Add this export
 } = arenaApi;

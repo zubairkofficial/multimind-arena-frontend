@@ -77,7 +77,7 @@ const PackagePlan = () => {
               </div>
 
               <div className="package-description">
-                <p className="fs-6">{item.description}</p>
+                <p className="fs-6 text-success" style={{whiteSpace:"break-spaces"}}>{item.description}</p>
               </div>
 
               <button

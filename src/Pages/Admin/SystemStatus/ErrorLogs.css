@@ -1,0 +1,23 @@
+.table-cell {
+    white-space: nowrap;
+    /* Prevents text from wrapping to the next line */
+    overflow: hidden;
+    /* Hides any content that overflows the cell */
+    text-overflow: ellipsis;
+    /* Adds an ellipsis (...) when text overflows */
+    max-width: 200px;
+    /* Set the maximum width of the cell (adjust as needed) */
+}
+
+.stack-cell {
+    white-space: normal;
+    /* Allow stack trace to wrap normally */
+    overflow-x: auto;
+    /* Adds horizontal scrolling */
+    max-width: 250px;
+    /* Set a max-width for stack cell */
+    word-wrap: break-word;
+    /* Allow words to break when wrapping */
+    display: block;
+    /* Ensures the cell behaves like a block element */
+}

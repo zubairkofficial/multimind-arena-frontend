@@ -18,7 +18,10 @@ function ArenaInfoCard({
 }) {
   const [showDetails, setShowDetails] = useState(false);
   const [showModal, setShowModal] = useState(false);
-
+const handleShowModal=()=>{
+  toggleParticipants()
+  setShowModal(!showModal)
+}
   return (
     <div className="arena-info-container">
       <div className="arena-header">

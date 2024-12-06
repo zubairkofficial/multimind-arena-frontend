@@ -5,7 +5,7 @@ import Pagination from "../../../components/Table/Pagination";
 import Searchbar from "../../../components/Searchbar/Searchbar";
 import Helpers from "../../../Config/Helpers"; // Import Helpers for the API URL
 import axios from "axios";
-
+import "./ErrorLogs.css";
 export default function ErrorLogs() {
   const navigate = useNavigate();
   const [searchText, setSearchText] = useState("");
@@ -28,7 +28,6 @@ export default function ErrorLogs() {
 
         // Access the data directly
         setErrorData(response.data); // No need to parse JSON
-
       } catch (err) {
         // Handle error properly
         if (err.response) {
@@ -67,12 +66,18 @@ export default function ErrorLogs() {
   };
 
   // Table headers and formatted data for CustomTable
-  const tableHeaders = ["Path", "Error Message", "Stack", "Timestamp", "Actions"];
+  const tableHeaders = [
+    "Path",
+    "Error Message",
+    "Stack",
+    "Timestamp",
+    "Actions",
+  ];
   const tableData = currentErrors.map((error) => ({
-    path: error.path,
-    errorMessage: error.message,
-    stack: error.stack,
-    timestamp: error.timestamp,
+    path: <div className="table-cell">{error.path}</div>,
+    errorMessage: <div className="table-cell">{error.message}</div>,
+    stack: <div className="stack-cell">{error.stack}</div>,
+    timestamp: new Date(error.createdAt).toLocaleString(),
     actions: (
       <button
         className="btn btn-sm btn-outline-primary"
@@ -90,10 +95,12 @@ export default function ErrorLogs() {
     <div className="container mx-3">
       {/* Search Bar */}
       <Searchbar
-    
         placeholder="Search for Errors"
         heading="Error Logs"
-        onChange={(e) => setSearchText(e.target.value)}
+        onSearch={(e) => {
+          console.log(e.target);
+          setSearchText(e.target.value);
+        }}
       />
 
       <div className=" manage-arenas text-light">

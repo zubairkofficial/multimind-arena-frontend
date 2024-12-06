@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Clock, Info, Users } from "lucide-react";
+import { Clock, Info, Users, Lock, Unlock, Send, MessageCircle } from "lucide-react";
 import styled from 'styled-components';
 import Logo from '../../../public/assets/images/logo/logo.png';
 import { ArenaType } from "../../common";
@@ -71,17 +71,32 @@ export default function ArenaCard({ arena, onJoin }) {
         <Description>{arena.description}</Description>
 
         <CardFooter>
-          <JoinButton onClick={onJoin}>
-            Join Arena
-            <ButtonGlow />
-          </JoinButton>
+         
 
           <StatusContainer>
-            <StatusBadge type={arena.arenaType.name.toLowerCase()}>
-              {arena.arenaType.name}
+          <StatusBadge 
+          
+         className="px-5"
+         >
+          <Send 
+          size={12} 
+          color="#17df14"
+          strokeWidth={2.5}
+          onClick={onJoin}
+        />
             </StatusBadge>
-            <StatusBadge status={arena?.isPrivate?ArenaType.PRIVATE:ArenaType.PUBLIC}>
-              {arena?.isPrivate?ArenaType.PRIVATE:ArenaType.PUBLIC}
+            <StatusBadge status={arena?.isPrivate ? ArenaType.PRIVATE : ArenaType.PUBLIC}>
+              {arena?.isPrivate ? (
+                <>
+                  <Lock size={14} />
+                  PRIVATE
+                </>
+              ) : (
+                <>
+                  <Unlock size={14} />
+                  PUBLIC
+                </>
+              )}
             </StatusBadge>
             <StatusBadge status={arena.status}>
               {arena.status}
@@ -207,20 +222,49 @@ const CardFooter = styled.div`
 `;
 
 const JoinButton = styled.button`
-  background: linear-gradient(45deg, #0a3d0c, #17df14);
+  background: linear-gradient(135deg, #0a3d0c, #17df14);
   color: white;
   border: none;
-  border-radius: 8px;
-  padding: 0.75rem 1.5rem;
-  font-weight: 600;
+  border-radius: 25px;
+  padding: 0.75rem;
   cursor: pointer;
   position: relative;
   overflow: hidden;
   transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 15px rgba(23, 223, 20, 0.2);
+  width: 42px;
+  height: 42px;
 
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(23, 223, 20, 0.2);
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 6px 20px rgba(23, 223, 20, 0.3);
+    
+    .arrow-icon {
+      transform: translateX(2px);
+    }
+
+    .message-icon {
+      transform: scale(1.1);
+    }
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 10px rgba(23, 223, 20, 0.2);
+  }
+
+  .message-icon, .arrow-icon {
+    transition: all 0.3s ease;
+  }
+
+  @media (max-width: 768px) {
+    width: 36px;
+    height: 36px;
+    padding: 0.6rem;
   }
 `;
 
@@ -237,12 +281,16 @@ const ButtonGlow = styled.div`
     transparent
   );
   transform: translateX(-100%);
-
-  ${JoinButton}:hover & {
-    animation: glow 1.5s infinite;
-  }
+  animation: glow 2s infinite;
+  pointer-events: none;
 
   @keyframes glow {
+    0% {
+      transform: translateX(-100%);
+    }
+    50% {
+      transform: translateX(100%);
+    }
     100% {
       transform: translateX(100%);
     }
@@ -255,26 +303,53 @@ const StatusContainer = styled.div`
 `;
 
 const StatusBadge = styled.span`
-  padding: 0.4rem 0.4rem;
-  border-radius: 6px;
+  padding: 0.5rem 0.8rem;
+  border-radius: 20px;
   font-size: 0.8rem;
   font-weight: 600;
   text-transform: uppercase;
-  background: ${props => 
-    props.status === 'open' ? 'rgba(23, 223, 20, 0.1)' :
-    props.type === 'premium' ? 'rgba(255, 215, 0, 0.1)' :
-    'rgba(255, 255, 255, 0.1)'
-  };
-  color: ${props => 
-    props.status === 'open' ? '#17df14' :
-    props.type === 'premium' ? '#ffd700' :
-    '#ffffff'
-  };
-  border: 1px solid ${props => 
-    props.status === 'open' ? '#17df14' :
-    props.type === 'premium' ? '#ffd700' :
-    'rgba(255, 255, 255, 0.2)'
-  };
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all 0.3s ease;
+  
+  ${props => {
+    switch(props.status) {
+      case ArenaType.PRIVATE:
+        return `
+          background: rgba(255, 59, 48, 0.1);
+          color: #ff3b30;
+          border: 1px solid rgba(255, 59, 48, 0.2);
+          
+          &:hover {
+            background: rgba(255, 59, 48, 0.15);
+            transform: translateY(-1px);
+          }
+        `;
+      case ArenaType.PUBLIC:
+        return `
+          background: rgba(23, 223, 20, 0.1);
+          color: #17df14;
+          border: 1px solid rgba(23, 223, 20, 0.2);
+          
+          &:hover {
+            background: rgba(23, 223, 20, 0.15);
+            transform: translateY(-1px);
+          }
+        `;
+      default:
+        return `
+          background: rgba(255, 255, 255, 0.1);
+          color: #ffffff;
+          border: 1px solid rgba(255, 255, 255, 0.2);
+        `;
+    }
+  }}
+
+  @media (max-width: 768px) {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.7rem;
+  }
 `;
 
 const Tooltip = styled.div`

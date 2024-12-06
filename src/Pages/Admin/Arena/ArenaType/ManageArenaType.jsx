@@ -53,8 +53,8 @@ export default function ManageArenaType() {
     navigate("/admin/add-arena-type");
   };
 
-  const handleEditArenaType = (arenaTypeId) => {
-    // navigate(`/admin/edit-arena-type/${arenaTypeId}`);
+  const handleEditArenaType = (arenaType) => {
+    navigate(`/admin/edit-arena-type/${arenaType.id}`);
   };
 
   const handleDeleteArenaType = async (arenaTypeId) => {
@@ -76,7 +76,7 @@ export default function ManageArenaType() {
       <>
         <button
           className="btn btn-sm btn-outline-success me-2"
-          onClick={() => handleEditArenaType(arenaType.id)}
+          onClick={() => handleEditArenaType(arenaType)}
         >
           <i className="fas fa-edit"></i>
         </button>

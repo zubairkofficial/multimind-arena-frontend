@@ -180,9 +180,7 @@ const CategoryButton = styled.button`
 const GalleryGrid = styled.div`
   display: grid;
   grid-template-columns: ${props => {
-    if (props.sidebarOpen && props.rightSidebarOpen) return 'repeat(1, 1fr)';
-    if (props.sidebarOpen || props.rightSidebarOpen) return 'repeat(2, 1fr)';
-    return 'repeat(4, 1fr)';
+     return 'repeat(3, 1fr)';
   }};
   gap: 2rem;
   padding: 1rem;

@@ -147,12 +147,20 @@ export default function ArenaChatPage() {
   };
 
   const handleLeaveRoom = () => {
+    console.log("come")
     getSocket().emit("leaveRoom", { arenaId: arena.id, userId });
     refetch();
     navigate("/dashboard");
+    
   };
 
-  const toggleParticipants = () => setShowParticipants(!showParticipants);
+  const toggleParticipants = () => 
+  {  
+    // setShowParticipants(flase)
+    setIsCollapsed(false)
+    setShowUsers(false)
+    // setShowParticipants(!showParticipants);
+  }
   const toggleUsers = () => setShowUsers(!showUsers);
 
   const sortedMessages = messages
@@ -164,7 +172,7 @@ export default function ArenaChatPage() {
         minute: "2-digit",
       }),
     }));
-
+console.log("sortedMessages",sortedMessages)
   return (
     <ChatContainer>
       <ChatLayout>
@@ -256,7 +264,7 @@ export default function ArenaChatPage() {
 
 // Styled Components
 const ChatContainer = styled.div`
-  height: 80vh;
+  height: 86vh;
   max-height: 100vh;
   background: linear-gradient(145deg, #101010, #0a3d0c20);
   color: #ffffff;
