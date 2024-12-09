@@ -1,6 +1,6 @@
 import React from 'react';
 import './customModal.css';
-
+import _ from 'lodash'
 const CustomModal = ({ show, onClose, figure, onChatNow }) => {
   if (!show) return null;
 
@@ -22,10 +22,10 @@ const CustomModal = ({ show, onClose, figure, onChatNow }) => {
             />
           </div>
           <p className="description-text">{figure?.description}</p>
-          <p className="figure-info">Type: {figure?.type}</p>
+          <p className="figure-info">Type: {_.startCase(_.capitalize(figure?.type))}</p>
 
         </div>
-        <div className="modal-footer">
+        <div className="modal-footer text-center justify-content-center">
           <button className="btn-custom" onClick={onChatNow}>Chat Now</button>
         </div>
       </div>

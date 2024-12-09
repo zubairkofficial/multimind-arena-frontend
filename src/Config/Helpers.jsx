@@ -1,10 +1,10 @@
 import { Notyf } from "notyf";
 
 class Helpers {
-  static localhost = "http://localhost:8080";
+  static localhost = "http://192.168.18.57:8080";
   static server = "http://multibackend.cyberifyportfolio.com";
 
-  static basePath = `${this.server}`;
+  static basePath = `${this.localhost}`;
   static apiUrl = `${this.basePath}/api/v1/`;
 
   static authUser = JSON.parse(localStorage.getItem("user") ?? "{}");

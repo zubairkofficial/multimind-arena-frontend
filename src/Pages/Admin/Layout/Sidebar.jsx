@@ -218,6 +218,11 @@ const Sidebar = () => {
       label: "Manage Arena Types",
     },
     {
+      path: "/admin/manage-system-prompt",
+      icon: "fa-solid fa-text",
+      label: "System Prompt",
+    },
+    {
       path: "/admin/manage-transactions",
       icon: "fa-solid fa-coins",
       label: "Manage Transactions",
@@ -242,6 +247,7 @@ const Sidebar = () => {
       icon: "fa-solid fa-box",
       label: "Bundle Package",
     },
+  
   ];
 
   const isActive = (path) => {

@@ -166,3 +166,27 @@
         padding: 1rem;
     }
 }
+
+
+.action-button {
+    background: rgba(255, 255, 255, 0.05);
+    border: none;
+    border-radius: 8px;
+    padding: 0.75rem;
+    color: #17df14;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.action-button:hover {
+    background: rgba(23, 223, 20, 0.1);
+    transform: translateY(-2px);
+}
+
+.action-button.danger {
+    color: #ff4444;
+}
+
+.action-button.danger:hover {
+    background: rgba(255, 68, 68, 0.1);
+}

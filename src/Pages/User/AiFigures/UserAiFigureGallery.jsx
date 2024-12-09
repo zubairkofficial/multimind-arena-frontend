@@ -11,7 +11,7 @@ import { useSelector } from "react-redux";
 import { AIFigureStatus, UserTier } from "../../../common";
 import {useGetUserByIdQuery } from "../../../features/api/userApi"
 import styled from "styled-components";
-
+import _ from "lodash"
 const AIFigureGallery = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -82,7 +82,7 @@ const AIFigureGallery = () => {
               aria-pressed={filter === category}
               aria-label={`Filter by ${category}`}
             >
-              {category}
+             {_.startCase(_.capitalize( category))}
             </CategoryButton>
           ))}
         </CategoryMenu>

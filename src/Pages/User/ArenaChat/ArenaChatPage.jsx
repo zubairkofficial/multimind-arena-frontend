@@ -25,6 +25,7 @@ export default function ArenaChatPage() {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [showParticipants, setShowParticipants] = useState(false);
   const [showUsers, setShowUsers] = useState(false);
+  const [showInfoDetail, setShowInfoDetail] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const chatContainerRef = useRef(null);
   const { data:userData,refetch:userRefetch } = useGetUserByIdQuery(userId);
@@ -194,6 +195,8 @@ console.log("sortedMessages",sortedMessages)
             toggleParticipants={toggleParticipants}
             toggleUsers={toggleUsers}
             setShowUsers={setShowUsers}
+            setShowInfoDetail={setShowInfoDetail}
+            showInfoDetail={showInfoDetail}
             participantsCount={arena?.userArenas?.length || 0}
             expiryTime={arena?.expiryTime}
             arenaModel={arena?.arenaModel}

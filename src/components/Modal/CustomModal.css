@@ -96,8 +96,12 @@
 .modal-footer {
     display: flex;
     justify-content: center;
+    align-items: center;
     padding-top: 1rem;
-}
+    width: 100%;
+  }
+  
+ 
 
 .btn-custom {
     background-color: #00ff00;

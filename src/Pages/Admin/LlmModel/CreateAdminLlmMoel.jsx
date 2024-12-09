@@ -81,9 +81,9 @@ const CreateAdminLlmModel = () => {
           <label htmlFor="modelType">Model Type:</label>
           <select id="modelType" {...register('modelType')}>
   <option value="">Select Model Type</option>
-  <option value="gpt-3">GPT-3</option>
+  <option value="gpt-4o-mini">GPT-4o-mini</option>
   <option value="gpt-4o">GPT-4o</option>
-  <option value="llama3">LLaMA</option>
+  {/* <option value="llama3">LLaMA</option> */}
 </select>
 
           {errors.modelType && <p className="error">{errors.modelType.message}</p>}

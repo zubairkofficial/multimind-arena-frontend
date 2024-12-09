@@ -16,6 +16,8 @@ import ManageArenas from "./Pages/Admin/Arena/ManageArenas";
 import AddArena from "./Pages/Admin/Arena/AddArena";
 import RecentActivity from "./Pages/Admin/RecentActivity";
 import ManageAiFigures from "./Pages/Admin/AiFigures/ManageAiFigures";
+import SystemPrompt from "./Pages/Admin/SystemPrompt/SystemPrompt"
+import ManageSystemPrompt from "./Pages/Admin/SystemPrompt/ManageSystemPrompt"
 
 // User components and layout
 import UserLayout from "./Pages/User/Layout/Index";
@@ -142,6 +144,14 @@ export const router = createBrowserRouter([
       {
         path: "arena-types",
         element: <ManageArenaType />,
+      },
+      {
+        path: "edit-system-prompt/:id",
+        element: <SystemPrompt />,
+      },
+      {
+        path: "manage-system-prompt",
+        element: <ManageSystemPrompt />,
       },
       {
           path: "manage-transactions",

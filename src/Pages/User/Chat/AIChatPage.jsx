@@ -109,10 +109,10 @@ const ChatForm = styled.form`
   max-width: 1200px;
   margin: 0 auto;
   position: relative;
-  background: rgba(0, 0, 0, 0.2);
+ 
   padding: 0.5rem;
   border-radius: 30px;
-  border: 1px solid rgba(23, 223, 20, 0.2);
+ 
   
   @media (max-width: 768px) {
     padding: 0.3rem;
@@ -121,80 +121,48 @@ const ChatForm = styled.form`
 
 const ChatInput = styled.input`
   flex: 1;
-  padding: 1rem 3.5rem 1rem 1.5rem;
-  border: none;
-  border-radius: 25px;
   background: rgba(255, 255, 255, 0.05);
-  color: #fff;
+  border: 1px solid rgba(23, 223, 20, 0.2);
+  border-radius: 25px;
+  padding: 1rem 1.5rem;
+  color: white;
   font-size: 1rem;
   transition: all 0.3s ease;
-  
-  &::placeholder {
-    color: rgba(255, 255, 255, 0.5);
-  }
-  
+
   &:focus {
     outline: none;
-    background: rgba(255, 255, 255, 0.1);
-    box-shadow: 0 0 0 2px rgba(23, 223, 20, 0.2);
+    border-color: #17df14;
+    box-shadow: 0 0 0 2px rgba(23, 223, 20, 0.1);
   }
-  
-  &:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
-  }
-  
+
   @media (max-width: 768px) {
-    padding: 0.8rem 3rem 0.8rem 1.2rem;
+    padding: 0.8rem 1.2rem;
     font-size: 0.9rem;
   }
 `;
 
 const SendButton = styled.button`
-  position: absolute;
-  right: 8px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #0a3d0c, #17df14);
+  background: linear-gradient(145deg, #0a3d0c, #17df14);
   border: none;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 0.3s ease;
-  
-  &:hover:not(:disabled) {
-    transform: translateY(-50%) scale(1.05);
-    box-shadow: 0 0 15px rgba(23, 223, 20, 0.4);
+  flex-shrink: 0;
+
+  &:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(23, 223, 20, 0.3);
   }
-  
-  &:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
-    background: linear-gradient(135deg, #0a3d0c80, #17df1480);
-  }
-  
-  i {
-    font-size: 1rem;
-    transition: transform 0.3s ease;
-  }
-  
-  &:hover:not(:disabled) i {
-    transform: translateX(2px);
-  }
-  
+
   @media (max-width: 768px) {
-    width: 36px;
-    height: 36px;
-    right: 6px;
-    
-    i {
-      font-size: 0.9rem;
-    }
+    width: 40px;
+    height: 40px;
   }
 `;
 
@@ -207,7 +175,6 @@ export default function AIChatPage() {
 
   const [message, setMessage] = useState("");
   const [chatMessages, setChatMessages] = useState([]);
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [isLoadingMessage, setIsLoadingMessage] = useState(false);
   const chatContainerRef = useRef(null);
 
@@ -343,9 +310,13 @@ export default function AIChatPage() {
 
   return (
     <div className="d-flex h-100 bg-transparent text-color-light">
-      <div className="flex-grow-1 d-flex flex-column chat-message-area full-width">
+      <div style={{
+        backgroundColor: "#101010",
+        borderRadius: "16px",
+        borderRight: "1px solid #00ff00"
+      }}className="flex-grow-1 d-flex flex-column chat-message-area full-width ">
         <AIFigureInfoCard
-          name={aiFigure?.name ?? "Chat Arena"}
+          aiFigure={aiFigure}
           image={aiImage}
           handleLeaveRoom={handleLeaveRoom}
           modelNames={modelNames}

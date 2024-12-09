@@ -4,6 +4,8 @@ import Logo from "../../../public/assets/images/logo/logo.png";
 import Meta from "../../../public/assets/meta-black-icon.svg";
 import { ArenaType, ModelType } from '../../common';
 import { FaUsers, FaClock, FaBrain, FaChevronDown, FaChevronUp, FaSignOutAlt } from 'react-icons/fa';
+import { Info } from "lucide-react";
+import styled from 'styled-components';
 
 function ArenaInfoCard({
   image,
@@ -12,6 +14,8 @@ function ArenaInfoCard({
   toggleParticipants,
   toggleUsers,
   setShowUsers,
+  setShowInfoDetail,
+  showInfoDetail,
   participantsCount = 0,
   expiryTime = null,
   arenaModel = []
@@ -22,6 +26,8 @@ const handleShowModal=()=>{
   toggleParticipants()
   setShowModal(!showModal)
 }
+
+
   return (
     <div className="arena-info-container">
       <div className="arena-header">
@@ -51,7 +57,24 @@ const handleShowModal=()=>{
             }}
             title="Toggle Details"
           >
-            {showDetails ? <FaChevronUp /> : <FaChevronDown />}
+             <InfoItem 
+           
+          >
+            <IconWrapper>
+              <Info size={16} />
+            </IconWrapper>
+          </InfoItem>
+          </button>
+          <button
+            className="action-button"
+            onClick={() => {
+              setShowInfoDetail(!showInfoDetail);
+              setShowUsers(false);
+              setShowModal(false);
+            }}
+            title="Toggle Details"
+          >
+            {showInfoDetail ? <FaChevronUp /> : <FaChevronDown />}
           </button>
 
           <button
@@ -78,7 +101,7 @@ const handleShowModal=()=>{
         </div>
       </div>
 
-      {showDetails && (
+      {showInfoDetail && (
         <div className="details-panel">
           <div className="detail-item">
             <FaUsers className="detail-icon" />
@@ -136,6 +159,21 @@ const handleShowModal=()=>{
           </div>
         </div>
       )}
+      {showDetails && (
+        <div className="details-panel">
+          <div className="detail-item">
+            <FaUsers className="detail-icon" />
+            <div className="detail-content">
+              <span className="detail-label">Description</span>
+              <span className="detail-value">{arena.description}</span>
+            </div>
+          </div>
+
+       
+
+        
+        </div>
+      )}
 
       {showModal && (
         <div className="modal-overlay">
@@ -174,3 +212,18 @@ const handleShowModal=()=>{
 }
 
 export default ArenaInfoCard;
+
+
+const InfoItem = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #ffffff;
+  font-size: 0.9rem;
+`;
+
+const IconWrapper = styled.div`
+  color: #17df14;
+  display: flex;
+  align-items: center;
+`;
