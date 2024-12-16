@@ -30,7 +30,7 @@ export default function ArenaChatPage() {
   const chatContainerRef = useRef(null);
   const { data:userData,refetch:userRefetch } = useGetUserByIdQuery(userId);
   const toggleCollapse = () => setIsCollapsed(!isCollapsed);
-
+ const sidebarOpen = useSelector((state) => state.sidebar.sidebarOpen);
   // Helper function to generate a unique localStorage key for each arena
   const getArenaMessageKey = (arenaId) => `arenaMessages_${arenaId}`;
   useEffect(() => {
@@ -173,9 +173,9 @@ export default function ArenaChatPage() {
         minute: "2-digit",
       }),
     }));
-console.log("sortedMessages",sortedMessages)
+
   return (
-    <ChatContainer>
+    <ChatContainer style={{marginLeft: `${!sidebarOpen?"5.5rem":"0rem"}`}}>
       <ChatLayout>
         {/* Participants Panel */}
         <ParticipantsPanel isVisible={showParticipants} isMobile={isMobile}>
@@ -187,7 +187,7 @@ console.log("sortedMessages",sortedMessages)
 
         {/* Main Chat Area */}
         <ChatMainArea>
-          {/* Arena Info Header */}
+        
           <ArenaInfoCard
             image={arena?.image}
             arena={arena}
@@ -268,7 +268,6 @@ console.log("sortedMessages",sortedMessages)
 // Styled Components
 const ChatContainer = styled.div`
   height: 86vh;
-  max-height: 100vh;
   background: linear-gradient(145deg, #101010, #0a3d0c20);
   color: #ffffff;
   display: flex;

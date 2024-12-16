@@ -6,6 +6,10 @@ import Searchbar from "../../../components/Searchbar/Searchbar";
 import ConfirmationModal from "../../../components/Modal/ConfirmationModal";
 import { useNavigate } from "react-router-dom";
 import styled from 'styled-components';
+import { Info } from "lucide-react";
+import {
+  FaSignOutAlt,
+} from "react-icons/fa";
 
 // Styled Components
 const DashboardWrapper = styled.main`
@@ -49,25 +53,25 @@ const TableWrapper = styled.div`
   }
 `;
 
-const ActionButton = styled.button`
-  padding: 0.5rem;
-  border-radius: 8px;
-  border: 1px solid #f44336;
-  background: transparent;
-  color: #f44336;
-  margin: 0 0.25rem;
-  transition: all 0.3s ease;
+// const ActionButton = styled.button`
+//   padding: 0.5rem;
+//   border-radius: 8px;
+//   border: 1px solid #f44336;
+//   background: transparent;
+//   color: #f44336;
+//   margin: 0 0.25rem;
+//   transition: all 0.3s ease;
 
-  &:hover {
-    background: #f44336;
-    color: white;
-    transform: translateY(-2px);
-  }
+//   &:hover {
+//     background: #f44336;
+//     color: white;
+//     transform: translateY(-2px);
+//   }
 
-  i {
-    font-size: 1rem;
-  }
-`;
+//   i {
+//     font-size: 1rem;
+//   }
+// `;
 
 const LoadingWrapper = styled.div`
   display: flex;
@@ -93,7 +97,48 @@ const ApiKeyCell = styled.div`
   white-space: normal;
   max-width: 200px;
 `;
+const Actions = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
 
+  @media (max-width: 480px) {
+    gap: 0.5rem;
+  }
+`;
+
+
+const IconWrapper = styled.div`
+  color: #17df14;
+  display: flex;
+  align-items: center;
+`;
+const ActionButton = styled.button`
+  background: ${(props) =>
+    props.danger ? "rgba(255, 59, 48, 0.2)" : "rgba(255, 255, 255, 0.1)"};
+  border: none;
+  color: ${(props) => (props.danger ? "#ff3b30" : "#ffffff")};
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  @media (max-width: 480px) {
+    width: 32px;
+    height: 32px;
+  }
+
+  &:hover {
+    background: ${(props) =>
+      props.danger ? "rgba(255, 59, 48, 0.3)" : "rgba(255, 255, 255, 0.2)"};
+    transform: translateY(-2px);
+  }
+`;
 const ManageAdminLlmModels = () => {
   const navigate = useNavigate();
   const { data: modelsData, isLoading, error, refetch } = useGetAllLlmModelsQuery();
@@ -123,6 +168,12 @@ const ManageAdminLlmModels = () => {
     setEntriesPerPage(entries);
     setCurrentPage(1);
   };
+
+
+
+  const handleEditLlmModel=(model)=>{
+    navigate(`/admin/edit-llm/${model.id}`);
+  }
   const handleDeleteModel = async () => {
     if (modelIdToDelete) {
       await deleteLlmModel(modelIdToDelete);
@@ -145,6 +196,13 @@ const ManageAdminLlmModels = () => {
     ),
     modelType: model.modelType,
     actions: (
+      <>
+       {/* <ActionButton variant="edit" 
+      //  onClick={()=>handleUpdateArena(arena)}
+       >
+          <i className="fas fa-edit"></i>
+        </ActionButton>
+
       <ActionButton
         onClick={() => {
           setModelIdToDelete(model.id);
@@ -152,7 +210,24 @@ const ManageAdminLlmModels = () => {
         }}
       >
         <i className="fas fa-trash"></i>
-      </ActionButton>
+      </ActionButton> */}
+        <button
+          className="btn btn-sm btn-outline-success me-2"
+          onClick={() => handleEditLlmModel(model)}
+        >
+          <i className="fas fa-edit"></i>
+        </button>
+        <button
+          className="btn btn-sm btn-outline-danger"
+          onClick={() => {
+            setModelIdToDelete(model.id);
+            setShowDeleteModal(true);
+          }}
+        >
+          <i className="fas fa-trash"></i>
+        </button>
+      </>
+
     ),
   }));
 

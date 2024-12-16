@@ -44,16 +44,17 @@ export const llmModelApi = apiSlice.injectEndpoints({
 
     // Update an existing LLM Model
     updateLlmModel: builder.mutation({
-      query: ({ id, updatedLlmModel }) => ({
+      query: ({ id, updatedModel }) => ({
         url: `llm-model/${id}`,  // Endpoint for updating an LLM model
         method: "PUT",
-        body: updatedLlmModel,
+        body: updatedModel, // Send updated data
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${Helpers.getItem("token")}`,
         },
       }),
     }),
+    
 
     // Delete an LLM Model
     deleteLlmModel: builder.mutation({

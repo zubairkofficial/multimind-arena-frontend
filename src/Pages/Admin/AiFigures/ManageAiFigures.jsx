@@ -14,7 +14,7 @@ import "./aifigures.css";
 import { useNavigate } from "react-router";
 
 const ManageAiFigures = () => {
-  const { data: aiFiguresData, error, isLoading } = useGetAllAIFiguresQuery();
+  const { data: aiFiguresData, error, isLoading,refetch:refetchAIFiugres } = useGetAllAIFiguresQuery();
   const [addAIFigure] = useAddAIFigureMutation();
   const [deleteAIFigure] = useDeleteAIFigureMutation();
   const [updateAIFigure] = useUpdateAIFigureMutation();
@@ -27,10 +27,8 @@ const ManageAiFigures = () => {
   const [selectedFigure, setSelectedFigure] = useState(null);
 
   useEffect(() => {
-    if (error) {
-      console.error("Failed to fetch AI figures", error);
-    }
-  }, [error]);
+    refetchAIFiugres()
+  }, []);
 
   if (isLoading) {
     return <div>Loading AI figures...</div>;
@@ -74,6 +72,7 @@ const ManageAiFigures = () => {
 
   const handleDeleteFigure = async (figureId) => {
     await deleteAIFigure(figureId);
+    refetchAIFiugres()
   };
 
   const handleModalSubmit = async (e) => {
@@ -86,11 +85,13 @@ const ManageAiFigures = () => {
 
     if (modalType === "add") {
       await addAIFigure(newFigure);
+      refetchAIFiugres()
     } else if (modalType === "edit" && selectedFigure) {
       await updateAIFigure({
         figureId: selectedFigure.id,
         updatedAIFigure: newFigure,
       });
+      refetchAIFiugres()
     }
 
     setShowModal(false);

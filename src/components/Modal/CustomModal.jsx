@@ -1,5 +1,7 @@
 import React from 'react';
 import './customModal.css';
+import Logo from "../../../public/assets/images/logo/logo.png";
+
 import _ from 'lodash'
 const CustomModal = ({ show, onClose, figure, onChatNow }) => {
   if (!show) return null;
@@ -16,7 +18,7 @@ const CustomModal = ({ show, onClose, figure, onChatNow }) => {
         <div className="modal-body">
           <div className="image-container">
             <img
-              src={figure?.image || "/assets/images/logo/logo.png"}
+              src={figure?.image || Logo}
               alt={figure?.name}
               className="modal-image"
             />

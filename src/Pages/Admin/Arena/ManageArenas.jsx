@@ -111,7 +111,7 @@ export default function ManageArenas() {
     aiFigure: arena.arenaAIFigures?.map((fig) => fig.id).join(", ") || "None",
     expirySession: arena.expiryTime
       ? new Date(arena.expiryTime).toLocaleDateString()
-      : "N/A",
+      : "No Expiry Time",
     status: arena.status.charAt(0).toUpperCase() + arena.status.slice(1),
     creator: arena.createdBy?.name,
   }));
@@ -177,6 +177,7 @@ export default function ManageArenas() {
   ];
 
   const tableData = currentArenas?.map((arena) => ({
+    
     image: (
       <Image
         src={arena.image}
@@ -187,7 +188,7 @@ export default function ManageArenas() {
     title: arena.title,
     type: arena.type,
     aiFigure: arena.aiFigure,
-    expirySession: arena.expiryTime ? arena.expiryTime : "No Expiry Time",
+    expirySession: arena.expirySession ,
     status: <Badge status={arena.status}>{arena.status}</Badge>,
     actions: (
       <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>

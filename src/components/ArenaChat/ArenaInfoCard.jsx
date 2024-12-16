@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./arenachat.css";
 import Logo from "../../../public/assets/images/logo/logo.png";
 import Meta from "../../../public/assets/meta-black-icon.svg";
 import { ArenaType, ModelType } from '../../common';
-import { FaUsers, FaClock, FaBrain, FaChevronDown, FaChevronUp, FaSignOutAlt } from 'react-icons/fa';
+import { FaUsers, FaClock, FaBrain, FaChevronDown, FaChevronUp, FaSignOutAlt ,FaHourglassHalf} from 'react-icons/fa';
 import { Info } from "lucide-react";
 import styled from 'styled-components';
+import { useSelector } from "react-redux";
 
 function ArenaInfoCard({
   image,
@@ -22,14 +23,34 @@ function ArenaInfoCard({
 }) {
   const [showDetails, setShowDetails] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [remainingTime, setRemainingTime] = useState(null);
+const sidebarOpen = useSelector((state) => state.sidebar.sidebarOpen);
+
 const handleShowModal=()=>{
   toggleParticipants()
   setShowModal(!showModal)
 }
 
+useEffect(() => {
+  if (expiryTime) {
+    const interval = setInterval(() => {
+      const timeLeft = new Date(expiryTime) - new Date();
+      if (timeLeft <= 0) {
+        clearInterval(interval);
+        setRemainingTime("Expired");
+      } else {
+        const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+        setRemainingTime(`${minutes}m ${seconds}s`);
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }
+}, [expiryTime]);
 
   return (
-    <div className="arena-info-container">
+    <div className="arena-info-container" >
       <div className="arena-header">
         <div className="arena-main-info">
           <div className="arena-avatar">
@@ -155,6 +176,14 @@ const handleShowModal=()=>{
                   <span className="model-badge">{ModelType?.GPT_4o_Mini}</span>
                 )}
               </div>
+            </div>
+          </div>
+
+          <div className="detail-item">
+            <FaHourglassHalf className="detail-icon" />
+            <div className="detail-content">
+              <span className="detail-label">Remaining Time</span>
+              <span className="detail-value">{remainingTime || "∞"}</span>
             </div>
           </div>
         </div>

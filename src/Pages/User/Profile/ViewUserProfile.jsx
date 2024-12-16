@@ -17,13 +17,14 @@ const theme = {
 
 const ViewUserProfile = () => {
   const userData = useSelector((state) => state.user.user);
+  const sidebarOpen = useSelector((state) => state.sidebar.sidebarOpen);
 
   if (!userData) {
     return <LoadingWrapper>Loading user profile...</LoadingWrapper>;
   }
 
   return (
-    <ProfileContainer>
+    <ProfileContainer style={{marginLeft: `${!sidebarOpen?"5.5rem":"0rem"}`}}>
       <ProfileHeader>
         <Title>User Profile</Title>
         <EditButton to="/edit-profile">

@@ -35,6 +35,7 @@ export default function UserDashboard() {
   const { data: userData, isLoading: userLoading, error: userError } = useGetUserByIdQuery(user?.id);
  
   const { data: userTotalCountData } = useGetUserInfoCountQuery(userId); // Fetch API data
+  const sidebarOpen = useSelector((state) => state.sidebar.sidebarOpen);
 
   const cardsData = [
     {
@@ -184,7 +185,7 @@ export default function UserDashboard() {
   if (error) return <div>Error loading arenas: {error.message}</div>;
 
   return (
-    <DashboardContainer>
+    <DashboardContainer style={{marginLeft: `${!sidebarOpen?"5.5rem":"0rem"}`}}>
       <DashboardContent>
         <WelcomeSection>
           <SearchBar

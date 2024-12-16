@@ -6,7 +6,7 @@ import { toggleSidebar } from "../../../features/sidebarSlice";
 import Logo from '../../../../public/assets/images/logo/logo.png';
 import { useGetUserByIdQuery } from "../../../features/api/userApi"; // Import the query hook
 import { clearUser } from "../../../features/userSlice";
-
+import _ from "lodash"
 const HeaderWrapper = styled.header`
   position: fixed;
   top: 0;
@@ -78,16 +78,13 @@ const UserButton = styled.button`
   align-items: center;
   gap: 12px;
   padding: 8px 16px;
-  background: rgba(76, 175, 80, 0.1);
+  background: linear-gradient(145deg, #0a3d0c, #17df14);
   border: 1px solid rgba(76, 175, 80, 0.2);
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.3s ease;
 
-  &:hover {
-    background: rgba(76, 175, 80, 0.15);
-    transform: translateY(-2px);
-  }
+
 `;
 
 const UserAvatar = styled.img`
@@ -127,6 +124,22 @@ const DropdownMenu = styled.div`
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
   display: ${props => props.isOpen ? 'block' : 'none'};
   z-index: 1000;
+`;
+
+const MenuLink = styled(Link)`
+  color: white;
+  text-decoration: none;
+  transition: all 0.3s ease;
+
+   i {
+    color: #4caf50;
+    font-size: 1.1rem;
+    margin-right:1rem;
+  }
+  &:hover {
+    text-decoration: underline;
+  }
+
 `;
 
 const MenuItem = styled(Link)`
@@ -204,23 +217,31 @@ const Header = () => {
               onError={(e) => e.target.src = Logo}
             />
             <UserInfo>
-              <span>{userDetails.name}</span>
+              <span>{_(userDetails.name).capitalize()}</span>
             </UserInfo>
-            <i className="fa-sharp fa-solid fa-chevron-down" />
+            <i className="fa-sharp fa-solid fa-chevron-down text-light" />
           </UserButton>
 
           <DropdownMenu isOpen={dropdownOpen}>
-            <MenuItem to="/admin/view-profile">
+            <MenuItem >
+            <MenuLink to="/admin/view-profile">
               <i className="fa-sharp fa-regular fa-user" />
               <span>Profile</span>
+              </MenuLink>
             </MenuItem>
             <MenuItem to="/admin/settings">
+            <MenuLink to="/admin/settings">
               <i className="fa-sharp fa-regular fa-gear" />
               <span>Settings</span>
+              </MenuLink>
             </MenuItem>
+            
             <MenuItem to="/login" onClick={handleLogout}>
+            <MenuLink to="/login">
+
               <i className="fa-sharp fa-solid fa-right-to-bracket" />
               <span>Logout</span>
+              </MenuLink>
             </MenuItem>
           </DropdownMenu>
         </UserSection>

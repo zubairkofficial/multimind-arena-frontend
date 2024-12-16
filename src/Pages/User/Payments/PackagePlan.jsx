@@ -11,7 +11,7 @@ const PackagePlan = () => {
   const user = useSelector((state) => state.user.user);
   const userId = user?.id;
   const { data: subscriptionsData } = useGetSubscriptionsByUserIdQuery(userId);
-
+  const sidebarOpen = useSelector((state) => state.sidebar.sidebarOpen);
   const handlePurchase = async (item) => {
     navigate("/existing-card", {
       state: { coins: item.coins, price: item.price, packageId: item.id },
@@ -31,7 +31,7 @@ const PackagePlan = () => {
   );
 
   return (
-    <div className="package-plan-container">
+    <div className="package-plan-container" style={{marginLeft: `${!sidebarOpen?"5.5rem":"0rem"}`}}>
       <div className="package-header">
         <h2>Available Plans</h2>
         <p className="subtitle">Choose the perfect plan for your needs</p>

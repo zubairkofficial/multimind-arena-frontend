@@ -123,6 +123,16 @@ export const userApi = apiSlice.injectEndpoints({
                       },
                     }),
                   }),
+                  logout: builder.mutation({
+                    query: () => ({
+                      url: 'user/logout',  // Assuming 'auth/logout' is the endpoint for logging out
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${Helpers.getItem("token")}`,
+                      },
+                    }),
+                    }),
                   updateAiFigureRequestStatus: builder.mutation({
                     query: ({ userId, status }) => ({
                       url: `user/update-aifigure-request/${userId}`, // Endpoint to update AI figure request status
@@ -156,5 +166,6 @@ export const {
     useGetUserInfoCountQuery,
     useGetUsersWithAiFigurePendingStatusQuery,
     useUpdateAiFigureRequestStatusMutation,
-    useCreateAiFigureRequestMutation
+    useCreateAiFigureRequestMutation,
+    useLogoutMutation 
 } = userApi;

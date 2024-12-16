@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
+  useCreateSystemPromptMutation,
   useGetAllSystemPromptsQuery,
   useUpdateSystemPromptMutation,
 } from "../../../features/api/promptApi";
@@ -15,10 +16,12 @@ const schema = yup.object().shape({
   prompt: yup.string().required("Prompt is required"),
 });
 
-const UpdateSystemPrompt = () => {
+const SystemPromptForm = () => {
   const { id } = useParams(); // Get the system prompt ID from the URL params
-  const { data, error, isLoading } = useGetAllSystemPromptsQuery(); // Fetch the data
-  const [updateSystemPrompt] = useUpdateSystemPromptMutation();
+  const { data, error, isLoading, refetch: refetchAllSystems } = useGetAllSystemPromptsQuery(); // Fetch the data
+
+  const [updateSystemPrompt, { isLoading: isUpdating }] = useUpdateSystemPromptMutation();
+  const [createSystemPrompt, { isLoading: isCreating }] = useCreateSystemPromptMutation();
   const notyf = new Notyf();
   const navigate = useNavigate();
 
@@ -50,17 +53,24 @@ const UpdateSystemPrompt = () => {
     }
   }, [data, id, reset]);
 
-  // Form submission handler
+  // Form submission handler for both create and update
   const onSubmit = async (formData) => {
     try {
-      await updateSystemPrompt({
-        id, // Pass the extracted id from params
-        updatedSystemPrompt: formData,
-      }).unwrap();
-      notyf.success("System Prompt updated successfully.");
-      navigate("/admin/manage-system-prompt"); // Redirect after successful update
+      if (id) {
+        // Update existing system prompt
+        await updateSystemPrompt({ id, updatedSystemPrompt: formData }).unwrap();
+        refetchAllSystems();
+        notyf.success("System Prompt updated successfully.");
+        navigate("/admin/manage-system-prompt"); // Redirect after successful update
+      } else {
+        // Create new system prompt
+        await createSystemPrompt(formData).unwrap();
+        refetchAllSystems();
+        notyf.success("System Prompt created successfully.");
+        navigate("/admin/manage-system-prompt"); // Redirect after successful creation
+      }
     } catch (error) {
-      notyf.error("Failed to update System Prompt. Please try again.");
+      notyf.error("Failed to save System Prompt. Please try again.");
     }
   };
 
@@ -75,17 +85,9 @@ const UpdateSystemPrompt = () => {
 
   return (
     <div className="ms-5 container">
-      <h6 className="fs-5 mt-5 ms-4">System Prompt</h6>
-      <div
-        className="tab-pane fade active show"
-        id="system-prompt"
-        role="tabpanel"
-        aria-labelledby="system-prompt-tab"
-      >
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="rbt-profile-row rbt-default-form row row--15"
-        >
+      <h6 className="fs-5 mt-5 ms-4">{id ? "Update" : "Create"} System Prompt</h6>
+      <div className="tab-pane fade active show" id="system-prompt" role="tabpanel" aria-labelledby="system-prompt-tab">
+        <form onSubmit={handleSubmit(onSubmit)} className="rbt-profile-row rbt-default-form row row--15">
           <div className="col-lg-12 col-md-12 col-sm-12 col-12">
             <div className="form-group">
               <label htmlFor="description" className="form-label">
@@ -103,9 +105,7 @@ const UpdateSystemPrompt = () => {
                 className={` ${errors.description ? "is-invalid" : ""}`}
                 placeholder="Enter System Prompt Description"
               />
-              {errors.description && (
-                <div className="invalid-feedback">{errors.description.message}</div>
-              )}
+              {errors.description && <div className="invalid-feedback">{errors.description.message}</div>}
             </div>
           </div>
 
@@ -121,16 +121,14 @@ const UpdateSystemPrompt = () => {
                 placeholder="Enter the prompt for the system"
                 rows="4"
               ></textarea>
-              {errors.prompt && (
-                <div className="invalid-feedback">{errors.prompt.message}</div>
-              )}
+              {errors.prompt && <div className="invalid-feedback">{errors.prompt.message}</div>}
             </div>
           </div>
 
           <div className="col-12 mt-3">
             <div className="form-group mb-0 text-center">
-              <button type="submit" className="btn-default btn-lg">
-                Update System Prompt
+              <button type="submit" className="btn-default btn-lg" disabled={isCreating || isUpdating}>
+                {isCreating || isUpdating ? "Saving..." : id ? "Update System Prompt" : "Create System Prompt"}
               </button>
             </div>
           </div>
@@ -140,4 +138,4 @@ const UpdateSystemPrompt = () => {
   );
 };
 
-export default UpdateSystemPrompt;
+export default SystemPromptForm;

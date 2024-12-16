@@ -54,6 +54,7 @@ import CreateAdminLlmModel from "./Pages/Admin/LlmModel/CreateAdminLlmMoel";
 import { UserTier } from "./common";
 import ProtectedRoute from "./ProtectRoutes";
 import EditArenaType from "./Pages/Admin/Arena/ArenaType/EditArenaType";
+import UpdateAdminLlmModel from "./Pages/Admin/LlmModel/UpdateAdminLlmModel";
 // Define routes
 export const router = createBrowserRouter([
   // Default Routes
@@ -137,6 +138,10 @@ export const router = createBrowserRouter([
         element: <CreateAdminLlmModel />,
       },
       {
+        path: "edit-llm/:id",
+        element: <UpdateAdminLlmModel />,
+      },
+      {
         path: "manage-arenas",
         element: <ManageArenas />,
       },
@@ -147,6 +152,10 @@ export const router = createBrowserRouter([
       },
       {
         path: "edit-system-prompt/:id",
+        element: <SystemPrompt />,
+      },
+      {
+        path: "create-system-prompt",
         element: <SystemPrompt />,
       },
       {

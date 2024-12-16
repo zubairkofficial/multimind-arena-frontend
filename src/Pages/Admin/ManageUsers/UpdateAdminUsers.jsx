@@ -212,7 +212,7 @@ const UpdateAdminUsers = () => {
     e.preventDefault();
 
     try {
-      const response = await updateUser(formData).unwrap(); // Trigger the mutation and handle the response
+       await updateUser(formData).unwrap(); // Trigger the mutation and handle the response
       userRefetch()
       navigate('/admin/users'); // Redirect to users list or another page
     } catch (err) {

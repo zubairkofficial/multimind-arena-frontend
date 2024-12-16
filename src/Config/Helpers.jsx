@@ -1,7 +1,7 @@
 import { Notyf } from "notyf";
 
 class Helpers {
-  static localhost = "http://192.168.18.57:8080";
+  static localhost = "http://localhost:8080";
   static server = "http://multibackend.cyberifyportfolio.com";
 
   static basePath = `${this.localhost}`;

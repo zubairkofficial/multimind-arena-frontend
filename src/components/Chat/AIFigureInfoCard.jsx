@@ -22,8 +22,8 @@ function AIFigureInfoCard({
   const [showModal, setShowModal] = useState(false);
 
   return (
-    <Container>
-      <Header>
+    <Container >
+      <Header >
         <MainInfo>
           <Avatar>
             <img
@@ -53,49 +53,14 @@ function AIFigureInfoCard({
             </IconWrapper>
           </ActionButton>
 
-          <ActionButton
-            onClick={() => {
-              setShowInfoDetail(!showInfoDetail);
-              setShowDetails(false);
-            }}
-            title="Toggle Info"
-          >
-            {showInfoDetail ? <FaChevronUp /> : <FaChevronDown />}
-          </ActionButton>
-
+         
           <ActionButton danger onClick={() => setShowModal(true)} title="Leave">
             <FaSignOutAlt />
           </ActionButton>
         </Actions>
       </Header>
 
-      {showInfoDetail && (
-        <DetailsPanel>
-          <DetailItem>
-            <DetailIcon>
-              <FaUsers />
-            </DetailIcon>
-            <DetailContent>
-              <DetailLabel>Model Type</DetailLabel>
-              <DetailValue>{aiFigure?.model || "AI Model"}</DetailValue>
-            </DetailContent>
-          </DetailItem>
-
-          <DetailItem>
-            <DetailIcon>
-              <FaBrain />
-            </DetailIcon>
-            <DetailContent>
-              <DetailLabel>Models</DetailLabel>
-              <ModelsList>
-                {modelNames.map((modelName, index) => (
-                  <ModelBadge key={index}>{modelName}</ModelBadge>
-                ))}
-              </ModelsList>
-            </DetailContent>
-          </DetailItem>
-        </DetailsPanel>
-      )}
+   
 
       {showDetails && (
         <DetailsPanel>
@@ -141,13 +106,13 @@ function AIFigureInfoCard({
 
 // Styled Components
 const Container = styled.div`
- 
-  max-height:50vh;
+  max-height: 50vh;
   background: linear-gradient(145deg, #101010, #0a3d0c20);
   color: #ffffff;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow: visible;
+  position: relative;
 `;
 
 const Header = styled.div`
@@ -160,7 +125,10 @@ const Header = styled.div`
     rgba(13, 138, 13, 0.95) 0%,
     rgba(18, 22, 33, 0.95) 100%
   );
+    border-radius: 16px;
   height: 80px;
+  position: relative;
+  z-index: 20;
 
   @media (max-width: 768px) {
     padding: 0.75rem;
@@ -226,7 +194,7 @@ const Name = styled.h3`
 `;
 
 const Type = styled.span`
-  color: rgba(255, 255, 255, 0.8);
+  color:  #17df14;
   font-size: 0.9rem;
 `;
 
@@ -274,6 +242,10 @@ const IconWrapper = styled.div`
 `;
 
 const DetailsPanel = styled.div`
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
   padding: 1.5rem;
   background: linear-gradient(
     145deg,
@@ -283,6 +255,15 @@ const DetailsPanel = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
+  z-index: 10;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+  
+  @media (max-width: 768px) {
+    padding: 1rem;
+  }
 `;
 
 const DetailItem = styled.div`
@@ -300,6 +281,8 @@ const DetailContent = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
+  width: 100%;
+  overflow-wrap: break-word;
 `;
 
 const DetailLabel = styled.span`
@@ -311,6 +294,23 @@ const DetailValue = styled.span`
   font-size: 1rem;
   color: #fff;
   font-weight: 500;
+  line-height: 1.4;
+  max-height: 200px;
+  overflow-y: auto;
+  
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(23, 223, 20, 0.2);
+    border-radius: 4px;
+  }
 `;
 
 const ModelsList = styled.div`
@@ -318,7 +318,23 @@ const ModelsList = styled.div`
   flex-wrap: wrap;
   gap: 0.5rem;
   margin-top: 0.25rem;
-  height: 32px;
+  min-height: 32px;
+  max-height: 80px;
+  overflow-y: auto;
+  
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(23, 223, 20, 0.2);
+    border-radius: 4px;
+  }
 `;
 
 const ModelBadge = styled.span`

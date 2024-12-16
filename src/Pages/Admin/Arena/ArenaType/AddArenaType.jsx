@@ -1,5 +1,5 @@
 import React from "react";
-import { useAddArenaTypeMutation } from "../../../../features/api/arenaApi";
+import { useAddArenaTypeMutation ,useGetAllArenaTypesQuery} from "../../../../features/api/arenaApi";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -13,7 +13,9 @@ const schema = yup.object().shape({
 });
 
 const AddArenaType = () => {
-  const [addArenaType] = useAddArenaTypeMutation();
+  const [addArenaType,{isLoading,isArenaTypeLoading}] = useAddArenaTypeMutation();
+    const { data: arenaTypesData, error, isLoading:arenaTypesLoading,refetch:arenaTypesRefech } = useGetAllArenaTypesQuery();
+  
   const notyf = new Notyf();
 
   // React Hook Form setup with Yup validation
@@ -35,6 +37,7 @@ const AddArenaType = () => {
   const onSubmit = async (data) => {
     try {
       await addArenaType(data).unwrap();
+      arenaTypesRefech()
       notyf.success("Arena Type created successfully.");
       reset(); // Clear the form after submission
     } catch (error) {
@@ -68,7 +71,7 @@ const AddArenaType = () => {
                   borderWidth: "1px", // Ensure the border is visible
                   outline: "none", // Remove default focus outline
                 }}
-                className={` ${errors.name ? "is-invalid" : ""}`}
+                className={`text-light ${errors.name ? "is-invalid" : ""}`}
                 placeholder="Enter Arena Type Name"
               />
               {errors.name && (
@@ -85,7 +88,7 @@ const AddArenaType = () => {
               <textarea
                 id="description"
                 {...register("description")}
-                className={` ${errors.description ? "is-invalid" : ""}`}
+                className={`text-light ${errors.description ? "is-invalid" : ""}`}
                 placeholder="Enter a description for the arena type"
                 rows="2"
               ></textarea>
@@ -105,7 +108,7 @@ const AddArenaType = () => {
               <textarea
                 id="prompt"
                 {...register("prompt")}
-                className={` ${errors.prompt ? "is-invalid" : ""}`}
+                className={`text-light ${errors.prompt ? "is-invalid" : ""}`}
                 placeholder="Enter a prompt for the arena type"
                 rows="4"
               ></textarea>
@@ -118,7 +121,7 @@ const AddArenaType = () => {
           <div className="col-12 mt-3">
             <div className="form-group mb-0 text-center">
               <button type="submit" className="btn-default btn-lg">
-                Create Arena Type
+               {isArenaTypeLoading||arenaTypesLoading?"Creating Arena Type...": "Create Arena Type"}
               </button>
             </div>
           </div>

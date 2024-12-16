@@ -5,6 +5,7 @@ import { FaBrain } from 'react-icons/fa';
 import { BiPlanet } from 'react-icons/bi';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import { useCreateArenaRequestMutation, useGetUserByIdQuery, useCreateAiFigureRequestMutation } from '../../../features/api/userApi';
+import { ArenaRequestStatus } from '../../../common';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -142,7 +143,7 @@ const StatusArena = () => {
   
   const user = useSelector((state) => state.user.user);
   const { data: userData, isLoading: userLoading, refetch } = useGetUserByIdQuery(user.id);
-
+  const sidebarOpen = useSelector((state) => state.sidebar.sidebarOpen);
   const cardData = [
     {
       title: 'AI Figure Creation Request',
@@ -178,11 +179,12 @@ const StatusArena = () => {
   }
 
   return (
-    <Container>
+    <Container style={{marginLeft: `${!sidebarOpen?"5.5rem":"0rem"}`}}>
       <MainCard>
         <CardGrid>
           {cardData.map((card, index) => (
-            <RequestCard key={index}>
+             userData?.aiFigureRequestStatus===ArenaRequestStatus.APPROVED &&  userData?.createArenaRequestStatus === ArenaRequestStatus.APPROVED ?
+          "":(  <RequestCard key={index}>
               <IconWrapper>
                 {card.icon}
               </IconWrapper>
@@ -211,7 +213,7 @@ const StatusArena = () => {
                   'Send Request'
                 )}
               </RequestButton>
-            </RequestCard>
+            </RequestCard>)
           ))}
         </CardGrid>
       </MainCard>

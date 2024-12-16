@@ -60,7 +60,7 @@ const AIFigureGallery = () => {
           (figure) => figure.type === filter || (figure.tags && figure.tags.includes(filter))
         );
   return (
-    <GalleryContainer>
+    <GalleryContainer style={{marginLeft: `${!sidebarOpen?"5.5rem":"0rem"}`}}>
       <GalleryHeader>
         <SearchSection>
           <SearchBar

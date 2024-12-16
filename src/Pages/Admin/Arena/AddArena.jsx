@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import UserDashboard from "../Layout/Index";
 import ArenaDetailsForm from "./ArenaDetailsForm";
 import { useGetArenaByIdQuery } from "../../../features/api/arenaApi"; // Import the query hook
 import { useLocation } from "react-router";
@@ -9,7 +8,7 @@ const AddArena = () => {
 
 const location=useLocation()
   // Fetch the arena details by ID using the custom query hook
-  const { data: arenaData, isLoading, isError, error } = useGetArenaByIdQuery(location?.state?.id); // Fetch arena by ID
+  const { data: arenaData, isLoading, isError, error,refetch:refetchArenaById } = useGetArenaByIdQuery(location?.state?.id); // Fetch arena by ID
   useEffect(() => {
     if (isError) {
       console.error("Error fetching arena:", error);
@@ -18,6 +17,9 @@ const location=useLocation()
 
   if (isLoading) {
     return <div>Loading...</div>;
+  }
+  const handleArenaById=()=>{
+    refetchArenaById(location?.state?.id)
   }
 
   return (
@@ -36,8 +38,9 @@ const location=useLocation()
 
                     <ArenaDetailsForm
                       arena={arenaData} // Pass the fetched arena data to the form
+                      handleArenaById={handleArenaById}
                       onSubmit={(formData) => console.log("Form submitted", formData)} // Handle form submission
-                    />
+                   />
                   </div>
                 </div>
               </div>

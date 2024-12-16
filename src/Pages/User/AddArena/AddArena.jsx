@@ -3,12 +3,13 @@ import ArenaDetailsForm from "./ArenaDetailsForm";
 import { useGetAllLlmModelsQuery } from "../../../features/api/LlmModelApi";
 import styled from 'styled-components';
 import { FaLock, FaGlobe, FaRobot, FaPlus } from 'react-icons/fa';
+import { useSelector } from 'react-redux';
 
 const UserAddArena = () => {
   const [isPrivate, setIsPrivate] = useState(false);
   const [selectedModel, setSelectedModel] = useState(null);
   const { data: llmModels, error, isLoading } = useGetAllLlmModelsQuery();
-
+  const sidebarOpen = useSelector((state) => state.sidebar.sidebarOpen);
   const handleToggle = () => {
     setIsPrivate((prevState) => !prevState);
   };
@@ -18,7 +19,7 @@ const UserAddArena = () => {
   };
 
   return (
-    <PageContainer>
+    <PageContainer style={{marginLeft: `${!sidebarOpen?"5.5rem":"0rem"}`}}>
       <ContentWrapper>
         <HeaderSection>
           <TitleWrapper>

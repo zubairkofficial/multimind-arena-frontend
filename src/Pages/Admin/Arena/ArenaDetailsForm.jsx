@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Notyf } from "notyf";
-import { useGetAllArenaTypesQuery } from "../../../features/api/arenaApi";
+import { useGetAllArenaTypesQuery, useGetArenaByIdQuery } from "../../../features/api/arenaApi";
 import { useGetAllAIFiguresQuery } from "../../../features/api/aiFigureApi";
 import { useGetAllLlmModelsQuery } from "../../../features/api/llmModelApi";
+import { useGetAllArenasQuery } from "../../../features/api/arenaApi";
 import Preloader from "../../Landing/Preloader";
 import Helpers from "../../../Config/Helpers";
 import Slider from "react-slick";
@@ -25,8 +26,7 @@ import {
 } from "react-icons/fa";
 import Select from "react-select";
 import { useNavigate } from "react-router-dom";
-import { customStyles } from "../../../common/customStyle";
-import { ModelType } from "../../../common";
+
 // Styled Components
 const FormContainer = styled.div`
   max-width: 1200px;
@@ -549,7 +549,8 @@ const RoleAssignment = styled.div`
   margin-bottom: 0.75rem;
 `;
 
-const ArenaDetailsForm = ({ arena }) => {
+                     
+const ArenaDetailsForm = ({ arena,handleArenaById }) => {
   const arenaData=JSON.parse(arena?.arenaModel[0]??"{}")
   const navigate = useNavigate();
   const notyf = new Notyf();
@@ -572,10 +573,10 @@ const ArenaDetailsForm = ({ arena }) => {
         }),
         {}
       ) || {};
-
+console.log("arena?.expirySession",arena?.expirySession)
     return {
       name: arena?.name ?? "",
-      duration: arena?.expiryTime ?? "60",
+      duration: arena?.expirySession ?? "Unlimited",
       arenaTypeId: arena?.arenaType?.id ?? "",
       aiFigureId: selectedFigures,
       aiFigureRoles: figureRoles,
@@ -617,6 +618,11 @@ const ArenaDetailsForm = ({ arena }) => {
     error: aiFiguresError,
   } = useGetAllAIFiguresQuery();
 
+  const {
+   refetch:refetchAllArenas,
+   isLoading: isAllArenasLoading,
+  } = useGetAllArenasQuery();
+  
   // State hooks
   const [roles, setRoles] = useState([]);
   const [image, setImage] = useState(null);
@@ -630,8 +636,11 @@ const ArenaDetailsForm = ({ arena }) => {
   useEffect(() => {
     const fetchRoles = async () => {
       try {
+        setIsSubmitting(true)
         const response = await axios.get(`${Helpers.apiUrl}figure-role`);
-        setRoles(response.data);
+       
+        setRoles(response?.data);
+        setIsSubmitting(false)
       } catch (error) {
         console.error("Error fetching roles:", error);
       }
@@ -759,7 +768,7 @@ const ArenaDetailsForm = ({ arena }) => {
     e.preventDefault();
     try {
       const formDataToSend = new FormData();
-      formDataToSend.append("name", formData.name);
+      formDataToSend.append("name", formData?.name);
       formDataToSend.append("arenaTypeId", formData.arenaTypeId);
       formDataToSend.append("description", formData.description);
       formDataToSend.append("maxParticipants", formData.maxParticipants || "0");
@@ -776,8 +785,8 @@ const ArenaDetailsForm = ({ arena }) => {
       });
       if (
         (formData?.arenaModel && formData?.arenaModel?.length > 0) ?? {
-          value: defaultModel.id,
-          label: defaultModel.name,
+          value: defaultModel?.id,
+          label: defaultModel?.name,
         }
       ) {
         formDataToSend.append(
@@ -791,7 +800,8 @@ const ArenaDetailsForm = ({ arena }) => {
 
       if (arena?.id) {
         // PUT request to update
-        const response = await axios.put(
+        setIsSubmitting(true)
+         await axios.put(
           `${Helpers.apiUrl}arenas/${arena.id}`,
           formDataToSend,
           {
@@ -801,10 +811,14 @@ const ArenaDetailsForm = ({ arena }) => {
             },
           }
         );
+        setIsSubmitting(false)
+        refetchAllArenas()
+        handleArenaById()
         notyf.success("Arena updated successfully");
         setIsSubmitting(false);
         navigate("/admin/manage-arenas");
       } else {
+        setIsSubmitting(true)
         // POST request to create
         await axios.post(`${Helpers.apiUrl}arenas`, formDataToSend, {
           headers: {
@@ -812,6 +826,10 @@ const ArenaDetailsForm = ({ arena }) => {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         });
+        setIsSubmitting(false)
+        refetchAllArenas()
+        handleArenaById()
+
         setIsSubmitting(false);
         notyf.success("Arena created successfully");
       }
@@ -916,12 +934,12 @@ const ArenaDetailsForm = ({ arena }) => {
             </Label>
             <StyledInput
               id="name"
-              value={formData.name}
+              value={formData?.name}
               onChange={handleChange}
               placeholder="Enter Topic"
-              error={errors.name}
+              error={errors?.name}
             />
-            {errors.name && <ErrorMessage>{errors.name}</ErrorMessage>}
+            {errors?.name && <ErrorMessage>{errors?.name}</ErrorMessage>}
           </FormGroup>
 
           <FormGroup>
@@ -936,7 +954,7 @@ const ArenaDetailsForm = ({ arena }) => {
               <option value="">Select Arena Type</option>
               {arenaTypesData?.map((type) => (
                 <option key={type.id} value={type.id}>
-                  {type.name}
+                  {type?.name}
                 </option>
               ))}
             </StyledSelect>
@@ -1068,13 +1086,13 @@ const ArenaDetailsForm = ({ arena }) => {
               value={
                 formData.arenaModel?.[0] ?? {
                   value: defaultModel?.id,
-                  label: defaultModel.name,
+                  label: defaultModel?.name,
                 }
               }
               onChange={handleArenaModelChange}
               options={llmModels?.map((model) => ({
                 value: model.id,
-                label: model.name,
+                label: model?.name,
               }))}
               placeholder="Select AI Model"
               isClearable={false}
@@ -1148,7 +1166,7 @@ const ArenaDetailsForm = ({ arena }) => {
         <FormSection className="full-width">
           <SubmitButton type="submit" disabled={isSubmitting}>
             {arena
-              ? isSubmitting
+              ? isSubmitting||isAllArenasLoading
                 ? "Updating Arena..."
                 : "Update Arena"
               : isSubmitting

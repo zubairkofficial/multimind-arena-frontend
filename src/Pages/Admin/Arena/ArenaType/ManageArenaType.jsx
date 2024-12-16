@@ -16,7 +16,7 @@ export default function ManageArenaType() {
   const [searchText, setSearchText] = useState("");
 
   // Fetch arena types using the RTK query
-  const { data: arenaTypesData, error, isLoading } = useGetAllArenaTypesQuery();
+  const { data: arenaTypesData, error, isLoading,refetch:arenaTypesRefech } = useGetAllArenaTypesQuery();
   const [deleteArenaType] = useDeleteArenaTypeMutation(); // Initialize the delete mutation
 
   const arenaTypes = arenaTypesData || [];
@@ -61,6 +61,7 @@ export default function ManageArenaType() {
     if (window.confirm("Are you sure you want to delete this arena type?")) {
       try {
         await deleteArenaType(arenaTypeId).unwrap();
+        arenaTypesRefech()
         alert("Arena type deleted successfully.");
       } catch (error) {
         console.error("Failed to delete arena type:", error);
@@ -92,6 +93,8 @@ export default function ManageArenaType() {
 
   if (isLoading) return <Preloader />;
   if (error) return <div>Error loading arena types...</div>;
+
+
 
   return (
     <div className="container mx-3">

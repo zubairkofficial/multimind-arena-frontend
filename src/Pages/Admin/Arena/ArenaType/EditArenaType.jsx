@@ -10,7 +10,10 @@ import * as yup from "yup";
 import { Notyf } from "notyf";
 import styled from "styled-components";
 import { FaEdit, FaAlignLeft, FaComments, FaSave, FaTimes } from "react-icons/fa";
-
+import {
+  useGetAllArenaTypesQuery,
+  
+} from "../../../../features/api/arenaApi";
 // Styled Components
 const FormContainer = styled.div`
   max-width: 1200px;
@@ -161,9 +164,10 @@ const schema = yup.object().shape({
 const EditArenaType = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [updateArenaType] = useUpdateArenaTypeMutation();
-  const { data: arenaType, isLoading } = useGetArenaTypeByIdQuery(id);
+  const [updateArenaType,{isLoading:isUpdateArenaTypeLoading}] = useUpdateArenaTypeMutation();
+  const { data: arenaType, isLoading,refetch:refetchArenaTypeById } = useGetArenaTypeByIdQuery(id);
   const notyf = new Notyf();
+  const { data: arenaTypesData, error, isLoading:arenaTypesLoading,refetch:arenaTypesRefech } = useGetAllArenaTypesQuery();
 
   const {
     register,
@@ -187,6 +191,8 @@ const EditArenaType = () => {
   const onSubmit = async (data) => {
     try {
       await updateArenaType({ id, updatedArenaType: data }).unwrap();
+      arenaTypesRefech()
+      refetchArenaTypeById(id)
       notyf.success("Arena Type updated successfully.");
       navigate("/admin/arena-types");
     } catch (error) {
@@ -194,13 +200,11 @@ const EditArenaType = () => {
     }
   };
 
-  if (isLoading) return (
-    <div className="d-flex justify-content-center align-items-center" style={{ height: "100vh" }}>
-      <div className="spinner-border text-primary" role="status">
-        <span className="visually-hidden">Loading...</span>
-      </div>
-    </div>
-  );
+  if (isLoading) 
+  
+      return <div>Loading...</div>;
+    
+
 
   return (
     <FormContainer>
@@ -248,7 +252,7 @@ const EditArenaType = () => {
         <FormSection>
           <ButtonContainer>
             <Button type="submit" className="primary">
-              <FaSave /> Update Arena Type
+             <FaSave /> {isUpdateArenaTypeLoading||arenaTypesLoading?"Updating Arena Type....":" Update Arena Type"}
             </Button>
           
           </ButtonContainer>

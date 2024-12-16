@@ -12,83 +12,12 @@ import Helpers from "../../../Config/Helpers";
 import Logo from '../../../../public/assets/images/logo/logo.png';
 import { ModelType } from "../../../common";
 
-const Header = styled.div`
-  background: linear-gradient(135deg, #0a3d0c 0%, #17df14 100%);
-  padding: 1rem 1.5rem;
-  border-radius: 16px 16px 0 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(10px);
-`;
 
-const HeaderInfo = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-`;
 
-const AvatarContainer = styled.div`
-  position: relative;
-  
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: 2px;
-    right: 2px;
-    width: 10px;
-    height: 10px;
-    background: #4CAF50;
-    border-radius: 50%;
-    border: 2px solid #fff;
-  }
-`;
 
-const HeaderAvatar = styled.img`
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid rgba(255, 255, 255, 0.2);
-`;
 
-const HeaderText = styled.div`
-  h2 {
-    margin: 0;
-    font-size: 1.25rem;
-    color: #fff;
-    font-weight: 600;
-  }
 
-  p {
-    margin: 0;
-    font-size: 0.875rem;
-    color: rgba(255, 255, 255, 0.7);
-  }
-`;
 
-const LeaveButton = styled.button`
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  transition: all 0.3s ease;
-  cursor: pointer;
-
-  &:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: translateY(-1px);
-  }
-
-  i {
-    font-size: 0.875rem;
-  }
-`;
 
 const ChatInputWrapper = styled.div`
   padding: 1.5rem;
@@ -166,6 +95,48 @@ const SendButton = styled.button`
   }
 `;
 
+const ChatContainer = styled.div`
+  height: 86vh;
+  background: linear-gradient(145deg, #101010, #0a3d0c20);
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+`;
+
+const ChatArea = styled.div`
+  background-color: #101010;
+  border-radius: 16px;
+  border-right: 1px solid #00ff00;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  height: 86vh;
+ 
+`;
+
+const ChatMessages = styled.div`
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+  padding-bottom: 80px;
+  scroll-behavior: smooth;
+  height: calc(100vh - 160px);
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #17df14;
+    border-radius: 3px;
+  }
+
+  @media (max-width: 768px) {
+    height: calc(100vh - 180px);
+  }
+`;
+
 export default function AIChatPage() {
   const navigate = useNavigate();
   const { figureId } = useParams();  // Get figureId from URL params
@@ -181,7 +152,7 @@ export default function AIChatPage() {
   const userImage = JSON.parse(localStorage.getItem("user"))?.image ?? Logo;
   const aiImage = aiFigure?.image ?? Logo;
   const userId = useSelector((state) => state.user.user?.id); // Assuming user ID is stored in Redux
-
+const sidebarOpen = useSelector((state) => state.sidebar.sidebarOpen);
   // Fetch user details by ID
   const { data: user, isError, refetch: userRefetch } = useGetUserByIdQuery(userId);
 
@@ -309,12 +280,8 @@ export default function AIChatPage() {
   }
 
   return (
-    <div className="d-flex h-100 bg-transparent text-color-light">
-      <div style={{
-        backgroundColor: "#101010",
-        borderRadius: "16px",
-        borderRight: "1px solid #00ff00"
-      }}className="flex-grow-1 d-flex flex-column chat-message-area full-width ">
+    <ChatContainer style={{marginLeft: `${!sidebarOpen?"5.5rem":"0rem"}`}}>
+      <ChatArea>
         <AIFigureInfoCard
           aiFigure={aiFigure}
           image={aiImage}
@@ -322,7 +289,7 @@ export default function AIChatPage() {
           modelNames={modelNames}
         />
       
-        <div ref={chatContainerRef} className="flex-grow-1 pt-4 px-4 overflow-auto chat-message-container">
+        <ChatMessages ref={chatContainerRef}>
           {chatMessages?.map((msg, index) => (
             <div key={index} className={`d-flex ${msg.isUser ? "flex-row-reverse" : ""}`}>
               <div style={{ width: "50px", margin: "0 10px" }}>
@@ -335,7 +302,7 @@ export default function AIChatPage() {
                     borderRadius: "50%",
                     objectFit: "cover",
                   }}
-                  onError={(e) => e.target.src = Logo} // Fallback to Logo if the image fails to load
+                  onError={(e) => e.target.src = Logo}
                 />
               </div>
               <MessageBubble message={msg} />
@@ -354,7 +321,7 @@ export default function AIChatPage() {
                     borderRadius: "50%",
                     objectFit: "cover",
                   }}
-                  onError={(e) => e.target.src = Logo} // Fallback to Logo if the image fails to load
+                  onError={(e) => e.target.src = Logo}
                 />
               </div>
               <div
@@ -378,7 +345,7 @@ export default function AIChatPage() {
               </div>
             </div>
           )}
-        </div>
+        </ChatMessages>
 
         <ChatInputWrapper>
           <ChatForm onSubmit={handleSubmit}>
@@ -398,7 +365,7 @@ export default function AIChatPage() {
             </SendButton>
           </ChatForm>
         </ChatInputWrapper>
-      </div>
-    </div>
+      </ChatArea>
+    </ChatContainer>
   );
 }

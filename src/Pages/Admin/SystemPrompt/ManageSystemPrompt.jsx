@@ -16,7 +16,7 @@ export default function ManageSystemPrompt() {
   const [searchText, setSearchText] = useState("");
 
   // Fetch system prompts using the RTK query
-  const { data: systemPromptsData, error, isLoading } = useGetAllSystemPromptsQuery();
+  const { data: systemPromptsData, error, isLoading,refetch:refetchAllSystems } = useGetAllSystemPromptsQuery();
   const [deleteSystemPrompt] = useDeleteSystemPromptMutation(); // Initialize the delete mutation
 
   const systemPrompts = systemPromptsData || [];
@@ -50,7 +50,7 @@ export default function ManageSystemPrompt() {
   };
 
   const handleCreateSystemPrompt = () => {
-    navigate("/admin/system-prompt"); // Adjust the route
+    navigate("/admin/create-system-prompt"); // Adjust the route
   };
 
   const handleEditSystemPrompt = (systemPrompt) => {
@@ -61,6 +61,8 @@ export default function ManageSystemPrompt() {
     if (window.confirm("Are you sure you want to delete this system prompt?")) {
       try {
         await deleteSystemPrompt(systemPromptId).unwrap();
+        refetchAllSystems()
+
         alert("System prompt deleted successfully.");
       } catch (error) {
         console.error("Failed to delete system prompt:", error);

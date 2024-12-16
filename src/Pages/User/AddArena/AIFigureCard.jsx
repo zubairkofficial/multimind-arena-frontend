@@ -1,6 +1,9 @@
 import React from "react";
 import styled from 'styled-components';
-import { FaUser, FaCheck, FaStar, FaCode } from 'react-icons/fa';
+import { Lock, Unlock } from "lucide-react";
+import { FaCheck } from 'react-icons/fa';
+import Logo from "../../../../public/assets/images/logo/logo.png";
+import { ArenaType } from "../../../common";
 
 const CardContainer = styled.div`
   background: rgba(16, 16, 16, 0.95);
@@ -9,7 +12,7 @@ const CardContainer = styled.div`
   position: relative;
   transition: all 0.3s ease;
   border: 1px solid rgba(23, 223, 20, 0.1);
-  backdrop-filter: blur(10px);
+  height: 100%;
   cursor: pointer;
 
   &:hover {
@@ -66,27 +69,6 @@ const CardTitle = styled.h3`
   line-height: 1.4;
 `;
 
-const InfoGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-`;
-
-const InfoItem = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: #ffffff;
-  font-size: 0.9rem;
-`;
-
-const IconWrapper = styled.div`
-  color: #17df14;
-  display: flex;
-  align-items: center;
-`;
-
 const Description = styled.p`
   color: rgba(255, 255, 255, 0.8);
   font-size: 0.9rem;
@@ -96,6 +78,51 @@ const Description = styled.p`
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+`;
+
+const CardFooter = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const SelectButton = styled.button`
+  background: #17df14;
+  color: #0a3d0c;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: #0a3d0c;
+    color: #17df14;
+    border: 1px solid #17df14;
+  }
+`;
+
+const ButtonGlow = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(23, 223, 20, 0.2);
+  border-radius: 6px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+
+  ${SelectButton}:hover & {
+    opacity: 1;
+  }
 `;
 
 const StatusContainer = styled.div`
@@ -151,10 +178,13 @@ const SelectMark = styled.span`
 
 export default function AIFigureCard({ figure, onSelect, isSelected }) {
   return (
-    <CardContainer className={isSelected ? "selected" : ""} onClick={onSelect}>
+    <CardContainer 
+      className={isSelected ? "selected" : ""} 
+      onClick={() => onSelect(figure)}
+    >
       <ImageWrapper>
         <CardImage 
-          src={figure.image || Logo} 
+          src={figure?.image ?? Logo} 
           alt={figure.name}
           onError={(e) => e.target.src = Logo}
         />
@@ -163,32 +193,26 @@ export default function AIFigureCard({ figure, onSelect, isSelected }) {
 
       <CardContent>
         <CardTitle>{figure.name}</CardTitle>
-        
-        <InfoGrid>
-          <InfoItem>
-            <IconWrapper>
-              <FaUser size={16} />
-            </IconWrapper>
-            <span>@{figure.creator}</span>
-          </InfoItem>
-          <InfoItem>
-            <IconWrapper>
-              <FaStar size={16} />
-            </IconWrapper>
-            <span>{figure.rating || 0} Rating</span>
-          </InfoItem>
-        </InfoGrid>
-
         <Description>{figure.description}</Description>
 
-        <StatusContainer>
-          <StatusBadge>
-            <FaCode size={12} /> {figure.model}
-          </StatusBadge>
-          <StatusBadge>
-            <FaUser size={12} /> {figure.usageCount || 0} Uses
-          </StatusBadge>
-        </StatusContainer>
+        <CardFooter>
+          {/* <SelectButton onClick={() => onSelect(figure)} className="fs-6">
+            Select AI Figure
+            <ButtonGlow />
+          </SelectButton> */}
+
+          <StatusContainer>
+            <StatusBadge isPrivate={figure.isAiPrivate}>
+              {figure.isAiPrivate ? 
+                <><Lock size={12} /> {ArenaType.PRIVATE}</> : 
+                <><Unlock size={12} /> {ArenaType.PUBLIC}</>
+              }
+            </StatusBadge>
+            <StatusBadge type="model">
+              {figure.model || 'AI Model'}
+            </StatusBadge>
+          </StatusContainer>
+        </CardFooter>
       </CardContent>
 
       {isSelected && (

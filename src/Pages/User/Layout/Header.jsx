@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import styled from 'styled-components';
 import { toggleSidebar, toggleRightSidebar } from "../../../features/sidebarSlice";
 import { clearUser } from "../../../features/userSlice";
-import { useGetUserByIdQuery } from "../../../features/api/userApi";
+import { useGetUserByIdQuery,useLogoutMutation } from "../../../features/api/userApi";
 import Logo from '../../../../public/assets/images/logo/logo.png';
 
 const Header = () => {
@@ -16,6 +16,7 @@ const Header = () => {
 
   // Fetch user details by ID
   const { data: user, isLoading, isError } = useGetUserByIdQuery(userId);
+  const [logout, { isLoading:isLogout, error }] = useLogoutMutation();
 
   const handleSidebar = () => {
     dispatch(toggleSidebar());
@@ -26,6 +27,7 @@ const Header = () => {
   };
 
   const handleLogout =async () => {
+    await logout().unwrap()
     dispatch(clearUser());
     navigate('/login')
   };
@@ -104,7 +106,7 @@ const Header = () => {
                 <MenuList>
                   <MenuItem>
                     <LogoutButton onClick={handleLogout}>
-                      <i className="fa-sharp fa-solid fa-right-to-bracket" />
+                      <i className="fa-sharp fa-solid fa-right-to-bracket me-3" />
                       <span>Logout</span>
                     </LogoutButton>
                   </MenuItem>
@@ -221,6 +223,7 @@ const UserPanel = styled.div`
 
 const UserCard = styled.div`
   background: linear-gradient(145deg, #0a3d0c, #17df14);
+  border: 1px solid rgba(76, 175, 80, 0.2);
   padding: 0.5rem 1rem;
   border-radius: 12px;
   cursor: pointer;
@@ -257,6 +260,7 @@ const DropdownIcon = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+ 
 `;
 
 const UserProfileSection = styled.div`
@@ -308,8 +312,25 @@ const MenuList = styled.ul`
   padding: 0;
 `;
 
-const MenuItem = styled.li`
-  padding: 0.5rem 0;
+const MenuItem = styled(Link)`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+
+  i {
+    color: #4caf50;
+    font-size: 1.1rem;
+  }
+
+  &:hover {
+    background: rgba(76, 175, 80, 0.1);
+    transform: translateX(5px);
+  }
 `;
 
 const MenuLink = styled(Link)`
@@ -317,9 +338,15 @@ const MenuLink = styled(Link)`
   text-decoration: none;
   transition: all 0.3s ease;
 
+   i {
+    color: #4caf50;
+    font-size: 1.1rem;
+    margin-right:1rem;
+  }
   &:hover {
     text-decoration: underline;
   }
+
 `;
 
 const LogoutButton = styled.button`

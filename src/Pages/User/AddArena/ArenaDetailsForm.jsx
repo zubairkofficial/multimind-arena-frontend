@@ -10,7 +10,6 @@ import AIFigureCard from "./AIFigureCard";
 import "./../AiFigures/aifigures.css";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import Select from "react-select"; // Import Select from react-select
-import { customStyles } from "../../../common/customStyle";
 import styled from 'styled-components';
 import { FaEdit, FaUsers, FaClock, FaImage, FaRobot, FaLayerGroup, FaCloudUploadAlt, FaTrash, FaAlignLeft } from 'react-icons/fa';
 
