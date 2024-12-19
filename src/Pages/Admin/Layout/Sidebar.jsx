@@ -208,6 +208,11 @@ const Sidebar = () => {
       label: "Manage Arenas",
     },
     {
+      path: "/admin/manage-ai-figures-type",
+      icon: "fa-solid fa-robot",
+      label: "Manage AI Figures Type",
+    }, // New option added
+    {
       path: "/admin/manage-ai-figures",
       icon: "fa-solid fa-robot",
       label: "Manage AI Figures",

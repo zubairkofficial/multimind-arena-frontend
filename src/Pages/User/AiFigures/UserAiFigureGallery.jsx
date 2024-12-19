@@ -12,12 +12,15 @@ import { AIFigureStatus, UserTier } from "../../../common";
 import {useGetUserByIdQuery } from "../../../features/api/userApi"
 import styled from "styled-components";
 import _ from "lodash"
+import { useGetAllAifigureTypesQuery } from "../../../features/api/aiFigureTypeApi"; // Import the query hook
+
 const AIFigureGallery = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const user = useSelector((state) => state.user.user);
   const { data: userData, isLoading: userLoading, error: userError } = useGetUserByIdQuery(user?.id);
-
+ const { data: aiFigureTypes, isLoading: isLoadingTypes, error: typeError } =
+    useGetAllAifigureTypesQuery();
   const { data: aiFigures, isLoading, isError, error } = useGetAllAIFiguresQuery();
   const sidebarOpen = useSelector((state) => state.sidebar.sidebarOpen);
   const rightSidebarOpen = useSelector((state) => state.rightSidebar.rightSidebarOpen);
@@ -27,7 +30,7 @@ const AIFigureGallery = () => {
   const [selectedFigure, setSelectedFigure] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
-  const dynamicCategories = [...new Set(aiFigures?.map((figure) => figure.type))];
+  const dynamicCategories = [...new Set(aiFigureTypes?.map((figure) => figure.name))];
   const categories = ["All", ...dynamicCategories];
 
   const handleCreateFigure = () => {
@@ -57,7 +60,7 @@ const AIFigureGallery = () => {
     filter === "All"
       ? aiFigures
       : aiFigures.filter(
-          (figure) => figure.type === filter || (figure.tags && figure.tags.includes(filter))
+          (figure) =>  figure?.aifigureType?.name === filter || (figure.tags && figure.tags.includes(filter))
         );
   return (
     <GalleryContainer style={{marginLeft: `${!sidebarOpen?"5.5rem":"0rem"}`}}>

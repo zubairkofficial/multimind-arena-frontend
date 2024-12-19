@@ -21,6 +21,7 @@ const CustomModal = ({ show, onClose, figure, onChatNow }) => {
               src={figure?.image || Logo}
               alt={figure?.name}
               className="modal-image"
+              onError={(e) => (e.target.src = Logo)}
             />
           </div>
           <p className="description-text">{figure?.description}</p>

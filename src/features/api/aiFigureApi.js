@@ -19,16 +19,15 @@ export const aiFigureApi = apiSlice.injectEndpoints({
 
         // Add new AI figure
         addAIFigure: builder.mutation({
-            query: (newAIFigure) => ({
-              url: 'ai-figures',
-              method: 'POST',
-              body: newAIFigure,
-              headers: {
-                'Content-Type': 'multipart/form-data', // Ensure you're setting the correct content type
-                Authorization: `Bearer ${Helpers.getItem('token')}`, // Adding the Bearer token to the headers
-              },
-            }),
-            }),
+          query: (newAIFigure) => ({
+            url: 'ai-figures',
+            method: 'POST',
+            body: newAIFigure,
+            headers: {
+              Authorization: `Bearer ${Helpers.getItem('token')}`, // Only include the Authorization header
+            },
+          }),
+        }),
 
         // Delete an AI figure
         deleteAIFigure: builder.mutation({

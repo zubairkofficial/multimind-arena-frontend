@@ -5,8 +5,10 @@ import { useNavigate } from "react-router-dom"; // Import useNavigate
 import Helpers from "../../../Config/Helpers";
 import { useGetAllAIFiguresQuery } from "../../../features/api/aiFigureApi"; // Import your mutation hook
 import { useGetAllLlmModelsQuery } from "../../../features/api/LlmModelApi"; // Import query hook for LLM Models
+import { useGetAllAifigureTypesQuery } from "../../../features/api/aiFigureTypeApi"; // Import the query hook
 import Select from "react-select"; // Import react-select
 import styled from 'styled-components';
+import {  FaGlobe,FaLock,FaCloudUploadAlt,FaImage,FaTrash    } from 'react-icons/fa';
 
 const AIFigureDetailsForm = () => {
   const navigate = useNavigate(); // Initialize navigate
@@ -35,7 +37,8 @@ const AIFigureDetailsForm = () => {
 
   const { data: llmModels, error, isLoading } = useGetAllLlmModelsQuery(); // Fetch LLM models
   const { refetch } = useGetAllAIFiguresQuery(); // Hook for refetching AI figures
-
+  const { data: aiFigureTypes, isLoading: isLoadingTypes, error: typeError } =
+    useGetAllAifigureTypesQuery();
   const handleChange = (e) => {
     const { id, value } = e.target;
     if (id === "llmModel") {
@@ -108,7 +111,7 @@ const AIFigureDetailsForm = () => {
     aiFigure.append("name", formData.name);
     aiFigure.append("description", formData.description);
     aiFigure.append("prompt", formData.prompt);
-    aiFigure.append("type", formData.type);
+    aiFigure.append("aifigureType", formData.type);
     aiFigure.append("isAiPrivate", isPrivate);
     
     if (formData.llmModel && formData.llmModel.length > 0) {
@@ -160,24 +163,38 @@ const AIFigureDetailsForm = () => {
 
   return (
     <FormContainer>
-      <FormHeader>
-        <Title>Add AI Figure</Title>
-        <PrivacyToggle>
-          <ToggleSwitch
-            type="checkbox"
-            checked={isPrivate}
-            onChange={handleToggle}
-            id="privacyToggle"
-          />
-          <ToggleLabel htmlFor="privacyToggle">
-            {isPrivate ? "Private" : "Public"}
+      <HeaderSection>
+        <TitleWrapper>
+          <PageTitle>+ Add AI Figure</PageTitle>
+          <SubTitle>Create your custom AI figure with advanced capabilities</SubTitle>
+        </TitleWrapper>
+        
+        <ToggleWrapper>
+          <ToggleLabel>
+            <VisibilityText>AI Figure Visibility</VisibilityText>
+            <ToggleSwitch>
+              <ToggleInput
+                type="checkbox"
+                checked={isPrivate}
+                onChange={handleToggle}
+              />
+              <ToggleSlider isPrivate={isPrivate}>
+                <ToggleIcon isPrivate={isPrivate}>
+                  {isPrivate ? <FaLock /> : <FaGlobe />}
+                </ToggleIcon>
+                <ToggleText isPrivate={isPrivate}>
+                  {isPrivate ? 'Private' : 'Public'}
+                </ToggleText>
+              </ToggleSlider>
+            </ToggleSwitch>
           </ToggleLabel>
-        </PrivacyToggle>
-      </FormHeader>
+        </ToggleWrapper>
+      </HeaderSection>
 
       <Form onSubmit={handleSubmit}>
         <FormGrid>
           {/* Name Input */}
+            <FormSection>
           <FormGroup>
             <Label htmlFor="name">Name</Label>
             <Input
@@ -190,40 +207,63 @@ const AIFigureDetailsForm = () => {
             />
             {errors.name && <ErrorText>{errors.name}</ErrorText>}
           </FormGroup>
-
-          {/* Image Upload */}
-          <ImageUploadGroup>
-            <Label htmlFor="image">Image</Label>
-            <UploadContainer>
-              {imagePreview && (
-                <ImagePreview src={imagePreview} alt="AI Figure Preview" />
-              )}
-              <UploadButton>
-                <FileInput
-                  id="image"
-                  type="file"
-                  onChange={handleImageChange}
-                  accept="image/*"
-                />
-                <span>Choose Image</span>
-              </UploadButton>
-            </UploadContainer>
-            {errors.image && <ErrorText>{errors.image}</ErrorText>}
-          </ImageUploadGroup>
-
+        
+          <FormGroup>
+          <Label htmlFor="name">Image</Label>
+         
+          <ImageUploadContainer isDragging={false}>
+                     <input
+                       type="file"
+                       id="image"
+                       onChange={handleImageChange}
+                       accept="image/*"
+                       style={{ display: 'none' }}
+                     />
+                     {!imagePreview ? (
+                       <UploadPrompt htmlFor="image">
+                         <FaCloudUploadAlt size={40} />
+                         <UploadText>
+                           <strong>Click to upload</strong> or drag and drop
+                           <small>PNG, JPG (max. 5MB)</small>
+                         </UploadText>
+                       </UploadPrompt>
+                     ) : (
+                       <PreviewContainer>
+                         <ImagePreview src={imagePreview} alt="Preview" />
+                         <PreviewOverlay className="preview-overlay">
+                           <PreviewActions>
+                             <PreviewButton onClick={() => document.getElementById('image').click()}>
+                               <FaImage /> Change
+                             </PreviewButton>
+                             <PreviewButton onClick={() => {
+                               setImage(null);
+                               setImagePreview(null);
+                             }} isDelete>
+                               <FaTrash /> Remove
+                             </PreviewButton>
+                           </PreviewActions>
+                         </PreviewOverlay>
+                       </PreviewContainer>
+                     )}
+                   </ImageUploadContainer>
+                   </FormGroup>
+                   </FormSection>
           {/* Type Selection - Fixed Version */}
+          <FormSection>
           <FormGroup>
             <Label htmlFor="type">Type</Label>
             <StyledSelect
-              id="type"
-              value={formData.type}
-              onChange={handleChange}
-            >
-              <StyledOption value="creative">Creative</StyledOption>
-              <StyledOption value="anime">Anime</StyledOption>
-              <StyledOption value="famous_people">Famous People</StyledOption>
-              <StyledOption value="fictional_character">Fictional Character</StyledOption>
-            </StyledSelect>
+                id="type"
+                value={formData.type}
+                onChange={handleChange}
+              >
+                <option value="">Select a type</option>
+                {aiFigureTypes?.map((type) => (
+                  <option key={type.id} value={type.id}>
+                    {type.name}
+                  </option>
+                ))}
+              </StyledSelect>
             <SelectArrow>
               <i className="fas fa-chevron-down" />
             </SelectArrow>
@@ -250,7 +290,7 @@ const AIFigureDetailsForm = () => {
             />
             {errors.llmModel && <ErrorText>{errors.llmModel}</ErrorText>}
           </FormGroup>
-
+          </FormSection>
           {/* Description */}
           <FormGroup fullWidth>
             <Label htmlFor="description">Description</Label>
@@ -326,45 +366,34 @@ const Title = styled.h3`
   margin: 0;
 `;
 
-const PrivacyToggle = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-`;
 
-const ToggleSwitch = styled.input`
-  position: relative;
-  width: 60px;
-  height: 30px;
-  appearance: none;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 25px;
-  cursor: pointer;
+const ImageUploadContainer = styled.div`
+  border: 2px dashed ${props => props.isDragging ? '#17df14' : 'rgba(23, 223, 20, 0.2)'};
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.02);
   transition: all 0.3s ease;
-
-  &:checked {
-    background: #17df14;
-  }
-
-  &:before {
-    content: '';
-    position: absolute;
-    width: 26px;
-    height: 26px;
-    border-radius: 50%;
-    top: 2px;
-    left: 2px;
-    background: white;
-    transition: all 0.3s ease;
-    transform: ${props => props.checked ? 'translateX(30px)' : 'translateX(0)'};
-  }
-`;
-
-const ToggleLabel = styled.label`
-  color: #fff;
-  font-size: 0.9rem;
   cursor: pointer;
+    height: 90%; 
+  display: flex; 
+  justify-content: center; 
+  align-items: center;
+  &:hover {
+    border-color: #17df14;
+    background: rgba(23, 223, 20, 0.05);
+  }
 `;
+
+const UploadPrompt = styled.label`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  cursor: pointer;
+  color: #17df14;
+`;
+
 
 const Form = styled.form`
   display: flex;
@@ -411,10 +440,11 @@ const SubmitButton = styled.button`
 `;
 
 const FormGroup = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  grid-column: ${props => props.fullWidth ? '1 / -1' : 'auto'};
+  margin-bottom: 1.5rem;
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
 `;
 
 const Label = styled.label`
@@ -467,15 +497,7 @@ const TextArea = styled.textarea`
   }
 `;
 
-const ImageUploadGroup = styled(FormGroup)`
-  position: relative;
-`;
 
-const UploadContainer = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-`;
 
 const ImagePreview = styled.img`
   width: 100px;
@@ -485,30 +507,6 @@ const ImagePreview = styled.img`
   border: 2px solid #17df14;
 `;
 
-const UploadButton = styled.label`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.75rem 1.5rem;
-  background: rgba(23, 223, 20, 0.1);
-  border: 1px dashed #17df14;
-  border-radius: 8px;
-  color: #17df14;
-  cursor: pointer;
-  transition: all 0.3s ease;
-
-  &:hover {
-    background: rgba(23, 223, 20, 0.2);
-  }
-
-  span {
-    margin-left: 0.5rem;
-  }
-`;
-
-const FileInput = styled.input`
-  display: none;
-`;
 
 const ErrorText = styled.span`
   color: #ff4444;
@@ -516,12 +514,11 @@ const ErrorText = styled.span`
   margin-top: 0.25rem;
 `;
 
-const SelectWrapper = styled.div`
-  position: relative;
-`;
+
 
 const StyledSelect = styled.select`
   width: 100%;
+  height:60%;
   padding: 0.75rem 1rem;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(23, 223, 20, 0.2);
@@ -640,7 +637,199 @@ const SelectArrow = styled.div`
   pointer-events: none;
   color: #17df14;
 `;
+const UploadText = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
 
+  strong {
+    color: #17df14;
+  }
+
+  small {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.8rem;
+  }
+`;
+
+
+
+const PreviewContainer = styled.div`
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  max-width: 300px;
+  margin: 0 auto;
+  
+  &:hover .preview-overlay {
+    opacity: 1;
+  }
+`;
+
+const PreviewOverlay = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+`;
+
+const PreviewActions = styled.div`
+  display: flex;
+  gap: 1rem;
+`;
+const PreviewButton = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  border: none;
+  background: ${props => props.isDelete ? 'rgba(255, 69, 58, 0.2)' : 'rgba(23, 223, 20, 0.2)'};
+  color: ${props => props.isDelete ? '#ff453a' : '#17df14'};
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: ${props => props.isDelete ? 'rgba(255, 69, 58, 0.3)' : 'rgba(23, 223, 20, 0.3)'};
+    transform: translateY(-2px);
+  }
+`;
+
+const HeaderSection = styled.div`
+  padding: 2.5rem;
+  background: linear-gradient(145deg, rgba(16, 16, 16, 0.95), rgba(10, 61, 12, 0.3));
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+  border-bottom: 1px solid rgba(23, 223, 20, 0.1);
+`;
+
+const TitleWrapper = styled.div`
+  flex: 1;
+`;
+
+const PageTitle = styled.h1`
+  color: #17df14;
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin: 0 0 0.75rem 0;
+`;
+
+const SubTitle = styled.p`
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0;
+  font-size: 1.1rem;
+`;
+
+const ToggleWrapper = styled.div`
+  background: rgba(0, 0, 0, 0.3);
+  padding: 1.25rem;
+  border-radius: 12px;
+  border: 1px solid rgba(23, 223, 20, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+`;
+
+const VisibilityText = styled.span`
+  display: block;
+  margin-bottom: 0.5rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.9rem;
+  font-weight: 500;
+`;
+
+const ToggleLabel = styled.label`
+  display: flex;
+  flex-direction: column;
+`;
+
+const ToggleSwitch = styled.div`
+  position: relative;
+  width: 200px;
+  height: 40px;
+`;
+
+const ToggleInput = styled.input`
+  opacity: 0;
+  width: 0;
+  height: 0;
+`;
+
+const ToggleSlider = styled.div`
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: ${props => props.isPrivate ? 
+    'linear-gradient(145deg, #0a3d0c, #17df14)' : 
+    'linear-gradient(145deg, #101010, #1a1a1a)'};
+  transition: all 0.4s ease;
+  border-radius: 20px;
+  border: 2px solid ${props => props.isPrivate ? '#17df14' : '#0a3d0c'};
+  display: flex;
+  align-items: center;
+  padding: 0 0.75rem;
+`;
+
+const ToggleIcon = styled.div`
+  position: absolute;
+  height: calc(100% - 8px);
+  aspect-ratio: 1;
+  left: ${props => props.isPrivate ? 'calc(100% - 36px)' : '4px'};
+  bottom: 4px;
+  background: ${props => props.isPrivate ? '#17df14' : '#0a3d0c'};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: white;
+  transition: all 0.4s ease;
+`;
+
+const ToggleText = styled.span`
+  color: white;
+  margin-left: ${props => props.isPrivate ? '1rem' : '3rem'};
+  font-weight: 500;
+  transition: all 0.4s ease;
+`;
+
+const FormSection = styled.div`
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 1px solid rgba(23, 223, 20, 0.1);
+  transition: all 0.3s ease;
+  
+  .section-title {
+    font-size: 1.1rem;
+    color: #17df14;
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  &:hover {
+    border-color: rgba(23, 223, 20, 0.3);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  }
+
+  &.full-width {
+    grid-column: 1 / -1;
+  }
+`;
 const Spinner = styled.div`
   width: 20px;
   height: 20px;
@@ -713,5 +902,6 @@ const customSelectStyles = {
     backgroundColor: 'rgba(23, 223, 20, 0.2)'
   })
 };
+
 
 export default AIFigureDetailsForm;

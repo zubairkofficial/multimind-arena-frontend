@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from "react";
+
+
+import React, { useState, useEffect,useMemo } from "react";
 import axios from "axios";
 import { Notyf } from "notyf";
-import { useGetAllArenaTypesQuery, useGetArenaByIdQuery } from "../../../features/api/arenaApi";
+import { useGetAllArenaTypesQuery } from "../../../features/api/arenaApi";
 import { useGetAllAIFiguresQuery } from "../../../features/api/aiFigureApi";
 import { useGetAllLlmModelsQuery } from "../../../features/api/llmModelApi";
 import { useGetAllArenasQuery } from "../../../features/api/arenaApi";
@@ -11,6 +13,8 @@ import Slider from "react-slick";
 import AIFigureCard from "./AIFigureCard";
 import "./../AiFigures/aifigures.css";
 import styled from "styled-components";
+import Logo from "../../../../public/assets/images/logo/logo.png";
+
 import {
   FaEdit,
   FaUsers,
@@ -26,6 +30,7 @@ import {
 } from "react-icons/fa";
 import Select from "react-select";
 import { useNavigate } from "react-router-dom";
+import { useGetAllAifigureTypesQuery } from "../../../features/api/aiFigureTypeApi";
 
 // Styled Components
 const FormContainer = styled.div`
@@ -529,13 +534,21 @@ const SliderContainer = styled.div`
     .slick-track {
       display: flex;
       align-items: center;
+      gap: 1rem;
     }
 
     .slick-slide {
-      height: auto;
+      height: 50rem;
     }
   }
 `;
+// const SliderContainer = styled.div`
+//   margin: 2rem 0;
+//   .slick-track {
+//     display: flex;
+//     gap: 1rem;
+//   }
+// `;
 
 const RequiredStar = styled.span`
   color: #ff4444;
@@ -559,8 +572,15 @@ const ArenaDetailsForm = ({ arena,handleArenaById }) => {
     error: llmError,
     isLoading: llmLoading,
   } = useGetAllLlmModelsQuery();
-
-  // Initialize formData
+  const { data: aiFigureType, isLoading, error } = useGetAllAifigureTypesQuery();
+   const expiryDate = new Date(arena?.expiryTime);
+  const currentDate = new Date(arena?.updatedAt);
+  // Calculate the difference in milliseconds
+  const timeDifference =expiryDate-currentDate ;
+  
+  // Convert milliseconds to minutes
+  const minutesDifference = Math.round(timeDifference / (1000 * 60)); // Initialize formData
+  const minutesDuration = minutesDifference-300
   const [formData, setFormData] = useState(() => {
     // Extract AI figure IDs and roles from arenaAIFigures
     const selectedFigures =
@@ -573,10 +593,9 @@ const ArenaDetailsForm = ({ arena,handleArenaById }) => {
         }),
         {}
       ) || {};
-console.log("arena?.expirySession",arena?.expirySession)
     return {
       name: arena?.name ?? "",
-      duration: arena?.expirySession ?? "Unlimited",
+      duration: arena?.expiryTime? minutesDuration : "null",
       arenaTypeId: arena?.arenaType?.id ?? "",
       aiFigureId: selectedFigures,
       aiFigureRoles: figureRoles,
@@ -598,14 +617,10 @@ console.log("arena?.expirySession",arena?.expirySession)
   const defaultModel = llmModels?.find((model) =>
     model.modelType.includes("mini")
   );
-  console.log("Default model", defaultModel?.modelType);
   // Log for debugging
   useEffect(() => {
-    console.log("Current formData.arenaModel:", formData.arenaModel);
-    console.log("Available LLM Models:", llmModels);
   }, [formData.arenaModel, llmModels]);
 
-  console.log("Arena is", arena);
   // Hooks for fetching data
   const {
     data: arenaTypesData,
@@ -651,18 +666,18 @@ console.log("arena?.expirySession",arena?.expirySession)
   // Dynamic categories
   const dynamicCategories = [
     "All",
-    ...new Set(aiFiguresData?.map((figure) => figure.type)),
+    ...new Set(aiFigureType?.map((figure) => figure.name)),
   ];
-
   // Filtered figures
   const filteredFigures =
     filter === "All"
       ? aiFiguresData
       : aiFiguresData.filter(
           (figure) =>
-            figure.type === filter ||
+            figure?.aifigureType?.name === filter ||
             (figure.tags && figure.tags.includes(filter))
         );
+        console.log("filteredFigures===",filteredFigures)
 
   // Handlers
   const handleArenaModelChange = (selectedOption) => {
@@ -681,11 +696,25 @@ console.log("arena?.expirySession",arena?.expirySession)
 
   const handleChange = (e) => {
     const { id, value } = e.target;
-    setFormData({
-      ...formData,
-      [id]: value,
-    });
-
+    if (id === "duration") {
+      setFormData({
+        ...formData,
+        [id]: value === "Unlimited" ? null : parseInt(value, 10),
+      });
+    }
+    if (id === "maxParticipants") {
+      setFormData({
+        ...formData,
+        [id]: value === "" ? "" : parseInt(value, 10), // Parse as number, or empty string if no value
+      });
+    } else {
+      // For other fields, just store the value
+      setFormData({
+        ...formData,
+        [id]: value === "Unlimited" ? null : value,
+      });
+    }
+  
     const error = validateField(id, value);
     setErrors({ ...errors, [id]: error });
   };
@@ -705,9 +734,10 @@ console.log("arena?.expirySession",arena?.expirySession)
         }
         break;
       case "duration":
-        if (value === "" || isNaN(value)) {
-          error = "Duration is required.";
-        }
+        if (value === null || isNaN(value)) {
+          if(value==="null")return
+              error = "Duration is required.";
+            }
         break;
       case "description":
         if (!value) error = "Description is required.";
@@ -764,15 +794,29 @@ console.log("arena?.expirySession",arena?.expirySession)
     });
   };
 
+  const calculateExpiryTime = (durationInMinutes) => {
+    const now = new Date();
+    const expiryTime = new Date(now.getTime() + durationInMinutes * 60000);
+
+    // Convert expiryTime to UTC (Z) and format as ISO string
+    const utcTimeString = expiryTime.toISOString(); // This will give you the ISO string in UTC
+
+    return utcTimeString; // Returns the expiration time in UTC (Z) format
+};
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const expiryTime =
+        formData.duration === 'null'
+          ? null
+          :  calculateExpiryTime(Number(formData.duration));
       const formDataToSend = new FormData();
       formDataToSend.append("name", formData?.name);
       formDataToSend.append("arenaTypeId", formData.arenaTypeId);
       formDataToSend.append("description", formData.description);
       formDataToSend.append("maxParticipants", formData.maxParticipants || "0");
-      formDataToSend.append("duration", formData.duration || "null");
+      formDataToSend.append("expiryTime", expiryTime);
       formDataToSend.append("isPrivate", formData?.isPrivate);
       formData.aiFigureId.forEach((id) => {
         formDataToSend.append("aiFigureId[]", id);
@@ -835,7 +879,7 @@ console.log("arena?.expirySession",arena?.expirySession)
       }
       setFormData({
         name: "",
-        duration: "60",
+        duration: "",
         arenaTypeId: "",
         aiFigureId: [],
         aiFigureRoles: {},
@@ -848,11 +892,10 @@ console.log("arena?.expirySession",arena?.expirySession)
       setImagePreview(null);
       setIsSubmitting(false);
     } catch (error) {
-      notyf.error("Failed to submit form. Please try again.");
+      notyf.error(`Failed to submit form. Please try again.${error}`);
       setIsSubmitting(false);
     }
   };
-  console.log("Is Submitting", isSubmitting);
   if (isLoadingArenaTypes || isLoadingAIFigures) return <Preloader />;
   if (arenaTypesError)
     return <div>Error loading arena types: {arenaTypesError.message}</div>;
@@ -1003,7 +1046,7 @@ console.log("arena?.expirySession",arena?.expirySession)
               </UploadPrompt>
             ) : (
               <PreviewContainer>
-                <ImagePreview src={imagePreview} alt="Preview" />
+                <ImagePreview src={imagePreview} alt="Preview" onError={(e) => (e.target.src = Logo)} />
                 <PreviewOverlay className="preview-overlay">
                   <PreviewActions>
                     <PreviewButton
@@ -1112,20 +1155,21 @@ console.log("arena?.expirySession",arena?.expirySession)
             <FaRobot /> AI Figures
           </h3>
           <CategoryMenu>
-            {dynamicCategories.map((category) => (
-              <CategoryButton
-                key={category}
-                active={filter === category}
-                onClick={() => setFilter(category)}
-              >
-                {category}
-              </CategoryButton>
-            ))}
+            {dynamicCategories?.map((category) => (
+           <CategoryButton
+           key={category}
+           active={filter === category}
+           onClick={() => setFilter(category)}
+           type="button" // Prevent form submission
+         >
+           {category}
+         </CategoryButton>
+                     ))}
           </CategoryMenu>
 
           <SliderContainer>
             <Slider {...sliderSettings}>
-              {filteredFigures.map((figure) => (
+              {filteredFigures?.map((figure) => (
                 <AIFigureCard
                   key={figure.id}
                   figure={figure}
@@ -1149,7 +1193,7 @@ console.log("arena?.expirySession",arena?.expirySession)
                 error={errors.aiFigureRoles?.[figureId]}
               >
                 <option value="">Select Role</option>
-                {roles.map((role) => (
+                {roles?.map((role) => (
                   <option key={role.id} value={role.id}>
                     {role.roleName}
                   </option>

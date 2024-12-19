@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom"; // Import useNavigate
 import Select from "react-select"; // Import Select from react-select
 import styled from 'styled-components';
 import { FaEdit, FaUsers, FaClock, FaImage, FaRobot, FaLayerGroup, FaCloudUploadAlt, FaTrash, FaAlignLeft } from 'react-icons/fa';
+import { useGetAllAifigureTypesQuery } from "../../../features/api/aiFigureTypeApi";
 
 // Main container with responsive grid
 const FormContainer = styled.div`
@@ -380,6 +381,7 @@ const ArenaDetailsForm = ({isPrivate,llmModels}) => {
     isLoading: isLoadingAIFigures,
     error: aiFiguresError,
   } = useGetAllAIFiguresQuery();
+  const { data: aiFigureType, isLoading, error } = useGetAllAifigureTypesQuery();
 
   // Form data state
   const [roles, setRoles] = useState([]);
@@ -669,7 +671,7 @@ const ArenaDetailsForm = ({isPrivate,llmModels}) => {
   // Dynamically generate categories for filtering
   const dynamicCategories = [
     "All",
-    ...new Set(aiFiguresData?.map((figure) => figure.type)),
+    ...new Set(aiFigureType?.map((figure) => figure.name)),
   ];
 
   const filteredFigures =
@@ -677,7 +679,7 @@ const ArenaDetailsForm = ({isPrivate,llmModels}) => {
       ? aiFiguresData
       : aiFiguresData.filter(
           (figure) =>
-            figure.type === filter ||
+            figure?.aifigureType?.name === filter ||
             (figure.tags && figure.tags.includes(filter))
         );
        
@@ -966,11 +968,12 @@ const ArenaDetailsForm = ({isPrivate,llmModels}) => {
             <FaRobot /> AI Figures
           </h3>
           <CategoryMenu>
-            {dynamicCategories.map((category) => (
-              <CategoryButton
+            {dynamicCategories?.map((category) => (
+                <CategoryButton
                 key={category}
                 active={filter === category}
                 onClick={() => setFilter(category)}
+                type="button" // Prevent form submission
               >
                 {category}
               </CategoryButton>

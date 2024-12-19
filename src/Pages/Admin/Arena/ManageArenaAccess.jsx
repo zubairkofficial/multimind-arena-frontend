@@ -11,7 +11,7 @@ import Searchbar from "../../../components/Searchbar/Searchbar";
 const ManageArenaAccess = () => {
   const notyf = new Notyf();
 
-  const { data: users, isLoading, error } = useGetUsersWithPendingStatusQuery();
+  const { data: users, isLoading, error,refetch:refetchManageArena } = useGetUsersWithPendingStatusQuery();
   const [updateArenaRequestStatus] = useUpdateArenaRequestStatusMutation();
   const [userDetails, setUserDetails] = useState([]);
   const [searchText, setSearchText] = useState("");
@@ -36,6 +36,7 @@ const ManageArenaAccess = () => {
   const handleStatusChange = async (userId, newStatus) => {
     try {
       const response = await updateArenaRequestStatus({ userId, newStatus }).unwrap();
+      refetchManageArena()
       notyf.success(`Request ${newStatus === ArenaRequestStatus.APPROVED ? 'approved' : newStatus === ArenaRequestStatus.REJECTED ? 'rejected' : 'status updated'} successfully!`);
       setUserDetails((prevUsers) =>
         prevUsers.map((user) =>
@@ -44,6 +45,7 @@ const ManageArenaAccess = () => {
             : user
         )
       );
+
     } catch (error) {
       notyf.error('Failed to update the request status');
     }

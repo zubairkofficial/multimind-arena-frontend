@@ -1,115 +1,106 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Notyf } from "notyf";
-import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
-import Helpers from "../../../Config/Helpers";
 import styled from 'styled-components';
-import {useGetAllAIFiguresQuery, useUpdateAIFigureMutation} from "../../../features/api/aiFigureApi"
+import { useGetAllAifigureTypesQuery } from "../../../features/api/aiFigureTypeApi";
+import { useUpdateAIFigureMutation,useAddAIFigureMutation } from "../../../features/api/aiFigureApi";
+
 const AIFigureDetailsForm = () => {
-  const location=useLocation()
-  const aiFigureData=location?.state
-  const navigate = useNavigate(); // Initialize navigate
+  const location = useLocation();
+  const aiFigureData = location?.state;
+  const navigate = useNavigate();
+  console.log(aiFigureData?.
+    aifigureType?.name
+    )
+  // Fetch AI figure types
+  const { data: aifigureTypesData = [], isLoading, error } = useGetAllAifigureTypesQuery();
+  
   const [formData, setFormData] = useState({
-    name:  "",
+    name: "",
     description: "",
     prompt: "",
-    type: "anime", // Default type
+    type: "default", // Set default to a placeholder
   });
-  const [image, setImage] = useState(aiFigureData?.image??null); // Store the image file
-  const [imagePreview, setImagePreview] = useState(aiFigureData?.image??null); // Store the image preview
-  const [isSubmitting, setIsSubmitting] = useState(false); // Loading state
-const [updateAIFigure]=useUpdateAIFigureMutation()
-const {aiFigureRefetch}=useGetAllAIFiguresQuery()
+
+  const [image, setImage] = useState(aiFigureData?.image ?? null);
+  const [imagePreview, setImagePreview] = useState(aiFigureData?.image ?? null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const [updateAIFigure] = useUpdateAIFigureMutation();
+  const [addAIFigure, { isLoading: isAdding }] = useAddAIFigureMutation();
+  
   const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.id]: e.target.value,
     });
   };
-useEffect(()=>{
-  setFormData({
-    name:aiFigureData?.name??"",
-    description:aiFigureData?.description?? "",
-    prompt: aiFigureData?.prompt ??"",
-    type: aiFigureData?.type ??"anime",
-  }
-  )
-  
-},[aiFigureData])
+
+  useEffect(() => {
+    setFormData({
+      name: aiFigureData?.name ?? "",
+      description: aiFigureData?.description ?? "",
+      prompt: aiFigureData?.prompt ?? "",
+      type: aiFigureData?.aifigureType?.name ?? "default",
+    });
+  }, [aiFigureData]);
+
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     setImage(file);
-    setImagePreview(URL.createObjectURL(file)); // Generate preview URL
+    setImagePreview(URL.createObjectURL(file));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const notyf = new Notyf();
-    setIsSubmitting(true); // Start loading
-    // Prepare FormData payload
+    setIsSubmitting(true);
     const aiFigure = new FormData();
     aiFigure.append("name", formData.name);
     aiFigure.append("description", formData.description);
     aiFigure.append("prompt", formData.prompt);
-    aiFigure.append("type", formData.type);
+    aiFigure.append("aifigureType", formData.type);
     if (image) {
       aiFigure.append("file", image);
     }
+console.log("air",aiFigure)
     try {
       if (aiFigureData) {
-        try {
-          // Trigger the mutation to update the AI Figure
-          await updateAIFigure({
-            figureId: aiFigureData.id,
-            updatedAIFigure: aiFigure
-          }).unwrap();
-          notyf.success("AI Figure updated successfully.");
-        } catch (error) {
-          console.error("Error updating AI figure:", error);
-          notyf.error("Failed to update AI Figure.");
-        }
+        await updateAIFigure({ figureId: aiFigureData.id, updatedAIFigure: aiFigure }).unwrap();
+        notyf.success("AI Figure updated successfully.");
+      } else {
+        await addAIFigure(aiFigure).unwrap(); // Call Redux Toolkit Query mutation
+        notyf.success("AI Figure created successfully.");
       }
-      else{
-      const response = await axios.post(
-        `${Helpers.apiUrl}ai-figures`,
-        aiFigure,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      notyf.success("AI Figure created successfully.");
 
-    }
-      setIsSubmitting(false); // End loading
-
+      setIsSubmitting(false);
       setFormData({
         name: "",
         description: "",
         prompt: "",
-        type: "anime",
+        type: "default",
       });
+
       setImage(null);
       setImagePreview(null);
-      navigate("/admin/manage-ai-figures"); // Navigate to gallery
-      // aiFigureRefetch()
-     
+      navigate("/admin/manage-ai-figures");
     } catch (error) {
-      notyf.error("Failed to create AI Figure.");
-      setIsSubmitting(false); // End loading
+      console.log("errrorr",error);
+      notyf.error("Failed to process AI Figure.");
+      setIsSubmitting(false);
     }
   };
-
-  
 
   return (
     <FormContainer>
       <FormWrapper onSubmit={handleSubmit}>
         <HeaderSection>
-          <Title>{aiFigureData?"Update AI Figure":"Add AI Figure"}</Title>
-          <SubTitle>{aiFigureData?"Update AI Figure with custom properties":"Create a new AI figure with custom properties"}</SubTitle>
+          <Title>{aiFigureData ? "Update AI Figure" : "Add AI Figure"}</Title>
+          <SubTitle>
+            {aiFigureData
+              ? "Update AI Figure with custom properties"
+              : "Create a new AI figure with custom properties"}
+          </SubTitle>
         </HeaderSection>
 
         <FormGrid>
@@ -156,10 +147,20 @@ useEffect(()=>{
               onChange={handleChange}
               required
             >
-              <option value="creative">Creative</option>
-              <option value="anime">Anime</option>
-              <option value="famous_people">Famous People</option>
-              <option value="fictional_character">Fictional Character</option>
+              <option value="default" disabled>
+                Select AI Figure Type
+              </option>
+              {isLoading ? (
+                <option>Loading...</option>
+              ) : error ? (
+                <option>Error fetching types</option>
+              ) : (
+                aifigureTypesData?.map((type) => (
+                  <option key={type.id} value={type.id}>
+                    {type.name}
+                  </option>
+                ))
+              )}
             </Select>
           </FormGroup>
 
@@ -192,10 +193,10 @@ useEffect(()=>{
           <SubmitButton type="submit" disabled={isSubmitting}>
             {isSubmitting ? (
               <>
-                <Spinner /> Creating...
+                <Spinner /> Processing...
               </>
             ) : (
-             `${aiFigureData ? 'Update AI Figure': 'Create AI Figure'}`
+              `${aiFigureData ? "Update AI Figure" : "Create AI Figure"}`
             )}
           </SubmitButton>
         </ButtonContainer>
@@ -203,7 +204,6 @@ useEffect(()=>{
     </FormContainer>
   );
 };
-
 // Styled Components
 const FormContainer = styled.div`
   min-height: 100vh;

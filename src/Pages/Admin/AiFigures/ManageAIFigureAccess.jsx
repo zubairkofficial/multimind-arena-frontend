@@ -11,7 +11,7 @@ const ManageAIFigureAccess = () => {
   const notyf = new Notyf();
 
   // Fetch users data from the API
-  const { data: users, isLoading, error } = useGetUsersWithAiFigurePendingStatusQuery();
+  const { data: users, isLoading, error,refetch:refetchManageAIFigure } = useGetUsersWithAiFigurePendingStatusQuery();
   const [updateAiFigureAccessStatus] = useUpdateAiFigureRequestStatusMutation();
 
   const [userDetails, setUserDetails] = useState([]);
@@ -39,6 +39,7 @@ const ManageAIFigureAccess = () => {
     try {
       // Call API to update the access status
       await updateAiFigureAccessStatus({ userId, status:newStatus }).unwrap();
+      refetchManageAIFigure()
       notyf.success(`Access status updated to ${newStatus}!`);
 
       // Update local state

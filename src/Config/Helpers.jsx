@@ -4,7 +4,7 @@ class Helpers {
   static localhost = "http://localhost:8080";
   static server = "http://multibackend.cyberifyportfolio.com";
 
-  static basePath = `${this.localhost}`;
+  static basePath = `${this.server}`;
   static apiUrl = `${this.basePath}/api/v1/`;
 
   static authUser = JSON.parse(localStorage.getItem("user") ?? "{}");

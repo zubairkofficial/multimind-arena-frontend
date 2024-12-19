@@ -16,6 +16,7 @@ import ManageArenas from "./Pages/Admin/Arena/ManageArenas";
 import AddArena from "./Pages/Admin/Arena/AddArena";
 import RecentActivity from "./Pages/Admin/RecentActivity";
 import ManageAiFigures from "./Pages/Admin/AiFigures/ManageAiFigures";
+import ManageAiFigureType from "./Pages/Admin/AiFigureType/ManageAiFigureType";
 import SystemPrompt from "./Pages/Admin/SystemPrompt/SystemPrompt"
 import ManageSystemPrompt from "./Pages/Admin/SystemPrompt/ManageSystemPrompt"
 
@@ -55,6 +56,7 @@ import { UserTier } from "./common";
 import ProtectedRoute from "./ProtectRoutes";
 import EditArenaType from "./Pages/Admin/Arena/ArenaType/EditArenaType";
 import UpdateAdminLlmModel from "./Pages/Admin/LlmModel/UpdateAdminLlmModel";
+import AddOrUpdateAifigureType from "./Pages/Admin/AiFigureType/AddAiFigureType";
 // Define routes
 export const router = createBrowserRouter([
   // Default Routes
@@ -212,6 +214,14 @@ export const router = createBrowserRouter([
         element: <ManageAiFigures />,
       },
       {
+        path: "manage-ai-figures-type",
+        element: <ManageAiFigureType />,
+      },
+      {
+        path: "add-aifigure-type",
+        element: <AddOrUpdateAifigureType />,
+      },
+      {
         path: "add-ai-figure",
         element: <AddAIFigure />,
       },
@@ -220,13 +230,18 @@ export const router = createBrowserRouter([
         element: <AddAIFigure />,
       },
       {
+        path: "update-aifigure-type",
+        element: <AddOrUpdateAifigureType />
+      },
+      {
         path: "view-profile",
         element: <ViewAdminProfile />,
       },
       {
         path: "edit-arena-type/:id",
         element: <EditArenaType />
-      }
+      },
+      
     ],
   },
 
